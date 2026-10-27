@@ -181,7 +181,6 @@ export const LiveAudioTranscriptionPanel: React.FC = () => {
           <MaterialIcon name="warning" className="text-amber-500 text-xs shrink-0" />
           <span className="italic">Machine transcript, may contain errors.</span>
         </div>
-        <SampleDataBadge />
       </div>
     </div>
   );

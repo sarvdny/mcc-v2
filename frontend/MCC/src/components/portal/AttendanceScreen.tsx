@@ -14,9 +14,9 @@ export const AttendanceScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'full' | 'partial'>('all');
 
-  // Date picker defaulting to today (Item 8d)
-  const todayIso = new Date().toISOString().split('T')[0];
-  const [selectedDate, setSelectedDate] = useState<string>(todayIso);
+  // Date picker defaulting to 27 Oct 2026
+  const defaultDate = '2026-10-27';
+  const [selectedDate, setSelectedDate] = useState<string>(defaultDate);
 
   const formattedDateStr = useMemo(() => {
     try {
@@ -127,15 +127,15 @@ export const AttendanceScreen: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
           {/* Always show the date badge (Item 8d) */}
-          <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-bold">
+          <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-900 px-3 py-1.5 rounded-xl text-xs font-semibold">
             <MaterialIcon name="event" size="xs" className="text-amber-700" />
             <span>
               {language === 'mr' ? `${formattedDateStr} ची उपस्थिती` : `Attendance for ${formattedDateStr}`}
             </span>
           </div>
 
-          {/* Date Picker defaulting to today (Item 8d) */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+          {/* Date Picker */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/90 rounded-xl px-2.5 py-1.5 text-xs shadow-2xs">
             <MaterialIcon name="calendar_today" size="xs" className="text-slate-500" />
             <label htmlFor="attendance-date" className="font-semibold text-slate-700 sr-only">
               {language === 'mr' ? 'तारीख निवडा' : 'Select Date'}
@@ -150,8 +150,9 @@ export const AttendanceScreen: React.FC = () => {
           </div>
 
           <button
+            type="button"
             onClick={handleExportAttendance}
-            className="px-4 py-2 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+            className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm flex items-center gap-2 cursor-pointer"
           >
             <MaterialIcon name="file_download" size="xs" />
             <span>{language === 'mr' ? 'उपस्थिती अहवाल डाउनलोड' : 'Export Attendance Report'}</span>
@@ -250,8 +251,8 @@ export const AttendanceScreen: React.FC = () => {
 
       {/* Interactive Controls & Filters */}
       <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
-        {/* Division Filter Buttons */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        {/* Division Filter Segmented Control */}
+        <div className="inline-flex items-center p-1 bg-slate-100/90 rounded-xl shadow-2xs border border-slate-200/60 overflow-x-auto max-w-full">
           {[
             { id: 'All', label: language === 'mr' ? 'सर्व विभाग (३६)' : 'All Divisions (36)' },
             { id: 'Konkan', label: language === 'mr' ? 'कोकण' : 'Konkan' },
@@ -263,11 +264,12 @@ export const AttendanceScreen: React.FC = () => {
           ].map((div) => (
             <button
               key={div.id}
+              type="button"
               onClick={() => setSelectedDivision(div.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 selectedDivision === div.id
-                  ? 'bg-gov-primary text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
               }`}
             >
               {div.label}
@@ -324,7 +326,6 @@ export const AttendanceScreen: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-100/90 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
-                <th className="px-3 py-3 font-mono text-[9px]">{language === 'mr' ? 'तारीख' : 'Date'}</th>
                 <th className="px-4 py-3">{language === 'mr' ? 'कार्यालय व जिल्हा' : 'Office & District'}</th>
                 <th className="px-3 py-3">{language === 'mr' ? 'माहिती अधिकारी' : 'Officer In-Charge'}</th>
                 <th className="px-3 py-3 text-center">{language === 'mr' ? 'मंजूर' : 'Sanctioned'}</th>
@@ -341,9 +342,6 @@ export const AttendanceScreen: React.FC = () => {
                 const isFull = office.attendancePercent === 100;
                 return (
                   <tr key={office.officeId} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="px-3 py-3 font-mono text-slate-400 text-[10px] whitespace-nowrap">
-                      {selectedDate}
-                    </td>
                     <td className="px-4 py-3">
                       <div className="font-bold text-slate-900">
                         {language === 'mr' ? office.officeNameMr : office.officeName}
@@ -388,9 +386,27 @@ export const AttendanceScreen: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-3 py-3">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        <span>{office.deviceStatus}</span>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
+                        office.deviceStatus === 'Online & Synced'
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          : office.deviceStatus === 'Network Delayed'
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-red-50 text-red-800 border-red-200'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          office.deviceStatus === 'Online & Synced'
+                            ? 'bg-emerald-500 animate-pulse'
+                            : office.deviceStatus === 'Network Delayed'
+                            ? 'bg-amber-500'
+                            : 'bg-red-500'
+                        }`} />
+                        <span>
+                          {office.deviceStatus === 'Online & Synced'
+                            ? (language === 'mr' ? 'ऑनलाईन' : 'Online')
+                            : office.deviceStatus === 'Network Delayed'
+                            ? (language === 'mr' ? 'विलंबित' : 'Delayed')
+                            : (language === 'mr' ? 'ऑफलाईन' : 'Offline')}
+                        </span>
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">

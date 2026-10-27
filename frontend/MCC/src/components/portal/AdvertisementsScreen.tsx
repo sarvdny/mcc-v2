@@ -216,7 +216,7 @@ export const AdvertisementsScreen: React.FC = () => {
   const [selectedCreative, setSelectedCreative] = useState<StateAdvertisement | null>(null);
   const [selectedHoarding, setSelectedHoarding] = useState<HoardingRecord | null>(null);
 
-  // DGPR DAVP Rate Calculator state
+  // DGIPR DAVP Rate Calculator state
   const [showRateCalculator, setShowRateCalculator] = useState<boolean>(false);
   const [calcMediaType, setCalcMediaType] = useState<'print' | 'hoarding' | 'tv' | 'radio'>('print');
   const [calcSize, setCalcSize] = useState<number>(384); // sq.cm or spots
@@ -297,8 +297,8 @@ export const AdvertisementsScreen: React.FC = () => {
             <MaterialIcon name="campaign" size="xs" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR) • जाहिरात व मोहीम नियंत्रण कक्ष'
-                : 'DGPR Advertising & Media Campaign Management Wing'}
+                ? 'माहिती व जनसंपर्क महासंचालनालय (DGIPR) • जाहिरात व मोहीम नियंत्रण कक्ष'
+                : 'DGIPR Advertising & Media Campaign Management Wing'}
             </span>
           </div>
 
@@ -333,8 +333,8 @@ export const AdvertisementsScreen: React.FC = () => {
               setToast({
                 message:
                   language === 'mr'
-                    ? 'सर्व ४२ सक्रिय प्रसिद्धी आदेश (DGPR-RO-Ledger-2026.csv) यशस्वीरीत्या एक्सपोर्ट झाले.'
-                    : 'All 42 active Release Orders exported (DGPR-RO-Ledger-2026.csv).',
+                    ? 'सर्व ४२ सक्रिय प्रसिद्धी आदेश (DGIPR-RO-Ledger-2026.csv) यशस्वीरीत्या एक्सपोर्ट झाले.'
+                    : 'All 42 active Release Orders exported (DGIPR-RO-Ledger-2026.csv).',
                 type: 'success',
               })
             }
@@ -347,14 +347,14 @@ export const AdvertisementsScreen: React.FC = () => {
           <button
             onClick={() =>
               setToast({
-                message: language === 'mr' ? 'DGPR दर सूची २०२६ डाउनलोड झाली.' : 'DGPR Approved Rate Card 2026 downloaded.',
+                message: language === 'mr' ? 'DGIPR दर सूची २०२६ डाउनलोड झाली.' : 'DGIPR Approved Rate Card 2026 downloaded.',
                 type: 'info',
               })
             }
             className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
           >
             <MaterialIcon name="description" size="xs" />
-            <span>{language === 'mr' ? 'डीजीपीआर दर सूची' : 'DGPR Rate Card'}</span>
+            <span>{language === 'mr' ? 'डीजीआयपीआर दर सूची' : 'DGIPR Rate Card'}</span>
           </button>
 
           <button
@@ -390,7 +390,7 @@ export const AdvertisementsScreen: React.FC = () => {
             {language === 'mr' ? 'मंजूर मोहीम बजेट' : 'Authorized Campaign Budget'}
           </span>
           <div className="text-2xl font-black text-amber-700 my-1">₹ 34.80 Cr</div>
-          <span className="text-[11px] text-slate-500">DGPR Account Head 2220</span>
+          <span className="text-[11px] text-slate-500">DGIPR Account Head 2220</span>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
@@ -598,7 +598,7 @@ export const AdvertisementsScreen: React.FC = () => {
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-auto">
                   <button
                     onClick={() => setSelectedRO(ad)}
-                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
+                    className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all flex items-center gap-1 cursor-pointer shadow-2xs"
                   >
                     <MaterialIcon name="description" size="xs" />
                     <span>{language === 'mr' ? 'RO आदेश पहा' : 'View RO'}</span>
@@ -606,7 +606,7 @@ export const AdvertisementsScreen: React.FC = () => {
 
                   <button
                     onClick={() => handleExportRO(ad.roNumber)}
-                    className="px-3 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
+                    className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all flex items-center gap-1 cursor-pointer shadow-sm"
                   >
                     <MaterialIcon name="download" size="xs" />
                     <span>{language === 'mr' ? 'डाउनलोड' : 'Export'}</span>
@@ -700,8 +700,7 @@ export const AdvertisementsScreen: React.FC = () => {
                       className="aspect-[16/9] rounded-xl bg-gradient-to-br from-amber-700 via-amber-800 to-slate-900 p-3.5 text-white flex flex-col justify-between border border-amber-600/40 shadow-inner cursor-pointer hover:ring-2 hover:ring-amber-400 transition-all"
                       title="Click to view full inspection photo"
                     >
-                      <div className="flex justify-between items-center text-[9px] font-mono tracking-wider text-amber-300">
-                        <span>MAHARASHTRA GOVT • OUTDOOR</span>
+                      <div className="flex justify-end items-center text-[9px] font-mono tracking-wider">
                         <span className="bg-emerald-500/90 text-white px-1.5 py-0.2 rounded font-bold">VERIFIED</span>
                       </div>
                       <div className="py-1 text-center">
@@ -712,13 +711,13 @@ export const AdvertisementsScreen: React.FC = () => {
                       </div>
                       <div className="flex justify-between text-[9px] font-mono text-slate-300 border-t border-white/20 pt-1">
                         <span>{h.size}</span>
-                        <span>{h.impressionsDaily} / day</span>
+                        <span>{h.impressionsDaily.replace(/\s*\/ day$/, '')} / day</span>
                       </div>
                     </div>
 
                     {/* Geotag & Audit Info */}
                     <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono bg-slate-50 p-2 rounded-lg border border-slate-200/60">
-                      <span>GPS: {h.geotag.lat.toFixed(2)}, {h.geotag.lng.toFixed(2)}</span>
+                      <span>GPS: {h.geotag.lat.toFixed(2)}° N, {h.geotag.lng.toFixed(2)}° E</span>
                       <span>Verified: {h.verifiedDate}</span>
                     </div>
                   </div>
@@ -988,10 +987,10 @@ export const AdvertisementsScreen: React.FC = () => {
               <div className="space-y-2 border border-slate-200 p-3.5 rounded-xl bg-amber-50/20">
                 <strong className="text-slate-900 block font-serif">विषय: {selectedRO.campaignTitleMr}</strong>
                 <p className="text-slate-700 leading-relaxed text-[11px]">
-                  उपरोक्त विषयासंदर्भात कळविण्यात येते की, माहिती व जनसंपर्क महासंचालनालयाच्या अधिकृत सूचीतील वृत्तपत्रे, नियतकालिके व माध्यम गृहांमध्ये सदर जाहिरात प्रसिद्ध करण्यास मंजुरी देण्यात येत आहे. सर्व बिल देयके शासकीय विहित दर (DGPR Approved Rate Card) नुसार सादर करावीत.
+                  उपरोक्त विषयासंदर्भात कळविण्यात येते की, माहिती व जनसंपर्क महासंचालनालयाच्या अधिकृत सूचीतील वृत्तपत्रे, नियतकालिके व माध्यम गृहांमध्ये सदर जाहिरात प्रसिद्ध करण्यास मंजुरी देण्यात येत आहे. सर्व बिल देयके शासकीय विहित दर (DGIPR Approved Rate Card) नुसार सादर करावीत.
                 </p>
                 <div className="pt-2 flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                  <span>Authorized by: Deputy Director (Advertising), DGPR</span>
+                  <span>Authorized by: Deputy Director (Advertising), DGIPR</span>
                   <span className="text-emerald-700 font-bold">✓ Digitally Signed</span>
                 </div>
               </div>
@@ -1137,7 +1136,7 @@ export const AdvertisementsScreen: React.FC = () => {
               >
                 <div className="flex justify-between items-start">
                   <span className="text-[10px] font-mono tracking-widest text-amber-300 font-bold uppercase">
-                    GOVERNMENT OF MAHARASHTRA • DGPR
+                    GOVERNMENT OF MAHARASHTRA • DGIPR
                   </span>
                   <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded font-bold">
                     {hoardingLuxMode === 'night' ? '248 LUX ILLUMINATED' : 'GPS VERIFIED'}
@@ -1196,7 +1195,7 @@ export const AdvertisementsScreen: React.FC = () => {
         </div>
       )}
 
-      {/* 11. MODAL 4: INTERACTIVE DGPR DAVP RATE ESTIMATOR CALCULATOR */}
+      {/* 11. MODAL 4: INTERACTIVE DGIPR DAVP RATE ESTIMATOR CALCULATOR */}
       {showRateCalculator && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 border border-slate-300">
@@ -1204,7 +1203,7 @@ export const AdvertisementsScreen: React.FC = () => {
               <div className="flex items-center gap-2">
                 <MaterialIcon name="table_chart" size="sm" className="text-amber-300" />
                 <span className="font-bold text-sm">
-                  {language === 'mr' ? 'डीजीपीआर डीएव्हीपी दर गणक (Rate Calculator)' : 'DGPR DAVP Sanction Rate Estimator'}
+                  {language === 'mr' ? 'डीजीआयपीआर डीएव्हीपी दर गणक (Rate Calculator)' : 'DGIPR DAVP Sanction Rate Estimator'}
                 </span>
               </div>
               <button
@@ -1304,7 +1303,7 @@ export const AdvertisementsScreen: React.FC = () => {
                     : (calcTier === 'A' ? 800 : calcTier === 'B' ? 450 : 250);
 
                 const gross = baseUnitRate * calcSize;
-                const davpDiscount = gross * 0.15; // 15% DGPR DAVP Concession
+                const davpDiscount = gross * 0.15; // 15% DGIPR DAVP Concession
                 const taxable = gross - davpDiscount;
                 const gst = taxable * 0.05; // 5% GST
                 const netPayable = taxable + gst;

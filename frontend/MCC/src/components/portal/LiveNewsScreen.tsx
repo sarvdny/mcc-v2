@@ -888,7 +888,7 @@ export const LiveNewsScreen: React.FC = () => {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-mono text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                        ⏱️ {hl.timestamp}
+                        {hl.timestamp}
                       </span>
                       <span
                         className={`text-[9px] font-bold font-mono px-1.5 py-0.2 rounded border ${
@@ -912,9 +912,10 @@ export const LiveNewsScreen: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="pt-2.5 mt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-amber-800 font-semibold">
-                    <span>{isSelectedSegment ? '🔴 आता सुरू आहे' : 'व्हिडिओ व ट्रान्सक्रिप्ट पहा'}</span>
-                    <span className="underline">Play ➜</span>
+                  <div className="pt-2.5 mt-2 border-t border-slate-200/60 flex items-center justify-end">
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-mono text-[10px] font-medium flex items-center gap-1 transition-all">
+                      <span>{language === 'mr' ? `येथे जा ${hl.timestamp} →` : `Jump to ${hl.timestamp} →`}</span>
+                    </span>
                   </div>
                 </div>
               );
@@ -962,26 +963,26 @@ export const LiveNewsScreen: React.FC = () => {
               </span>
             </div>
 
-            {/* Live Speech Sync Simulation Toggle */}
+            {/* Live Speech Sync Toggle */}
             <button
               onClick={() => setIsLiveSyncing(!isLiveSyncing)}
-              className={`h-8.5 px-3 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`h-8.5 px-3 rounded-xl text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 ${
                 isLiveSyncing
-                  ? 'bg-rose-600 text-white border-rose-600 shadow-xs'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-2xs'
                   : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
               }`}
               title="Toggle automatic synchronized speech progression"
             >
-              <span className={`w-2 h-2 rounded-full ${isLiveSyncing ? 'bg-white animate-ping' : 'bg-slate-400'}`} />
+              <span className={`w-2 h-2 rounded-full ${isLiveSyncing ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
               <span>{isLiveSyncing ? 'Speech Sync: ON' : 'Speech Sync: PAUSED'}</span>
             </button>
 
             {/* Auto Scroll Toggle */}
             <button
               onClick={() => setAutoScroll(!autoScroll)}
-              className={`h-8.5 px-3 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+              className={`h-8.5 px-3 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
                 autoScroll
-                  ? 'bg-slate-900 text-white border-slate-900'
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
                   : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
               }`}
             >
@@ -1006,54 +1007,6 @@ export const LiveNewsScreen: React.FC = () => {
               <MaterialIcon name="share" size="xs" />
               <span>{language === 'mr' ? 'कॉपी करा' : 'Copy'}</span>
             </button>
-          </div>
-        </div>
-
-        {/* Live Transcript Preparation Console: Audio Waveform & Neural STT Buffer */}
-        <div className="bg-slate-900 text-slate-100 p-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            {/* Visual Equalizer Spectrum Bars */}
-            <div className="flex items-end gap-1 h-7 px-2 py-1 bg-slate-950 rounded border border-slate-800">
-              <span className="w-1 bg-emerald-400 rounded-full animate-pulse h-4" />
-              <span className="w-1 bg-emerald-400 rounded-full animate-bounce h-6" />
-              <span className="w-1 bg-emerald-400 rounded-full animate-pulse h-3" />
-              <span className="w-1 bg-amber-400 rounded-full animate-bounce h-5" />
-              <span className="w-1 bg-emerald-400 rounded-full animate-pulse h-6" />
-              <span className="w-1 bg-emerald-400 rounded-full animate-bounce h-2" />
-              <span className="w-1 bg-amber-400 rounded-full animate-pulse h-5" />
-            </div>
-
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-2 py-0.2 rounded border border-emerald-500/30">
-                  LIVE AUDIO INGEST
-                </span>
-                <span className="text-xs font-bold text-white">
-                  Whisper-v3 Neural STT Engine
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Latency: 32ms • WER: &lt;1.1% • Confidence: 99.4% • Language: English + Hindi (Devanagari Real-time Translation)
-              </p>
-            </div>
-          </div>
-
-          {/* Active Speaking Status & Buffer Preview */}
-          <div className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 flex items-center justify-between gap-3 max-w-xl w-full">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping shrink-0" />
-              <div className="truncate text-xs font-mono">
-                <span className="text-slate-400">Preparation Buffer: </span>
-                <span className="text-amber-300 font-semibold">
-                  &quot;...in the spirit of democracy and constitutional safeguards...&quot;
-                </span>
-                <span className="animate-pulse text-rose-400 ml-1">▋</span>
-              </div>
-            </div>
-
-            <span className="text-[10px] font-mono text-emerald-400 shrink-0 border border-emerald-500/30 bg-emerald-950/60 px-1.5 py-0.5 rounded">
-              Active Chunk #{activeSegmentIndex + 1}
-            </span>
           </div>
         </div>
 
@@ -1098,7 +1051,7 @@ export const LiveNewsScreen: React.FC = () => {
                         )}
                         {seg.isHighlight && (
                           <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 font-mono text-[9px] font-bold">
-                            ⭐ {language === 'mr' ? seg.highlightTagMr : seg.highlightTag}
+                            {language === 'mr' ? seg.highlightTagMr : seg.highlightTag}
                           </span>
                         )}
                       </div>
@@ -1109,19 +1062,8 @@ export const LiveNewsScreen: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2 font-mono text-[11px]">
-                    <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
-                      ⏱️ {seg.timestamp}
-                    </span>
-                    <span
-                      className={`px-2 py-0.5 rounded font-bold border ${
-                        seg.sentiment === 'Positive'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                          : seg.sentiment === 'Alert'
-                          ? 'bg-rose-50 text-rose-800 border-rose-200'
-                          : 'bg-blue-50 text-blue-800 border-blue-200'
-                      }`}
-                    >
-                      {seg.sentiment} ({seg.confidence}%)
+                    <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold tabular-nums">
+                      {seg.timestamp}
                     </span>
                   </div>
                 </div>
@@ -1138,13 +1080,13 @@ export const LiveNewsScreen: React.FC = () => {
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[9px] font-mono font-bold text-slate-600 uppercase">
-                          Original Spoken Speech (Audio):
+                        <span className="text-[10px] font-mono font-bold text-slate-600 uppercase bg-slate-100 px-1.5 py-0.5 rounded">
+                          EN
                         </span>
                         {isSpeakingNow && (
-                          <span className="text-[10px] text-amber-700 font-mono font-bold flex items-center gap-1">
+                          <span className="text-[10px] text-amber-700 font-mono font-medium flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
-                            Live STT Synchronized
+                            Live Sync
                           </span>
                         )}
                       </div>
@@ -1164,11 +1106,11 @@ export const LiveNewsScreen: React.FC = () => {
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[9px] font-mono font-bold text-amber-900 uppercase">
-                          मराठी थेट भाषांतर (Devanagari Live Translation):
+                        <span className="text-[10px] font-mono font-bold text-amber-900 uppercase bg-amber-100 px-1.5 py-0.5 rounded">
+                          MR
                         </span>
                         <span className="text-[10px] text-amber-800 font-mono">
-                          DGIPR AI ट्रांसलेटर
+                          स्वयंचलित मराठी अनुवाद
                         </span>
                       </div>
                       <p className="text-slate-900 font-serif font-medium leading-relaxed text-xs">

@@ -125,7 +125,7 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
       throughput: '1,450 ev/min',
       status: 'Active',
       description: 'Calculates sentiment score (-1.0 to +1.0), topic taxonomy, crisis urgency index, credibility weighting.',
-      workers: '2x NVIDIA Tensor Core Workers',
+      workers: 'High-Throughput Stream Workers',
       input: 'Clean Unicode Text Tokens',
       output: 'Sentiment Vector + Urgency Score (0-100)',
     },
@@ -353,9 +353,9 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1">
             <span className="flex items-center gap-1.5 text-gov-primary font-semibold">
               <MaterialIcon name="layers" size="xs" />
-              <span>OPTICAL DATA CONDUIT (STAGE 1 ➔ STAGE 6)</span>
+              <span>SECURE DATA CONDUIT (STAGE 1 ➔ STAGE 6)</span>
             </span>
-            <span className="text-slate-600">Zero-Copy Ring Buffer Bus (40 Gbps)</span>
+            <span className="text-slate-600">Ring Buffer Stream Bus</span>
           </div>
 
           <svg className="w-full h-6" viewBox="0 0 1000 24" fill="none">

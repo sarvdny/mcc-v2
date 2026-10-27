@@ -79,7 +79,6 @@ export const GovernmentPositionsSection: React.FC = () => {
             </p>
           </div>
         </div>
-        <SampleDataBadge />
       </div>
 
       {/* Loading State */}

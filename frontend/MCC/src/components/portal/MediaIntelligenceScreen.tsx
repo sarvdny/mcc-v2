@@ -39,8 +39,8 @@ export interface MediaOutletAnalysis {
   circulation: string;
   todayLead: string;
   todayLeadMr: string;
-  tone: 'Pro-Public Policy' | 'Balanced Analytical' | 'Critical Review' | 'Investigative';
-  toneMr: 'धोरणात्मक सकारात्मक' | 'तटस्थ विश्लेषणात्मक' | 'आव्हानात्मक टीका' | 'शोध पत्रकारिता';
+  tone: 'Constructive / Factual' | 'Balanced Analytical' | 'Critical Review' | 'Investigative';
+  toneMr: 'रचनात्मक / तथ्यनिष्ठ' | 'तटस्थ विश्लेषणात्मक' | 'आव्हानात्मक टीका' | 'शोध पत्रकारिता';
   alignmentScore: number;
   dgprIntervention: string;
   dgprInterventionMr: string;
@@ -222,8 +222,8 @@ const DISTRICT_NARRATIVES: DistrictNarrative[] = [
     mediaOutlet: 'The Hitavada / Lokmat Nagpur',
     tone: 'Positive',
     toneMr: 'सकारात्मक',
-    actionTaken: 'DGPR Nagpur regional desk held technical media briefing.',
-    actionTakenMr: 'डीजीपीआर नागपूर शाखेतर्फे पत्रकारांसाठी विशेष तांत्रिक वार्तालाप आयोजित.',
+    actionTaken: 'DGIPR Nagpur regional desk held technical media briefing.',
+    actionTakenMr: 'डीजीआयपीआर नागपूर शाखेतर्फे पत्रकारांसाठी विशेष तांत्रिक वार्तालाप आयोजित.',
   },
 ];
 
@@ -234,11 +234,11 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     circulation: '1.45M Daily',
     todayLead: 'Ladki Bahin Diwali bonus advance credited to rural women beneficiaries across 36 districts',
     todayLeadMr: 'राज्यभरातील लाडक्या बहिणींच्या खात्यात दिवाळी सन्मान निधी जमा; ग्रामीण भागात उत्साहाचे वातावरण',
-    tone: 'Pro-Public Policy',
-    toneMr: 'धोरणात्मक सकारात्मक',
+    tone: 'Constructive / Factual',
+    toneMr: 'रचनात्मक / तथ्यनिष्ठ',
     alignmentScore: 94,
-    dgprIntervention: 'Routine data briefing by DGPR News Desk',
-    dgprInterventionMr: 'डीजीपीआर वृत्त विभागाकडून अधिकृत आकडेवारी पुरवली',
+    dgprIntervention: 'Routine data briefing by DGIPR News Desk',
+    dgprInterventionMr: 'डीजीआयपीआर वृत्त विभागाकडून अधिकृत आकडेवारी पुरवली',
   },
   {
     outlet: 'Sakal (सकाळ)',
@@ -246,8 +246,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     circulation: '1.28M Daily',
     todayLead: 'Infrastructure boom: Atal Setu and Samruddhi Mahamarg transform intra-state transit logistics',
     todayLeadMr: 'अटल सेतू व समृद्धी महामार्गामुळे राज्याच्या दळणवळणात क्रांती; शेतमालाची मुंबईत जलद पोहोच',
-    tone: 'Pro-Public Policy',
-    toneMr: 'धोरणात्मक सकारात्मक',
+    tone: 'Constructive / Factual',
+    toneMr: 'रचनात्मक / तथ्यनिष्ठ',
     alignmentScore: 91,
     dgprIntervention: 'MSRDC transit duration analytics shared',
     dgprInterventionMr: 'एमएसआरडीसी वाहतूक वेळेचा अभ्यास अहवाल सादर',
@@ -270,8 +270,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     circulation: 'Statewide Marathi TRP #1',
     todayLead: 'Special Prime-Time Report: Ground reality of water storage in Marathwada farm ponds',
     todayLeadMr: 'थेट ग्राउंड रिपोर्ट: मराठवाड्यातील शेततळ्यांमधील जलसाठा आणि रब्बी हंगामाची पूर्वतयारी',
-    tone: 'Pro-Public Policy',
-    toneMr: 'धोरणात्मक सकारात्मक',
+    tone: 'Constructive / Factual',
+    toneMr: 'रचनात्मक / तथ्यनिष्ठ',
     alignmentScore: 92,
     dgprIntervention: 'Live telemetry stream access granted to news crew',
     dgprInterventionMr: 'वृत्तवाहिनीच्या प्रतिनिधींना जलसंपदा थेट आकडेवारी उपलब्ध',
@@ -282,8 +282,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     circulation: 'Statewide Marathi TRP #2',
     todayLead: 'Crop insurance claim settlement: 98% claims processed within 7 working days',
     todayLeadMr: 'पीक विमा भरपाई वाटप: एका आठवड्यात ९८% दाव्यांचा निपटारा; तक्रार निवारण कक्ष सक्रिय',
-    tone: 'Pro-Public Policy',
-    toneMr: 'धोरणात्मक सकारात्मक',
+    tone: 'Constructive / Factual',
+    toneMr: 'रचनात्मक / तथ्यनिष्ठ',
     alignmentScore: 89,
     dgprIntervention: 'Agriculture Commissioner soundbite coordinated',
     dgprInterventionMr: 'कृषी आयुक्तांची थेट मुलाखत आयोजित केली',
@@ -294,11 +294,11 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     circulation: 'Statewide Marathi News',
     todayLead: 'Skill Development Mega Job Fair in Chhatrapati Sambhajinagar offers 18,000 appointment letters',
     todayLeadMr: 'छत्रपती संभाजीनगर येथे महारोजगार मेळाव्यात १८,००० तरुणांना थेट नियुक्तीपत्रे वाटप',
-    tone: 'Pro-Public Policy',
-    toneMr: 'धोरणात्मक सकारात्मक',
+    tone: 'Constructive / Factual',
+    toneMr: 'रचनात्मक / तथ्यनिष्ठ',
     alignmentScore: 93,
     dgprIntervention: 'Live OB van coordination provided',
-    dgprInterventionMr: 'थेट प्रक्षेपणासाठी डीजीपीआर माध्यम सहाय्य',
+    dgprInterventionMr: 'थेट प्रक्षेपणासाठी डीजीआयपीआर माध्यम सहाय्य',
   },
 ];
 
@@ -331,8 +331,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR) • दैनिक माध्यम संवेदनशीलता अहवाल कक्ष'
-                : 'DGPR Daily Media Sentiment & Narrative Radar (08:00 AM Brief)'}
+                ? 'माहिती व जनसंपर्क महासंचालनालय (DGIPR) • दैनिक माध्यम संवेदनशीलता अहवाल कक्ष'
+                : 'DGIPR Daily Media Sentiment & Narrative Radar (08:00 AM Brief)'}
             </span>
           </div>
 
@@ -341,7 +341,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
             <span>
               {language === 'mr'
                 ? 'माध्यम कल, संवेदनशीलता व वृत्तांत रडार दालन'
-                : 'DGPR Media Sentiment & Statewide Narrative Intelligence Radar'}
+                : 'DGIPR Media Sentiment & Statewide Narrative Intelligence Radar'}
             </span>
           </h1>
 
@@ -364,7 +364,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                 type: 'info',
               })
             }
-            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
             <MaterialIcon name="download" size="xs" />
             <span>{language === 'mr' ? 'दैनिक अहवाल PDF' : 'Export Brief PDF'}</span>
@@ -372,7 +372,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
 
           <button
             onClick={() => setShowBriefModal(true)}
-            className="px-4 py-2 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
             <MaterialIcon name="description" size="xs" />
             <span>{language === 'mr' ? 'गुप्तवार्ता संक्षेप पहा' : 'View Executive Brief'}</span>
@@ -414,9 +414,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             </span>
           </div>
           <div className="my-2">
-            <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
-              <span>{language === 'mr' ? 'सकारात्मक' : 'Positive'}</span>
-              <span>64%</span>
+            <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>{language === 'mr' ? 'सकारात्मक कल' : 'Tone Distribution'}</span>
             </div>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden flex">
               <div className="h-full bg-emerald-500 w-[64%]" />
@@ -437,9 +436,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             </span>
           </div>
           <div className="my-2">
-            <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
-              <span>{language === 'mr' ? 'प्राइम-टाइम चर्चा' : 'Prime-Time Tone'}</span>
-              <span>58%</span>
+            <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>{language === 'mr' ? 'प्राइम-टाइम कल' : 'Tone Distribution'}</span>
             </div>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden flex">
               <div className="h-full bg-emerald-500 w-[58%]" />
@@ -460,9 +458,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             </span>
           </div>
           <div className="my-2">
-            <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
-              <span>{language === 'mr' ? 'वेब वाचक कल' : 'Web Sentiment'}</span>
-              <span>68%</span>
+            <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>{language === 'mr' ? 'वेब वाचक कल' : 'Tone Distribution'}</span>
             </div>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden flex">
               <div className="h-full bg-emerald-500 w-[68%]" />
@@ -483,9 +480,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             </span>
           </div>
           <div className="my-2">
-            <div className="flex justify-between text-xs font-bold text-slate-800 mb-1">
-              <span>{language === 'mr' ? 'नागरिक संवाद' : 'Public Engagement'}</span>
-              <span>61%</span>
+            <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>{language === 'mr' ? 'नागरिक संवाद' : 'Tone Distribution'}</span>
             </div>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden flex">
               <div className="h-full bg-emerald-500 w-[61%]" />
@@ -580,13 +576,13 @@ export const MediaIntelligenceScreen: React.FC = () => {
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               {language === 'mr'
-                ? 'स्थानिक तक्रारींचे मोठ्या जनक्षोभात रूपांतर होण्यापूर्वी डीजीपीआरतर्फे तातडीने माहिती समन्वय.'
-                : 'Proactive DGPR coordination mitigating localized press grievances before escalation.'}
+                ? 'स्थानिक तक्रारींचे मोठ्या जनक्षोभात रूपांतर होण्यापूर्वी डीजीआयपीआरतर्फे तातडीने माहिती समन्वय.'
+                : 'Proactive DGIPR coordination mitigating localized press grievances before escalation.'}
             </p>
           </div>
 
           {/* Division Selector Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+          <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl overflow-x-auto max-w-full shadow-2xs">
             {[
               { id: 'all', label: language === 'mr' ? 'सर्व विभाग' : 'All Divisions' },
               { id: 'Konkan', label: language === 'mr' ? 'कोकण' : 'Konkan' },
@@ -601,10 +597,10 @@ export const MediaIntelligenceScreen: React.FC = () => {
                 <button
                   key={div.id}
                   onClick={() => setSelectedDivision(div.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer border ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
                     isActive
-                      ? 'bg-gov-primary text-white border-gov-primary shadow-xs'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {div.label}
@@ -623,7 +619,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                 <th className="p-3">{language === 'mr' ? 'प्रमुख बातमी / मथळा' : 'Leading Press Headline'}</th>
                 <th className="p-3">{language === 'mr' ? 'माध्यम स्रोत' : 'Media Outlet'}</th>
                 <th className="p-3">{language === 'mr' ? 'संवेदनशीलता कल' : 'Sentiment Tone'}</th>
-                <th className="p-3">{language === 'mr' ? 'डीजीपीआर तत्काळ प्रतिसाद (ATR)' : 'DGPR Proactive Action Taken'}</th>
+                <th className="p-3">{language === 'mr' ? 'डीजीआयपीआर तत्काळ प्रतिसाद (ATR)' : 'DGIPR Proactive Action Taken'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
@@ -738,7 +734,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                   <h3 className="text-sm sm:text-base font-black text-white">
                     {language === 'mr'
                       ? 'दैनिक माध्यम संवेदनशीलता गुप्तवार्ता संक्षेप (०८:०० AM)'
-                      : 'DGPR Daily Executive Intelligence Digest'}
+                      : 'DGIPR Daily Executive Intelligence Digest'}
                   </h3>
                 </div>
               </div>
@@ -754,8 +750,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
               <div className="border-b border-slate-200 pb-3">
                 <div className="text-xs text-slate-500">
                   {language === 'mr'
-                    ? 'दिनांक: २४ ऑक्टोबर २०२६ • वेळ: ०८:०० AM IST • संकलन: महासंचालक, माहिती व जनसंपर्क महासंचालनालय (DGPR)'
-                    : 'Date: 24 Oct 2026 • Time: 08:00 AM IST • Compiled by: Director General, DGPR Maharashtra'}
+                    ? 'दिनांक: २४ ऑक्टोबर २०२६ • वेळ: ०८:०० AM IST • संकलन: महासंचालक, माहिती व जनसंपर्क महासंचालनालय (DGIPR)'
+                    : 'Date: 24 Oct 2026 • Time: 08:00 AM IST • Compiled by: Director General, DGIPR Maharashtra'}
                 </div>
               </div>
 
@@ -787,7 +783,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
               <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
                 <button
                   onClick={() => setShowBriefModal(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs cursor-pointer"
                 >
                   {language === 'mr' ? 'बंद करा' : 'Close'}
                 </button>
@@ -799,7 +795,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                       type: 'success',
                     });
                   }}
-                  className="px-4 py-2 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm cursor-pointer"
                 >
                   {language === 'mr' ? 'अहवाल सेव्ह करा (PDF)' : 'Download Brief (PDF)'}
                 </button>

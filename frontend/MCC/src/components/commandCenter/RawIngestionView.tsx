@@ -80,12 +80,12 @@ export const RawIngestionView: React.FC = () => {
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {language === 'mr' ? 'अंतर्ग्रहण स्थिती' : 'Ingestion Status'}
             </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-              <span>98.2% Operational</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+              <span>Operational</span>
             </span>
           </div>
-          <div className="text-2xl font-bold font-mono text-amber-700 mt-1">Operational</div>
+          <div className="text-2xl font-bold font-mono text-slate-900 mt-1">98.2%</div>
           <p className="text-xs text-slate-600 mt-1 font-medium">2 Degraded • 0 Blocked</p>
         </div>
 
@@ -113,7 +113,7 @@ export const RawIngestionView: React.FC = () => {
             </span>
           </div>
           <div className="text-2xl font-bold font-mono text-amber-700 mt-1">3 Retried</div>
-          <p className="text-xs text-slate-600 mt-1 font-medium">0 Dropped (Self-Healed 100%)</p>
+          <p className="text-xs text-slate-600 mt-1 font-medium">0 Dropped (Auto-recovered)</p>
         </div>
       </div>
 
@@ -125,15 +125,12 @@ export const RawIngestionView: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-gov-primary flex items-center gap-2">
               <MaterialIcon name="dns" size="xs" className="text-gov-primary" />
-              <span>{language === 'mr' ? '१. अंतर्ग्रहण स्त्रोत रचना' : '1. Ingestion Source Configuration'}</span>
+              <span>{language === 'mr' ? 'अंतर्ग्रहण स्रोत रचना' : 'Ingestion Source Configuration'}</span>
             </h3>
-            <p className="text-xs text-content-secondary mt-0.5">
-              Active media broadcast feeds, OCR camera endpoints, and government API listeners
-            </p>
           </div>
           <button
             type="button"
-            className="px-3 py-1.5 rounded-xl bg-gov-primary text-white hover:bg-gov-primary-dark text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.98] transition-all duration-100 ease-out"
+            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
           >
             <MaterialIcon name="add" size="xs" />
             <span>Connect New Ingestion Source</span>
@@ -185,11 +182,8 @@ export const RawIngestionView: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-gov-primary flex items-center gap-2">
               <MaterialIcon name="sync" size="xs" className="text-gov-primary" />
-              <span>{language === 'mr' ? '२. अंतर्ग्रहण पाइपलाइन स्थिती' : '2. Ingestion Pipeline Status'}</span>
+              <span>{language === 'mr' ? 'अंतर्ग्रहण पाइपलाइन स्थिती' : 'Ingestion Pipeline Status'}</span>
             </h3>
-            <p className="text-xs text-content-secondary mt-0.5">
-              Live multi-stage execution pipeline throughput, worker health, and buffer depth
-            </p>
           </div>
           <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-700 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
@@ -231,9 +225,6 @@ export const RawIngestionView: React.FC = () => {
               <MaterialIcon name="warning" size="xs" className="text-amber-600" />
               <span>{language === 'mr' ? '३. प्रक्रिया त्रुटी व पुनर्प्रयत्न' : '3. Processing Failures & Retry'}</span>
             </h3>
-            <p className="text-xs text-content-secondary mt-0.5">
-              Transient ingestion faults, dead-letter queue and automatic/manual retry triage
-            </p>
           </div>
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
@@ -280,10 +271,10 @@ export const RawIngestionView: React.FC = () => {
                     type="button"
                     onClick={() => handleManualRetry(fail.id)}
                     disabled={isRetried}
-                    className={`px-3 py-1 rounded-xl text-xs font-semibold cursor-pointer shadow-xs active:scale-[0.98] transition-all duration-100 ease-out ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium cursor-pointer shadow-xs transition-all ${
                       isRetried
                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-default'
-                        : 'bg-gov-primary hover:bg-gov-primary-dark text-white'
+                        : 'bg-slate-900 hover:bg-slate-800 text-white'
                     }`}
                   >
                     {isRetried ? '✓ Retried & Queued' : 'Retry Now'}
@@ -305,9 +296,6 @@ export const RawIngestionView: React.FC = () => {
               <MaterialIcon name="schedule" size="xs" className="text-gov-primary" />
               <span>{language === 'mr' ? '४. अंतर्ग्रहण नोंदी व वेळांकन' : '4. Ingestion Logs and Timestamps'}</span>
             </h3>
-            <p className="text-xs text-content-secondary mt-0.5">
-              Chronological log stream of incoming network events, byte allocations and socket response codes
-            </p>
           </div>
           <span className="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-1 rounded border border-slate-300">
             Log Frequency: Realtime

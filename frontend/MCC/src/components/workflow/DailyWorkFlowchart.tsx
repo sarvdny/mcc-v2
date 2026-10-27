@@ -132,7 +132,7 @@ export const DailyWorkFlowchart: React.FC = () => {
             {language === 'mr' ? 'वेबपोर्टल — दैनंदिन कामकाज कार्यप्रवाह' : 'Webportals — Daily Operations Workflow'}
           </h3>
           <span className="border-l-2 border-slate-300 pl-2 text-slate-600 text-xs font-mono whitespace-nowrap">
-            {language === 'mr' ? '६-तास स्थिती चक्र' : '6h Status Cycle'}
+            {language === 'mr' ? 'दैनिक संनियंत्रण' : 'Operations Flow'}
           </span>
           <div className="flex items-center gap-2 text-[11px] text-content-muted">
             <span className="inline-flex items-center gap-1 text-emerald-700 font-medium whitespace-nowrap">
@@ -153,23 +153,12 @@ export const DailyWorkFlowchart: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap text-xs">
-          {/* Half-Timeline (50% Midpoint) Auto-Trigger Status Indicator */}
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-amber-800 font-medium whitespace-nowrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse shrink-0" />
-            <span>
-              {language === 'mr'
-                ? 'स्वयंचलित ट्रिगर: ५०% टप्पा (३ तास)'
-                : 'Auto-Trigger: @ 50% Timeline (3h Midpoint)'}
-            </span>
-          </span>
-
-          {/* 6-Hour Cycle Rotation Indicator */}
           <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 font-medium whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
             <span>
               {language === 'mr'
-                ? 'स्वयंचलित रीफ्रेश: दर ६ तासांनी • चक्र सक्रिय'
-                : 'Auto-Refresh: Every 6 Hours • Cycle Active'}
+                ? 'थेट प्रणाली संनियंत्रण सक्रिय'
+                : 'Live Operations Monitoring Active'}
             </span>
           </span>
         </div>
@@ -226,7 +215,9 @@ export const DailyWorkFlowchart: React.FC = () => {
                         : 'text-content-muted group-hover:text-content-secondary'
                     }`}
                   >
-                    {language === 'mr' ? `क्रम ०${idx + 1}` : `SEQ 0${idx + 1}`}
+                    {language === 'mr'
+                      ? ['०१ संकलन', '०२ दूरमिती', '०३ प्रसिद्धी', '०४ आपत्कालीन', '०५ प्रक्षेपण', '०६ संक्षेप'][idx] || `०${idx + 1}`
+                      : ['01 Ingestion', '02 Telemetry', '03 Dispatches', '04 Crisis SLA', '05 Broadcasts', '06 Briefings'][idx] || `0${idx + 1}`}
                   </span>
                 </button>
               );
@@ -307,7 +298,7 @@ export const DailyWorkFlowchart: React.FC = () => {
           <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
             <Link
               href={currentMeta.route}
-              className="flex items-center gap-1 px-2.5 py-1 bg-surface border border-borderLine-standard hover:border-borderLine-strong text-content-primary rounded text-[11px] font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs cursor-pointer"
             >
               <span>{language === 'mr' ? currentMeta.routeLabelMr : currentMeta.routeLabelEn}</span>
               <MaterialIcon name="open_in_new" size="xs" />
@@ -321,7 +312,7 @@ export const DailyWorkFlowchart: React.FC = () => {
                     activeWorkflowStep > 1 ? activeWorkflowStep - 1 : dynamicSteps.length;
                   setActiveWorkflowStep(prevId);
                 }}
-                className="p-1 border border-borderLine-standard rounded hover:bg-surface transition-colors text-content-primary cursor-pointer"
+                className="p-1.5 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs transition-all shadow-2xs cursor-pointer"
                 title={language === 'mr' ? 'मागील क्रम' : 'Previous Sequence'}
                 aria-label={language === 'mr' ? 'मागील क्रम' : 'Previous Sequence'}
               >
@@ -334,7 +325,7 @@ export const DailyWorkFlowchart: React.FC = () => {
                     activeWorkflowStep < dynamicSteps.length ? activeWorkflowStep + 1 : 1;
                   setActiveWorkflowStep(nextId);
                 }}
-                className="flex items-center gap-1 px-2.5 py-1 bg-action-primary text-content-inverse rounded text-[11px] font-medium hover:bg-action-primary-hover transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm cursor-pointer"
                 aria-label={language === 'mr' ? 'पुढील क्रम' : 'Next Sequence'}
               >
                 <span>{language === 'mr' ? 'पुढील क्रम' : 'Next Sequence'}</span>

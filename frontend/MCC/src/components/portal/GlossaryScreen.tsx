@@ -88,12 +88,13 @@ export const GlossaryScreen: React.FC = () => {
       </div>
 
       {/* Category Filter Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
         <button
+          type="button"
           onClick={() => setSelectedCategory('all')}
-          className={`px-3 py-1.5 rounded-lg font-bold transition-all shrink-0 cursor-pointer ${
+          className={`px-3 py-1.5 rounded-xl font-semibold transition-all shrink-0 cursor-pointer ${
             selectedCategory === 'all'
-              ? 'bg-gov-primary text-white shadow-xs'
+              ? 'bg-slate-900 text-white shadow-xs'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
           }`}
         >
@@ -104,10 +105,11 @@ export const GlossaryScreen: React.FC = () => {
           return (
             <button
               key={catKey}
+              type="button"
               onClick={() => setSelectedCategory(catKey)}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all shrink-0 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-semibold transition-all shrink-0 cursor-pointer ${
                 selectedCategory === catKey
-                  ? 'bg-gov-primary text-white shadow-xs'
+                  ? 'bg-slate-900 text-white shadow-xs'
                   : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
               }`}
             >
@@ -136,23 +138,25 @@ export const GlossaryScreen: React.FC = () => {
                     {item.categoryLabel[lang]}
                   </span>
                 </div>
-                {item.isSampleData && (
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
-                    {lang === 'mr' ? 'नमुना डेटा' : 'Sample data'}
-                  </span>
-                )}
               </div>
 
               {/* Meaning */}
               <p className="text-xs text-slate-600 leading-relaxed">{item.detailedMeaning[lang]}</p>
 
-              {/* Calculation Formula Block */}
-              <div className="bg-slate-900 text-amber-300 rounded-xl p-3.5 font-mono text-xs border border-slate-800 space-y-1">
-                <div className="font-sans text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                  {lang === 'mr' ? 'गणितीय सूत्र / कार्यपद्धती' : 'Calculation Formula'}
-                </div>
-                <div className="font-medium break-words leading-normal">{item.formula[lang]}</div>
-              </div>
+              {/* Calculation Formula Block / Operational Standard */}
+              {(() => {
+                const isProcessOrRole = item.category === 'administration' || !item.formula[lang].match(/[=+*/%]/);
+                return (
+                  <div className="bg-slate-900 text-amber-300 rounded-xl p-3.5 font-mono text-xs border border-slate-800 space-y-1">
+                    <div className="font-sans text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      {isProcessOrRole
+                        ? (lang === 'mr' ? 'प्रशासकीय कार्यपद्धती मानक' : 'OPERATIONAL STANDARD')
+                        : (lang === 'mr' ? 'गणितीय सूत्र / कार्यपद्धती' : 'Calculation Formula')}
+                    </div>
+                    <div className="font-medium break-words leading-normal">{item.formula[lang]}</div>
+                  </div>
+                );
+              })()}
 
               {/* Inputs */}
               {item.inputs && item.inputs[lang]?.length > 0 && (

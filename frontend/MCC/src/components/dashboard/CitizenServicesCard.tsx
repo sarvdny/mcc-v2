@@ -74,20 +74,20 @@ export const CitizenServicesCard: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col overflow-hidden w-full">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col overflow-hidden w-full h-full min-h-0">
       {/* 1. Card Header with MinimalCardHeader & Compact SLA Action */}
-      <div className="p-3.5 sm:p-4 border-b border-slate-200/80 bg-white">
+      <div className="p-3 sm:p-3.5 border-b border-slate-200/80 bg-white shrink-0">
         <MinimalCardHeader
-          title={isMr ? 'नागरिक सेवा व निवारण सनद' : 'Citizen Services & Grievances'}
+          title={isMr ? 'तक्रारी व हमी कायदा (SLA)' : 'Grievances & SLA'}
           subtitle={
             isMr
               ? 'महाराष्ट्र राज्य जिल्हास्तरीय नागरिक तक्रारी, सेवा हमी कायदा SLA व थेट निवारण संनियंत्रण.'
-              : 'Real-time tracking of civic grievances, affected citizen count & citizen charter SLA resolution across Maharashtra.'
+              : 'Real-time tracking of civic grievances, citizen charter SLA resolution & citizen counts.'
           }
           children={<TermInfo termKey="crisisSlaResolutionRate" size="xs" />}
           action={
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 94.2% {isMr ? 'SLA साध्य' : 'SLA'}
               </span>
@@ -97,57 +97,56 @@ export const CitizenServicesCard: React.FC = () => {
         />
       </div>
 
-      {/* 2. Responsive Telemetry Ribbon (Adapts seamlessly from 2x2 on narrow 340px to 4x1 on wide 700px+) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-slate-100 bg-slate-50/70 border-b border-slate-200/60 text-center">
-        {/* Cell 1: Total Cases */}
-        <div className="p-2 sm:p-2.5 flex flex-col items-center justify-center">
+      {/* 2. Compact 4-Cell Telemetry Ribbon (No text wrapping) */}
+      <div className="grid grid-cols-4 gap-1.5 p-2 bg-slate-50 rounded-lg border-b border-slate-100 text-center shrink-0">
+        {/* Cell 1: Total */}
+        <div className="flex flex-col items-center justify-center">
           <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500">
-            {isMr ? 'एकूण तक्रारी' : 'Total Tracked'}
+            {isMr ? 'एकूण' : 'TOTAL'}
           </span>
-          <span className="text-xs sm:text-sm font-bold font-mono text-slate-900 mt-0.5">
-            {CITIZEN_SERVICES_DATA.length} {isMr ? 'नोंदी' : 'Cases'}
+          <span className="text-sm font-bold font-mono text-slate-900">
+            {CITIZEN_SERVICES_DATA.length}
           </span>
         </div>
 
-        {/* Cell 2: In Progress Active */}
-        <div className="p-2 sm:p-2.5 flex flex-col items-center justify-center">
+        {/* Cell 2: Active */}
+        <div className="flex flex-col items-center justify-center">
           <span className="text-[10px] uppercase font-bold tracking-wider text-amber-700">
-            {isMr ? 'प्रगतीपथावर' : 'In Progress'}
+            {isMr ? 'सक्रिय' : 'ACTIVE'}
           </span>
-          <span className="text-xs sm:text-sm font-bold font-mono text-amber-600 mt-0.5 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-            {inProgressCount} {isMr ? 'सक्रिय' : 'Active'}
+          <span className="text-sm font-bold font-mono text-amber-600">
+            {inProgressCount}
           </span>
         </div>
 
-        {/* Cell 3: Affected Citizens */}
-        <div className="p-2 sm:p-2.5 flex flex-col items-center justify-center">
+        {/* Cell 3: Affected */}
+        <div className="flex flex-col items-center justify-center">
           <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500">
-            {isMr ? 'बाधित नागरिक' : 'Affected'}
+            {isMr ? 'बाधित' : 'AFFECTED'}
           </span>
-          <MetricTip metricKey="tatScore" value={`${totalAffected} Citizens`}>
-            <span className="text-xs sm:text-sm font-bold font-mono text-slate-900 mt-0.5 cursor-help">
-              {totalAffected.toLocaleString('en-IN')}
+          <MetricTip metricKey="tatScore" value={`${totalAffected.toLocaleString('en-IN')} Citizens`}>
+            <span className="text-sm font-bold font-mono text-slate-900 cursor-help">
+              {totalAffected >= 1000 ? `${(totalAffected / 1000).toFixed(1)}K` : totalAffected}
             </span>
           </MetricTip>
         </div>
 
-        {/* Cell 4: Resolved / Charter SLA */}
-        <div className="p-2 sm:p-2.5 flex flex-col items-center justify-center">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700">
-            {isMr ? 'निवारित' : 'Resolved'}
+        {/* Cell 4: Resolved */}
+        <div className="flex flex-col items-center justify-center min-w-0">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 truncate max-w-full">
+            {isMr ? 'निवारित' : 'RESOLVED'}
           </span>
-          <span className="text-xs sm:text-sm font-bold font-mono text-emerald-600 mt-0.5">
-            {resolvedCount} / {CITIZEN_SERVICES_DATA.length} ({isMr ? 'वेळेत' : 'On-Time'})
+          <span className="text-sm font-bold font-mono text-emerald-600 tabular-nums">
+            {resolvedCount}/{CITIZEN_SERVICES_DATA.length}
           </span>
         </div>
       </div>
 
-      {/* 3. Category Pill Filters (Apple-style segmented pill scrollbar) */}
+      {/* 3. Category Pill Filters (Clean wrapping strip so all pills are visible) */}
       <div
         role="tablist"
         aria-label="Filter citizen services by category"
-        className="px-3 py-2 border-b border-slate-100 bg-white flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth text-xs"
+        className="px-3 py-1.5 border-b border-slate-100 bg-white flex flex-wrap items-center gap-1.5 text-xs shrink-0"
       >
         {categories.map((cat) => {
           const count = categoryCounts[cat.id] || 0;
@@ -160,7 +159,7 @@ export const CitizenServicesCard: React.FC = () => {
               role="tab"
               aria-selected={isSelected}
               onClick={() => setFilterCategory(cat.id)}
-              className={`px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer active:scale-[0.98] shrink-0 flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full whitespace-nowrap transition-all duration-150 cursor-pointer active:scale-[0.98] shrink-0 flex items-center gap-1.5 ${
                 isSelected
                   ? 'bg-gov-primary text-white shadow-xs border border-slate-800'
                   : 'bg-slate-100/80 text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 border border-slate-200/60'
@@ -179,10 +178,11 @@ export const CitizenServicesCard: React.FC = () => {
         })}
       </div>
 
-      {/* 4. Adaptive Grievance Item List with 7-Field Hover Popover & Click-to-Drawer */}
-      <div className="divide-y divide-slate-100 overflow-y-auto max-h-[360px] p-2 space-y-1.5">
+      {/* 4. Adaptive Grievance Item List with Internal Scroll & Padding Clearance */}
+      <div className="overflow-y-auto flex-1 min-h-0 p-2.5 pt-3 space-y-2.5">
         {filteredItems.map((item) => {
           const isResolved = item.status === 'Resolved';
+          const shortTicketNumber = item.ticketNumber.replace(/^GRV-([A-Z]{3})-\d{4}-(\d+)/, '#$1-$2');
 
           return (
             <Tooltip.Provider key={item.id} delayDuration={150}>
@@ -198,30 +198,29 @@ export const CitizenServicesCard: React.FC = () => {
                         handleOpenDetail(item);
                       }
                     }}
-                    className="group p-3 rounded-xl bg-white hover:bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gov-accent flex flex-col gap-1.5"
+                    className="group p-3 rounded-lg bg-white hover:bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 hover:ring-1 hover:ring-slate-300 shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gov-accent space-y-2"
                     aria-label={`${isMr ? item.cityMr : item.city}: ${isMr ? item.issueDetailsMr : item.issueDetails}`}
                   >
-                    {/* Item Row 1: Location + Ticket ID on left; Status Badge with Live Dot on right */}
+                    {/* Item Row 1: Status Dot + Town & District Name on left; Compact Status on right */}
                     <div className="flex items-center justify-between gap-2 min-w-0">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <MaterialIcon name="place" size="xs" className="w-3.5 h-3.5 text-gov-accent shrink-0" />
-                        <span className="font-bold text-xs text-slate-900 truncate">
+                        <span
+                          className={`w-2 h-2 rounded-full shrink-0 ${
+                            isResolved ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
+                          }`}
+                        />
+                        <span className="text-xs font-semibold text-slate-900 truncate">
                           {isMr ? `${item.cityMr}, ${item.districtMr}` : `${item.city}, ${item.district}`}
-                        </span>
-                        <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium shrink-0">
-                          {item.ticketNumber}
                         </span>
                       </div>
 
                       <span
-                        className={`shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        className={`shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${
                           isResolved
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-300/80'
                             : 'bg-amber-50 text-amber-800 border-amber-300/80'
                         }`}
                       >
-                        {!isResolved && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />}
-                        {isResolved && <MaterialIcon name="check" size="xs" className="w-3 h-3 text-emerald-600" />}
                         {isMr ? item.statusMr : item.status}
                       </span>
                     </div>
@@ -231,37 +230,29 @@ export const CitizenServicesCard: React.FC = () => {
                       {isMr ? item.issueDetailsMr : item.issueDetails}
                     </p>
 
-                    {/* Item Row 3: Category Pill + Affected Count on left; SLA Duration + Chevron on right */}
-                    <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-100 text-[11px]">
-                      <div className="flex items-center gap-2 min-w-0">
+                    {/* Item Row 3: Category Pill + Ticket ID + Numeric Count on left; Action Link on right */}
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         <span
-                          className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold border ${getCategoryBadgeStyle(
+                          className={`px-2 py-0.5 text-[10px] font-medium rounded-full shrink-0 border ${getCategoryBadgeStyle(
                             item.category
                           )}`}
                         >
                           <span className="truncate">{isMr ? item.categoryMr : item.category}</span>
                         </span>
-                        <span className="font-mono text-slate-500 text-[11px] shrink-0 flex items-center gap-1">
-                          <MaterialIcon name="group" size="xs" className="w-3 h-3 text-slate-400" />
-                          {item.peopleAffected.toLocaleString('en-IN')} {isMr ? 'बाधित' : 'affected'}
+                        <span
+                          className="font-mono text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium shrink-0"
+                          title={item.ticketNumber}
+                        >
+                          {shortTicketNumber}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1 shrink-0 font-mono text-[11px]">
-                        <span className={isResolved ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-medium'}>
-                          {isResolved
-                            ? isMr
-                              ? 'निवारण पूर्ण'
-                              : 'Resolved'
-                            : isMr
-                            ? 'SLA ४ तास'
-                            : 'SLA Target'}
+                      <div className="flex items-center gap-1 shrink-0 ml-auto font-medium hover:underline text-xs text-slate-600">
+                        <MaterialIcon name="group" size="xs" className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="tabular-nums">
+                          {item.peopleAffected.toLocaleString('en-IN')} {isMr ? 'बाधित' : 'affected'}
                         </span>
-                        <MaterialIcon
-                          name="chevron_right"
-                          size="xs"
-                          className="w-3.5 h-3.5 text-slate-400 group-hover:text-gov-primary group-hover:translate-x-0.5 transition-transform"
-                        />
                       </div>
                     </div>
                   </div>
@@ -341,13 +332,13 @@ export const CitizenServicesCard: React.FC = () => {
       </div>
 
       {/* 5. Card Footer with Status & Live Sync Indicator */}
-      <div className="px-3.5 py-2.5 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500">
-        <div className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-          <span>{isMr ? 'थेट माहिती संकलन • २४x७ तक्रार कक्ष' : 'Live Sync • 24x7 Grievance Desk'}</span>
+      <div className="px-3.5 py-2.5 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500 whitespace-nowrap shrink-0">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+          <span className="truncate">{isMr ? 'थेट माहिती संकलन • २४x७ तक्रार कक्ष' : 'Live Sync • 24x7 Grievance Desk'}</span>
         </div>
-        <span className="font-medium text-slate-500 hover:text-gov-primary transition-colors">
-          {isMr ? 'तपशीलासाठी क्लिक करा →' : 'Click row for timeline →'}
+        <span className="font-medium text-slate-500 whitespace-nowrap shrink-0 ml-2">
+          {filteredItems.length} {isMr ? 'तक्रारी' : 'Grievances'}
         </span>
       </div>
 

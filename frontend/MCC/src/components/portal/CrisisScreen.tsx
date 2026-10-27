@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { CoreOperationalSwitchDeck } from '@/components/commandCenter/CoreOperationalSwitchDeck';
-import { EmergencyAlert } from '@/components/zones/EmergencyAlert/EmergencyAlert';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { getDistrictName } from '@/lib/dataLocalization';
@@ -517,7 +516,7 @@ export const CrisisScreen: React.FC = () => {
                 type="button"
                 disabled={!canAuthorize || isSubmittingAction}
                 onClick={() => handleCollectorAction('authorize')}
-                className={`px-3 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer ${
+                className={`px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer ${
                   canAuthorize
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                     : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
@@ -533,9 +532,9 @@ export const CrisisScreen: React.FC = () => {
                 type="button"
                 disabled={!canAuthorize || isSubmittingAction}
                 onClick={() => handleCollectorAction('issue_advisory')}
-                className={`px-3 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer ${
+                className={`px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer ${
                   canAuthorize
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                    ? 'bg-slate-900 hover:bg-slate-800 text-white'
                     : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
                 }`}
               >
@@ -548,9 +547,9 @@ export const CrisisScreen: React.FC = () => {
                 type="button"
                 disabled={!canAuthorize || isSubmittingAction}
                 onClick={() => handleCollectorAction('request_edits')}
-                className={`px-3 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer ${
+                className={`px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer ${
                   canAuthorize
-                    ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                    ? 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90'
                     : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
                 }`}
               >
@@ -560,9 +559,28 @@ export const CrisisScreen: React.FC = () => {
             </div>
 
             {!canAuthorize && (
-              <div className="p-2 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center gap-1.5">
-                <ExclamationCircleIcon className="w-4 h-4 shrink-0 text-amber-600" />
-                <span>Awaiting Collector Approval · Operator Clearance Insufficient</span>
+              <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/90 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2">
+                  <ExclamationCircleIcon className="w-4 h-4 shrink-0 text-amber-600" />
+                  <span className="font-medium">
+                    {language === 'mr' ? 'जिल्हाधिकारी मंजुरी प्रलंबित • ऑपरेटर स्तरावर स्वाक्षरी अधिकार नाहीत' : 'Awaiting Collector Approval · Read-Only Tier'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToast({
+                      type: 'success',
+                      message: language === 'mr'
+                        ? 'जिल्हाधिकारी यांना मंजुरीसाठी सूचना (Ping) यशस्वीरित्या पाठवली.'
+                        : 'Approval request pinged to District Collector via secure hotline.',
+                    });
+                  }}
+                  className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-800 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium shadow-2xs transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+                >
+                  <MaterialIcon name="notifications_active" size="xs" className="text-amber-600" />
+                  <span>{language === 'mr' ? 'मंजुरीसाठी जिल्हाधिकाऱ्यांना पिंग करा' : 'Ping District Collector for Approval'}</span>
+                </button>
               </div>
             )}
           </div>
@@ -597,9 +615,6 @@ export const CrisisScreen: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* 5. Complete Emergency Alert Incident Archive & Triage Desk */}
-      <EmergencyAlert />
     </div>
   );
 };

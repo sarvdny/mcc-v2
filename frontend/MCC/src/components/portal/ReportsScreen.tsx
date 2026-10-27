@@ -110,8 +110,8 @@ export const ReportsScreen: React.FC = () => {
       };
     }
     return {
-      labelEn: 'Under Synthesis',
-      labelMr: 'संश्लेषणाधीन',
+      labelEn: 'Under Review',
+      labelMr: 'पुनरावलोकनाधीन',
       dotClass: 'bg-amber-500',
       textClass: 'text-amber-700',
     };
@@ -177,7 +177,7 @@ export const ReportsScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setIsGenerateModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm self-start sm:self-auto cursor-pointer"
         >
           <MaterialIcon name="add" size="xs" className="text-amber-400" />
           <span>{language === 'mr' ? 'नवीन डॉसियर तयार करा' : 'Generate Dossier'}</span>
@@ -210,13 +210,13 @@ export const ReportsScreen: React.FC = () => {
             </p>
           </div>
 
-          {/* Sub-tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-md border border-slate-200 text-xs">
+          {/* Sub-tabs Segmented Control */}
+          <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl shadow-2xs overflow-x-auto">
             <button
               onClick={() => setActiveReportTab('lineDepts')}
-              className={`px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 activeReportTab === 'lineDepts'
-                  ? 'bg-gov-primary text-white shadow-2xs'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -224,9 +224,9 @@ export const ReportsScreen: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveReportTab('vip')}
-              className={`px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 activeReportTab === 'vip'
-                  ? 'bg-gov-primary text-white shadow-2xs'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -234,9 +234,9 @@ export const ReportsScreen: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveReportTab('social')}
-              className={`px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 activeReportTab === 'social'
-                  ? 'bg-gov-primary text-white shadow-2xs'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -444,29 +444,26 @@ export const ReportsScreen: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleExport(rpt.id)}
-                  disabled={isDownloading}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 border rounded text-xs font-semibold transition-colors shadow-2xs self-start sm:self-center cursor-pointer ${
-                    isDownloading
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                      : 'border-slate-300 text-slate-700 hover:bg-slate-100'
-                  }`}
-                  aria-label={`Export ${language === 'mr' ? rpt.titleMr : rpt.titleEn}`}
-                >
-                  {isDownloading ? (
-                    <>
-                      <MaterialIcon name="check" size="xs" className="text-emerald-600" />
-                      <span>{language === 'mr' ? 'निर्यात पूर्ण' : 'Exported'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <MaterialIcon name="download" size="xs" className="text-slate-500" />
-                      <span>{language === 'mr' ? 'डॉसियर निर्यात' : 'Export Dossier'}</span>
-                    </>
-                  )}
-                </button>
+                <div className="flex items-center gap-2 self-start sm:self-center">
+                  <button
+                    type="button"
+                    onClick={() => handleExport(rpt.id)}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm cursor-pointer"
+                    aria-label={`Export PDF ${language === 'mr' ? rpt.titleMr : rpt.titleEn}`}
+                  >
+                    <MaterialIcon name="download" size="xs" />
+                    <span>↓ PDF</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleExport(rpt.id)}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs cursor-pointer"
+                    aria-label={`Export XLSX ${language === 'mr' ? rpt.titleMr : rpt.titleEn}`}
+                  >
+                    <MaterialIcon name="table_chart" size="xs" />
+                    <span>↓ XLSX</span>
+                  </button>
+                </div>
               </div>
             );
           })}

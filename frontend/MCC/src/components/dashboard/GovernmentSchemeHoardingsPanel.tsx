@@ -196,7 +196,6 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
               ? `३६ जिल्हे जीआयएस ट्रॅकर · शेवटचे अपडेट: ${formattedSyncTime} · दररोज रात्री ०२:०० वाजता अपडेट होते`
               : `36 Districts GIS Tracker · Last fetched: ${formattedSyncTime} · Updates nightly at 02:00 IST`
           }
-          badge={<SampleDataBadge />}
           action={
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono bg-slate-100 text-slate-700 border border-slate-200">
@@ -527,9 +526,6 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
                     Field Verification Photo Available
                   </span>
                   <span className="text-[10px] text-slate-400">Captured via Mobile Inspection App</span>
-                  <div className="absolute bottom-2 right-2">
-                    <SampleDataBadge />
-                  </div>
                 </div>
 
                 <button

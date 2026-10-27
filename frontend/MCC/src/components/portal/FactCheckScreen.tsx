@@ -38,7 +38,7 @@ export interface FactCheckItem {
 export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   {
     id: 'FC-2026-01',
-    caseNumber: 'DGPR-FC-2026-1042',
+    caseNumber: 'DGIPR-FC-2026-1042',
     category: 'forged_gr',
     categoryMr: 'बनावट शासन निर्णय',
     title: 'Claim of age criteria modification in Majhi Ladki Bahin Yojana',
@@ -78,7 +78,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-02',
-    caseNumber: 'DGPR-FC-2026-1043',
+    caseNumber: 'DGIPR-FC-2026-1043',
     category: 'viral_rumor',
     categoryMr: 'व्हायरल अफवा व वृत्त',
     title: 'Claim of 100% Toll Hike on Mumbai-Pune Expressway from Nov 1',
@@ -93,12 +93,12 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
     channels: ['YouTube Clips', 'Facebook Pages', 'Regional Portals'],
     department: 'Public Works (MSRDC)',
     departmentMr: 'सार्वजनिक बांधकाम (एमएसआरडीसी)',
-    actionTaken: 'Official DGPR Clarification Bulletin issued to all accredited regional transport correspondents.',
-    actionTakenMr: 'डीजीपीआरतर्फे सर्व अधिकृत वृत्तवाहिन्या व पत्रकारांना तत्काळ वस्तुस्थिती पत्रक जारी.',
+    actionTaken: 'Official DGIPR Clarification Bulletin issued to all accredited regional transport correspondents.',
+    actionTakenMr: 'डीजीआयपीआरतर्फे सर्व अधिकृत वृत्तवाहिन्या व पत्रकारांना तत्काळ वस्तुस्थिती पत्रक जारी.',
   },
   {
     id: 'FC-2026-03',
-    caseNumber: 'DGPR-FC-2026-1044',
+    caseNumber: 'DGIPR-FC-2026-1044',
     category: 'deepfake',
     categoryMr: 'बनावट AI ऑडिओ व व्हिडिओ',
     title: 'AI Cloned Voice Note regarding Farmer Loan Waiver Misinformation',
@@ -118,7 +118,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-04',
-    caseNumber: 'DGPR-FC-2026-1045',
+    caseNumber: 'DGIPR-FC-2026-1045',
     category: 'recruitment_fraud',
     categoryMr: 'बनावट भरती जाहिरात व फसवणूक',
     title: 'Bogus Talathi Recruitment Notice charging ₹500 private fee',
@@ -138,7 +138,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-05',
-    caseNumber: 'DGPR-FC-2026-1046',
+    caseNumber: 'DGIPR-FC-2026-1046',
     category: 'out_of_context',
     categoryMr: 'दिशाभूल करणारा जुना संदर्भ',
     title: '2019 Flood Inundation Video shared as Current Marathwada Dam Overflow',
@@ -158,7 +158,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-06',
-    caseNumber: 'DGPR-FC-2026-1047',
+    caseNumber: 'DGIPR-FC-2026-1047',
     category: 'verified_true',
     categoryMr: 'प्रमाणित अधिकृत सत्य',
     title: 'GR approving 25% Advance Crop Damage Compensation to Kharif Farmers',
@@ -214,8 +214,8 @@ export const FactCheckScreen: React.FC = () => {
   const handleShareOnWhatsApp = (item: FactCheckItem) => {
     const text =
       language === 'mr'
-        ? `*डीजीपीआर तथ्य तपासणी (DGPR Fact Check)*\n\n📌 *दावा:* ${item.titleMr}\n❌ *सत्य:* ${item.factMr}\n\n🔍 *अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DGPR) द्वारे प्रमाणित.`
-        : `*DGPR Fact-Check Alert (Govt of Maharashtra)*\n\n📌 *Claim:* ${item.title}\n✅ *Fact:* ${item.fact}\n\n🔍 *Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate General of Public Relations (DGPR).`;
+        ? `*डीजीआयपीआर तथ्य तपासणी (DGIPR Fact Check)*\n\n📌 *दावा:* ${item.titleMr}\n❌ *सत्य:* ${item.factMr}\n\n🔍 *अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DGIPR) द्वारे प्रमाणित.`
+        : `*DGIPR Fact-Check Alert (Govt of Maharashtra)*\n\n📌 *Claim:* ${item.title}\n✅ *Fact:* ${item.fact}\n\n🔍 *Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate General of Information and Public Relations (DGIPR).`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -233,8 +233,8 @@ export const FactCheckScreen: React.FC = () => {
     setToast({
       message:
         language === 'mr'
-          ? `डीजीपीआर अधिकृत खुलासा पत्रक (${item.caseNumber}.pdf) डाउनलोड झाले.`
-          : `Official DGPR Clarification Bulletin (${item.caseNumber}.pdf) downloaded.`,
+          ? `डीजीआयपीआर अधिकृत खुलासा पत्रक (${item.caseNumber}.pdf) डाउनलोड झाले.`
+          : `Official DGIPR Clarification Bulletin (${item.caseNumber}.pdf) downloaded.`,
       type: 'info',
     });
   };
@@ -251,7 +251,7 @@ export const FactCheckScreen: React.FC = () => {
       });
       return;
     }
-    const trackingNo = `DGPR-FC-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const trackingNo = `DGIPR-FC-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     setShowSubmitModal(false);
     setUserClaimInput('');
     setUserUrlInput('');
@@ -259,8 +259,8 @@ export const FactCheckScreen: React.FC = () => {
     setToast({
       message:
         language === 'mr'
-          ? `आपला दावा यशस्वीरित्या नोंदवला गेला आहे! ट्रॅकिंग क्र: ${trackingNo}. डीजीपीआर सायबर कक्ष २४ तासांत पडताळणी करेल.`
-          : `Claim registered successfully! Case Reference: ${trackingNo}. DGPR Cyber Desk will verify within 24 hours.`,
+          ? `आपला दावा यशस्वीरित्या नोंदवला गेला आहे! ट्रॅकिंग क्र: ${trackingNo}. डीजीआयपीआर सायबर कक्ष २४ तासांत पडताळणी करेल.`
+          : `Claim registered successfully! Case Reference: ${trackingNo}. DGIPR Cyber Desk will verify within 24 hours.`,
       type: 'success',
     });
   };
@@ -274,8 +274,8 @@ export const FactCheckScreen: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR) • २४x७ तथ्य पडताळणी व सायबर खंडन कक्ष'
-                : 'DGPR 24x7 Fact-Check & Misinformation Debunking Unit'}
+                ? 'माहिती व जनसंपर्क महासंचालनालय (DGIPR) • २४x७ तथ्य पडताळणी व सायबर खंडन कक्ष'
+                : 'DGIPR 24x7 Fact-Check & Misinformation Debunking Unit'}
             </span>
           </div>
 
@@ -284,7 +284,7 @@ export const FactCheckScreen: React.FC = () => {
             <span>
               {language === 'mr'
                 ? 'तथ्य पडताळणी, बनावट शासन निर्णय (GR) व अफवा खंडन दालन'
-                : 'DGPR Fact-Check, Forged GR & Misinformation Radar'}
+                : 'DGIPR Fact-Check, Forged GR & Misinformation Radar'}
             </span>
           </h1>
 
@@ -464,15 +464,28 @@ export const FactCheckScreen: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Validation Basis: "False news detected from <source> on <date>" (Item 8b) */}
-                <div className="bg-rose-50 border border-rose-200/70 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-rose-900 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse shrink-0" />
-                  <span>
-                    {language === 'mr'
-                      ? `${item.channels.join(', ')} वरून ${item.date} रोजी खोटी बातमी आढळली`
-                      : `False news detected from ${item.channels.join(', ')} on ${item.date}`}
-                  </span>
-                </div>
+                {/* Validation Source Header */}
+                {isVerified ? (
+                  <div className="bg-emerald-50 border border-emerald-200/80 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-emerald-900 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                    <span>
+                      {language === 'mr'
+                        ? 'प्रमाणित अधिकृत शासन निर्णय • मुद्रित व डिजिटल माध्यमांतून पुष्टी'
+                        : 'Verified Official Circular • Confirmed across Print & Web'}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between gap-2 flex-wrap text-[11px]">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {item.channels.map((ch, idx) => (
+                        <span key={idx} className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium text-[10px] border border-slate-200">
+                          {ch}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="font-mono text-slate-500 text-[10px] font-medium shrink-0">{item.date}</span>
+                  </div>
+                )}
 
                 {/* Title */}
                 <h3 className="text-sm font-black text-slate-900 leading-snug">
@@ -480,10 +493,18 @@ export const FactCheckScreen: React.FC = () => {
                 </h3>
 
                 {/* Claim Box */}
-                <div className="bg-red-50/70 border-l-3 border-red-500 rounded-r-lg p-2.5 text-xs text-red-950 space-y-1">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-red-800 flex items-center gap-1">
-                    <MaterialIcon name="warning" size="xs" />
-                    <span>{language === 'mr' ? 'व्हायरल खोटा दावा:' : 'Viral False Claim:'}</span>
+                <div className={`border-l-3 rounded-r-lg p-2.5 text-xs space-y-1 ${
+                  isVerified ? 'bg-slate-50 border-slate-400 text-slate-900' : 'bg-red-50/70 border-red-500 text-red-950'
+                }`}>
+                  <div className={`text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${
+                    isVerified ? 'text-slate-600' : 'text-red-800'
+                  }`}>
+                    <MaterialIcon name={isVerified ? 'help_outline' : 'warning'} size="xs" />
+                    <span>
+                      {isVerified
+                        ? (language === 'mr' ? 'नागरिक शंका / दावा:' : 'CITIZEN QUERY / CLAIM:')
+                        : (language === 'mr' ? 'व्हायरल खोटा दावा:' : 'Viral False Claim:')}
+                    </span>
                   </div>
                   <p className="line-clamp-2">{language === 'mr' ? item.claimMr : item.claim}</p>
                 </div>
@@ -492,7 +513,7 @@ export const FactCheckScreen: React.FC = () => {
                 <div className="bg-emerald-50/80 border-l-3 border-emerald-600 rounded-r-lg p-2.5 text-xs text-emerald-950 space-y-1">
                   <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1">
                     <MaterialIcon name="verified" size="xs" />
-                    <span>{language === 'mr' ? 'डीजीपीआर पडताळणी व वस्तुस्थिती:' : 'Official Fact:'}</span>
+                    <span>{language === 'mr' ? 'अधिकृत वस्तुस्थिती:' : 'Official Fact:'}</span>
                   </div>
                   <p className="line-clamp-3">{language === 'mr' ? item.factMr : item.fact}</p>
                 </div>
@@ -611,7 +632,7 @@ export const FactCheckScreen: React.FC = () => {
                   <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
                     <span className="text-xs font-bold text-emerald-900 uppercase flex items-center gap-1.5">
                       <MaterialIcon name="verified" size="xs" className="text-emerald-600" />
-                      <span>{language === 'mr' ? 'अधिकृत शासकीय सत्य (DGPR)' : 'Official DGPR Verification'}</span>
+                      <span>{language === 'mr' ? 'अधिकृत शासकीय सत्य (DGIPR)' : 'Official DGIPR Verification'}</span>
                     </span>
                     <span className="text-[10px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
                       प्रमाणित / VERIFIED
@@ -643,7 +664,7 @@ export const FactCheckScreen: React.FC = () => {
                     <div className="text-xs font-bold text-slate-900">
                       {language === 'mr'
                         ? 'माहिती व जनसंपर्क महासंचालनालय, मंत्रालय, मुंबई - ४०००३२'
-                        : 'Directorate General of Public Relations (DGPR), Mantralaya, Mumbai'}
+                        : 'Directorate General of Information and Public Relations (DGIPR), Mantralaya, Mumbai'}
                     </div>
                     <div className="text-[11px] text-slate-500">
                       {language === 'mr'
@@ -683,7 +704,7 @@ export const FactCheckScreen: React.FC = () => {
               <div className="flex items-center gap-2.5">
                 <MaterialIcon name="speaker_notes" size="sm" />
                 <h3 className="text-sm font-bold text-white">
-                  {language === 'mr' ? 'नागरिक व माध्यम तथ्य पडताळणी नोंदणी कक्ष' : 'Submit Claim for DGPR Fact-Check'}
+                  {language === 'mr' ? 'नागरिक व माध्यम तथ्य पडताळणी नोंदणी कक्ष' : 'Submit Claim for DGIPR Fact-Check'}
                 </h3>
               </div>
               <button

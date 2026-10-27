@@ -688,32 +688,32 @@ export const NewspaperScreen: React.FC = () => {
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* View Mode Toggle (Broadsheet vs Clippings) */}
-          <div className="flex items-center rounded-lg border border-slate-300 overflow-hidden bg-slate-100 p-0.5 text-xs">
+          {/* View Mode Segmented Control */}
+          <div className="bg-slate-100/90 p-1 rounded-xl inline-flex items-center gap-1 shadow-2xs">
             <button
               onClick={() => setViewMode('broadsheet')}
-              className={`px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === 'broadsheet'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📰 {language === 'mr' ? 'अस्सल वृत्तपत्र पृष्ठ' : 'Broadsheet Page'}
+              <MaterialIcon name="newspaper" size="xs" />
+              <span>{language === 'mr' ? 'वृत्तपत्र पृष्ठ' : 'Broadsheet Page'}</span>
             </button>
             <button
               onClick={() => setViewMode('clippings')}
-              className={`px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === 'clippings'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span>📑 {language === 'mr' ? 'कात्रणे दालन' : 'Clippings Gallery'}</span>
-              <MetricTip metricKey="volumeScore" value={516}>
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold">
-                  516
-                </span>
-              </MetricTip>
+              <MaterialIcon name="content_cut" size="xs" />
+              <span>{language === 'mr' ? 'कात्रणे दालन' : 'Clippings Gallery'}</span>
+              <span className="font-mono text-[10px] text-slate-500 tabular-nums">
+                516
+              </span>
             </button>
           </div>
 
@@ -730,13 +730,13 @@ export const NewspaperScreen: React.FC = () => {
             ))}
           </select>
 
-          {/* Random Edition Button (🎲) */}
+          {/* Random Edition Button */}
           <button
             onClick={handleRandomizePublication}
             className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
             title="Open a different authentic newspaper"
           >
-            <span>🎲</span>
+            <MaterialIcon name="shuffle" size="xs" />
             <span>{language === 'mr' ? 'दुसरे वृत्तपत्र उघडा' : 'Open Different Edition'}</span>
           </button>
 
@@ -778,9 +778,6 @@ export const NewspaperScreen: React.FC = () => {
       {viewMode === 'broadsheet' && (
         <div className="bg-white rounded-xl border border-slate-200 p-2.5 shadow-xs flex items-center justify-between gap-2 overflow-x-auto">
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-2">
-              {language === 'mr' ? 'पृष्ठ निवडा:' : 'Flip Page:'}
-            </span>
             {currentPub.pages.map((p) => {
               const isCurrent = p.pageNumber === currentPageNum;
               return (
@@ -865,9 +862,6 @@ export const NewspaperScreen: React.FC = () => {
 
             {/* Authentic Vintage Masthead Banner */}
             <div className="text-center py-5 border-b-4 border-double border-slate-900 space-y-2">
-              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-sans font-bold">
-                {language === 'mr' ? currentPub.mottoMr : currentPub.mottoEn}
-              </div>
               <h2
                 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight select-none uppercase transition-colors"
                 style={{ color: currentPub.mastheadColor }}
@@ -1017,21 +1011,18 @@ export const NewspaperScreen: React.FC = () => {
                   </div>
                 )}
 
-                {/* 2-Column Body Text with Drop Cap and Newspaper Rules */}
+                {/* 2-Column Body Text with Authentic Newspaper Typography */}
                 <div className="columns-1 sm:columns-2 gap-5 text-xs text-slate-900 leading-relaxed text-justify space-y-3 font-serif">
                   <p>
                     <strong className="text-sm font-bold font-sans">
                       {currentPage.leadArticle.dateline} ({currentPage.leadArticle.byline}):
                     </strong>{' '}
-                    <span className="float-left text-4xl font-serif font-black leading-none mr-2 text-slate-950">
-                      {currentPage.leadArticle.ocrTextMr.slice(0, 1)}
-                    </span>
-                    {currentPage.leadArticle.ocrTextMr.slice(1)}
+                    {language === 'mr' ? currentPage.leadArticle.ocrTextMr : currentPage.leadArticle.ocrTextEn}
                   </p>
                   <p>
                     {language === 'mr'
                       ? 'संबंधित विभागांनी निश्चित केलेल्या विहित वेळापत्रकानुसार कामाची प्रत्यक्ष अंमलबजावणी सुरू झाली आहे. मुख्य सचिव कार्यालयाकडून दर पंधरा दिवसांनी प्रगतीचा अहवाल घेतला जाणार असून प्रकल्पाच्या दर्जात कोणतीही तडजोड केली जाणार नाही.'
-                      : 'Execution milestones will be rigorously monitored via biometric telemetry and direct dashboard synchronization.'}
+                      : 'Implementation has commenced as per the departmental roadmap. The Chief Secretary office conducts bi-weekly project reviews to ensure benchmark quality.'}
                   </p>
                 </div>
 
@@ -1039,13 +1030,13 @@ export const NewspaperScreen: React.FC = () => {
                 <div className="pt-2">
                   <button
                     onClick={() => setSelectedArticle(currentPage.leadArticle)}
-                    className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-sans text-xs font-bold rounded border border-slate-300 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                    className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-sans text-xs font-bold rounded-xl border border-slate-300 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                   >
-                    <span>✂</span>
+                    <MaterialIcon name="content_cut" size="xs" />
                     <span>
                       {language === 'mr'
-                        ? 'अस्सल वृत्तपत्र कात्रण व ओसीआर (OCR) पहा'
-                        : 'Inspect Authentic Press Cutout & Verified OCR'}
+                        ? 'कात्रण व ओसीआर पहा'
+                        : 'Inspect Cutout & OCR'}
                     </span>
                   </button>
                 </div>
@@ -1104,7 +1095,7 @@ export const NewspaperScreen: React.FC = () => {
             <div className="mt-8 pt-3 border-t-2 border-slate-800 flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-500 font-sans">
               <span>{currentPub.nameMr} • {currentPub.editionNameMr} • पृष्ठ {currentPage.pageNumber}</span>
               <span>मुद्रक व प्रकाशक: महाराष्ट्र राज्य वृत्तपत्र केंद्र • RNI #{currentPub.rniNumber}</span>
-              <span>DGIPR VERIFIED BROAD SHEET • 24 OCT 2026</span>
+              <span>DGIPR VERIFIED BROADSHEET • 24 OCT 2026</span>
             </div>
           </div>
         </div>

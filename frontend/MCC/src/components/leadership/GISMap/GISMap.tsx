@@ -271,6 +271,27 @@ export const GISMap: React.FC = () => {
   const [showTowns, setShowTowns] = useState<boolean>(false);
   const [showHoardings, setShowHoardings] = useState<boolean>(false);
   const [showGraticule, setShowGraticule] = useState<boolean>(false);
+  const [isLayersOpen, setIsLayersOpen] = useState<boolean>(false);
+
+  const activeLayersCount = useMemo(() => {
+    return [
+      showDistrictNumbers,
+      showHighways,
+      showRailways,
+      showWaterAndTerrain,
+      showTowns,
+      showGraticule,
+      showHoardings,
+    ].filter(Boolean).length;
+  }, [
+    showDistrictNumbers,
+    showHighways,
+    showRailways,
+    showWaterAndTerrain,
+    showTowns,
+    showGraticule,
+    showHoardings,
+  ]);
 
   const [view, setView] = useState<ViewBox>(FULL_VIEW);
   const [pxWidth, setPxWidth] = useState(700);
@@ -414,14 +435,14 @@ export const GISMap: React.FC = () => {
   }
 
   return (
-    <div className="w-full bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 overflow-hidden flex flex-col">
+    <div className="w-full bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 overflow-hidden flex flex-col h-full min-h-0">
       {/* 1. Header Toolbar */}
-      <div className="p-3 sm:p-4 border-b border-slate-200 flex flex-col gap-3 bg-white">
+      <div className="p-3 sm:p-3.5 border-b border-slate-200 flex flex-col gap-2.5 bg-white shrink-0">
         <MinimalCardHeader
           title={
             language === 'mr'
-              ? 'महाराष्ट्र राज्य जीआयएस नकाशा (प्रशासकीय व भौगोलिक माहिती)'
-              : 'Maharashtra State Geographic Information System (GIS)'
+              ? 'महाराष्ट्र जीआयएस (GIS)'
+              : 'Maharashtra GIS'
           }
           subtitle={
             language === 'mr'
@@ -434,101 +455,96 @@ export const GISMap: React.FC = () => {
               <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-xs">
                 Zoom: {Math.round(zoomFactor * 100)}%
               </span>
-              <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-xs">
-                36 Districts (#1 to #36)
-              </span>
             </div>
           }
           className="w-full"
         />
 
-        {/* Division Filter Bar */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          <span className="text-slate-500 font-medium shrink-0 mr-1 text-xs">
-            {language === 'mr' ? 'विभाग निवडा:' : 'Division:'}
-          </span>
+        {/* Compact 2-Control High-Density Filter Bar (Responsive 12-Column Grid) */}
+        <div className="grid grid-cols-12 gap-2 items-center p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+          {/* 1. Division Dropdown */}
+          <div className="col-span-5 min-w-0 flex items-center gap-1.5">
+            <span className="text-slate-500 font-medium text-xs hidden lg:inline shrink-0">
+              {language === 'mr' ? 'विभाग:' : 'Division:'}
+            </span>
+            <select
+              value={selectedDivisionFilter}
+              onChange={(e) => {
+                const divId = e.target.value;
+                setSelectedDivisionFilter(divId);
+                if (divId === 'all') {
+                  setView(FULL_VIEW);
+                } else {
+                  const bbox = getDivisionBbox(divId as DivisionId);
+                  setView(fitView(bbox));
+                }
+              }}
+              className="h-8 px-2 bg-white border border-slate-200 rounded-md text-xs font-medium text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-gov-accent w-full truncate"
+              aria-label={language === 'mr' ? 'प्रशासकीय विभाग निवडा' : 'Select administrative division'}
+            >
+              <option value="all">
+                {language === 'mr' ? 'सर्व विभाग (३६)' : 'All Divisions (36)'}
+              </option>
+              {DIVISION_ORDER.map((divId) => (
+                <option key={divId} value={divId}>
+                  {language === 'mr' ? DIVISIONS[divId].nameMr : DIVISIONS[divId].name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 2. District Select */}
+          <div className="col-span-5 min-w-0 flex items-center gap-1.5">
+            <span className="text-slate-500 font-medium text-xs hidden lg:inline shrink-0">
+              {language === 'mr' ? 'जिल्हा:' : 'District:'}
+            </span>
+            <select
+              value={selectedId || ''}
+              onChange={(e) => {
+                const dId = e.target.value as DistrictId;
+                if (dId) {
+                  selectDistrict(dId);
+                  const geom = DISTRICT_GEOMETRY.find((d) => d.id === dId);
+                  if (geom) setView(fitView(geom.bbox));
+                }
+              }}
+              className="h-8 px-2 bg-white border border-slate-200 rounded-md text-xs font-medium text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-gov-accent w-full truncate"
+              aria-label={language === 'mr' ? 'जिल्हा निवडा' : 'Select district'}
+            >
+              <option value="">
+                {language === 'mr' ? '-- सर्व ३६ जिल्हे (#१-३६) --' : '-- All 36 Districts (#1-36) --'}
+              </option>
+              {DISTRICT_GEOMETRY.map((d) => {
+                const num = DISTRICT_NUMBERS[d.id] ?? 0;
+                return (
+                  <option key={`opt-${d.id}`} value={d.id}>
+                    #{num} {language === 'mr' ? d.nameMr : d.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* 3. Reset / Zoom 100% Button */}
           <button
             type="button"
             onClick={() => {
-              setSelectedDivisionFilter('all');
               setView(FULL_VIEW);
+              setSelectedDivisionFilter('all');
             }}
-            className={`px-2.5 py-1 rounded text-xs font-medium transition-all shrink-0 cursor-pointer ${
-              selectedDivisionFilter === 'all'
-                ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
-            }`}
+            className="col-span-2 shrink-0 h-8 px-2 bg-white border border-slate-200 rounded-md text-xs font-medium hover:bg-slate-100 flex items-center justify-center gap-1 text-slate-700 cursor-pointer shadow-2xs"
+            title="Reset to 100% full view"
+            aria-label="Reset view"
           >
-            {language === 'mr' ? 'सर्व ३६ जिल्हे' : 'All 36 Districts'}
+            <span className="font-mono text-xs">100%</span>
+            <span className="hidden sm:inline">{language === 'mr' ? 'पूर्ववत' : 'Reset'}</span>
           </button>
-
-          {DIVISION_ORDER.map((divId) => {
-            const isCurrent = selectedDivisionFilter === divId;
-            const divLabel = language === 'mr' ? DIVISIONS[divId].nameMr : DIVISIONS[divId].name;
-            return (
-              <button
-                key={divId}
-                type="button"
-                onClick={() => {
-                  setSelectedDivisionFilter(divId);
-                  const bbox = getDivisionBbox(divId);
-                  setView(fitView(bbox));
-                }}
-                className={`px-2.5 py-1 rounded text-xs font-medium transition-all shrink-0 cursor-pointer ${
-                  isCurrent
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
-                }`}
-              >
-                {divLabel}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Quick District Index Selector Ribbon (#1 to #36) */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs border-t border-slate-100 pt-2">
-          <span className="text-slate-700 font-semibold shrink-0 mr-1 text-xs flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-            {language === 'mr' ? 'जिल्हा क्रमांक (#१-३६):' : 'Districts (#1-36):'}
-          </span>
-          {DISTRICT_GEOMETRY.map((d) => {
-            const num = DISTRICT_NUMBERS[d.id] ?? 0;
-            const isSelected = d.id === selectedId;
-            const isInspected = d.id === inspectedId;
-            const active = isSelected || isInspected;
-            return (
-              <button
-                key={`ribbon-${d.id}`}
-                type="button"
-                onClick={() => {
-                  selectDistrict(d.id);
-                  setView(fitView(d.bbox));
-                }}
-                className={`px-2 py-0.5 rounded-md text-xs font-medium transition-all shrink-0 cursor-pointer flex items-center gap-1 border ${
-                  active
-                    ? 'bg-slate-900 text-white border-slate-900 font-semibold shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
-                }`}
-                title={`#${num} ${d.name} (${d.nameMr})`}
-              >
-                <span
-                  className={`w-3.5 h-3.5 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
-                    active ? 'bg-amber-400 text-slate-900' : 'bg-slate-100 text-slate-600'
-                  }`}
-                >
-                  {num}
-                </span>
-                <span className="truncate">{language === 'mr' ? d.nameMr : d.name}</span>
-              </button>
-            );
-          })}
         </div>
       </div>
 
       {/* 2. Map Canvas (Google Maps Progressive Rendering) */}
-      <div className="p-3 sm:p-4 bg-[#F8FAFC]">
-        <div className="relative w-full aspect-[800/664] min-h-[300px] sm:min-h-[360px] max-h-[640px] flex items-center justify-center bg-[#F1F5F9] rounded-xl border border-slate-300 overflow-hidden shadow-inner">
+      <div className="p-3 sm:p-4 bg-[#F8FAFC] flex-1 min-h-0 overflow-y-auto">
+        <div className="relative w-full aspect-[800/664] min-h-[300px] sm:min-h-[360px] max-h-[640px] shrink-0 flex items-center justify-center bg-[#F1F5F9] rounded-xl border border-slate-300 overflow-hidden shadow-inner">
           <svg
             ref={svgRef}
             viewBox={`${view.x} ${view.y} ${view.w} ${viewH(view.w)}`}
@@ -895,6 +911,17 @@ export const GISMap: React.FC = () => {
                       setHoveredDistrict(null);
                     }}
                   >
+                    {/* Pulsing Beacon Ring for Selected District Centroid */}
+                    {isSelected && (
+                      <circle
+                        r={badgeRadius + 8}
+                        fill="none"
+                        stroke="#F59E0B"
+                        strokeWidth={2}
+                        className="animate-ping"
+                        opacity={0.35}
+                      />
+                    )}
                     {/* Outer high-contrast shadow/halo */}
                     <circle r={badgeRadius + 2} fill="#FFFFFF" opacity={0.95} />
                     {/* Badge circle */}
@@ -922,7 +949,7 @@ export const GISMap: React.FC = () => {
                 );
               })}
 
-            {/* DISTRICT LABELS (Dual Script with High-Contrast White Halo) */}
+            {/* DISTRICT LABELS (Single Tag Deduplicated with SVG paintOrder Halo) */}
             {DISTRICT_GEOMETRY.map((d) => {
               const isSelected = d.id === selectedId;
               const isInspected = d.id === inspectedId;
@@ -932,35 +959,23 @@ export const GISMap: React.FC = () => {
               if (!isLOD2 && !isSelected && !isInspected && d.bbox.w / unit < 35) return null;
 
               return (
-                <g key={`lbl-${d.id}`} pointerEvents="none">
-                  {/* Halo stroke */}
-                  <text
-                    x={d.pin.x}
-                    y={labelY}
-                    fill="none"
-                    stroke="#FFFFFF"
-                    strokeWidth={2.4 * unit}
-                    strokeLinejoin="round"
-                    fontSize={Math.max(12, 11 * unit)}
-                    fontWeight={700}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                  >
-                    {labelText}
-                  </text>
-                  {/* Foreground text */}
-                  <text
-                    x={d.pin.x}
-                    y={labelY}
-                    fill={isSelected ? '#1B2A4A' : isInspected ? '#1E40AF' : '#0F172A'}
-                    fontSize={Math.max(12, 11 * unit)}
-                    fontWeight={700}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                  >
-                    {labelText}
-                  </text>
-                </g>
+                <text
+                  key={`lbl-${d.id}`}
+                  x={d.pin.x}
+                  y={labelY}
+                  fill={isSelected ? '#1B2A4A' : isInspected ? '#1E40AF' : '#0F172A'}
+                  stroke="#FFFFFF"
+                  strokeWidth={2.8 * unit}
+                  strokeLinejoin="round"
+                  style={{ paintOrder: 'stroke fill' }}
+                  fontSize={Math.max(12, 11 * unit)}
+                  fontWeight={700}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  pointerEvents="none"
+                >
+                  {labelText}
+                </text>
               );
             })}
 
@@ -1083,91 +1098,99 @@ export const GISMap: React.FC = () => {
             </button>
           </div>
 
-          {/* MAP LAYER BUTTONS (Top Left) */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10 max-w-[85%]">
+          {/* FLOATING MAP LAYERS POPOVER (Top Right) */}
+          <div className="absolute top-3 right-3 z-20">
             <button
               type="button"
-              onClick={() => setShowDistrictNumbers(!showDistrictNumbers)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showDistrictNumbers
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
+              onClick={() => setIsLayersOpen(!isLayersOpen)}
+              className="bg-slate-900/90 text-white text-xs px-3 py-1.5 rounded-xl shadow-xs backdrop-blur-md flex items-center gap-2 hover:bg-slate-800 transition-all cursor-pointer border border-slate-700/60 font-medium"
+              aria-expanded={isLayersOpen}
+              aria-label="Toggle map layers menu"
             >
-              {language === 'mr' ? 'क्रमांक (#१-३६)' : 'Numbers (#1-36)'}
+              <svg className="w-3.5 h-3.5 text-slate-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <span>{language === 'mr' ? 'स्तर' : 'Layers'} ({activeLayersCount})</span>
+              <span className="text-[10px] text-slate-400 shrink-0">▾</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setShowHighways(!showHighways)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showHighways
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              {language === 'mr' ? 'महामार्ग' : 'Highways'}
-            </button>
+            {isLayersOpen && (
+              <div className="absolute right-0 mt-1.5 w-52 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-slate-200/90 p-2.5 text-xs text-slate-700 space-y-1 animate-in fade-in-0 zoom-in-95">
+                <div className="px-1 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-1 mb-1">
+                  {language === 'mr' ? 'नकाशा स्तर' : 'Map Layers'}
+                </div>
+                
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'क्रमांक (#१-३६)' : 'Numbers (#1-36)'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showDistrictNumbers}
+                    onChange={(e) => setShowDistrictNumbers(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
 
-            <button
-              type="button"
-              onClick={() => setShowRailways(!showRailways)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showRailways
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              {language === 'mr' ? 'रेल्वे लाईन' : 'Railways'}
-            </button>
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'महामार्ग' : 'Highways'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showHighways}
+                    onChange={(e) => setShowHighways(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
 
-            <button
-              type="button"
-              onClick={() => setShowWaterAndTerrain(!showWaterAndTerrain)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showWaterAndTerrain
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              {language === 'mr' ? 'सह्याद्री व धरणे' : 'Terrain & Water'}
-            </button>
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'रेल्वे लाईन' : 'Railways'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showRailways}
+                    onChange={(e) => setShowRailways(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
 
-            <button
-              type="button"
-              onClick={() => setShowTowns(!showTowns)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showTowns
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              {language === 'mr' ? 'तालुके / शहरे' : 'Talukas / Towns'}
-            </button>
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'सह्याद्री व धरणे' : 'Terrain & Water'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showWaterAndTerrain}
+                    onChange={(e) => setShowWaterAndTerrain(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
 
-            <button
-              type="button"
-              onClick={() => setShowGraticule(!showGraticule)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showGraticule
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              {language === 'mr' ? 'अक्षांश-रेखांश' : 'GIS Grid'}
-            </button>
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'तालुके / शहरे' : 'Talukas / Towns'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showTowns}
+                    onChange={(e) => setShowTowns(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
 
-            <button
-              type="button"
-              onClick={() => setShowHoardings(!showHoardings)}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
-                showHoardings
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              {language === 'mr' ? 'होर्डिंग्ज' : 'Hoardings'}
-            </button>
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'अक्षांश-रेखांश' : 'GIS Grid'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showGraticule}
+                    onChange={(e) => setShowGraticule(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-100/70 cursor-pointer select-none">
+                  <span className="text-xs font-medium text-slate-800">{language === 'mr' ? 'होर्डिंग्ज' : 'Hoardings'}</span>
+                  <input
+                    type="checkbox"
+                    checked={showHoardings}
+                    onChange={(e) => setShowHoardings(e.target.checked)}
+                    className="rounded border-slate-300 text-gov-primary focus:ring-gov-accent w-3.5 h-3.5"
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
           {/* FLOATING HOVER CARD */}
@@ -1242,7 +1265,7 @@ export const GISMap: React.FC = () => {
                   {inspected.name} ({inspected.nameMr})
                 </h4>
                 <span className="text-xs text-slate-500 font-medium">
-                  {divisionName} Division • Census Code: {inspected.censusCode} • LGD: {inspected.lgdCode}
+                  {divisionName} Division • HQ: {inspectedDetails?.quickStats.headquarters || inspected.name} • Literacy: {inspectedDetails?.quickStats.literacyRate || '84%'} • LGD: {inspected.lgdCode}
                 </span>
               </div>
             </div>
@@ -1267,7 +1290,8 @@ export const GISMap: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs items-stretch">
+          {/* Refactored from cramped grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 into Apple Bento 2x2 grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs items-stretch">
             {/* Box 1: Administrative Leadership */}
             <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
               <div>
@@ -1275,15 +1299,15 @@ export const GISMap: React.FC = () => {
                   {language === 'mr' ? 'प्रशासकीय नेतृत्व:' : 'Administrative Leadership:'}
                 </span>
                 <div className="truncate">
-                  <span className="text-xs text-slate-600 block">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector & DM:'}</span>
+                  <span className="text-[11px] text-slate-500 block">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector & DM:'}</span>
                   <strong className="text-slate-900 truncate text-xs block font-bold" title={inspectedDetails?.dioOffice.collectorName}>
                     {inspectedDetails?.dioOffice.collectorName || 'District Collector, IAS'}
                   </strong>
                 </div>
               </div>
               <div className="text-xs text-slate-600 truncate border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
-                <div className="truncate">
-                  <span className="text-xs text-slate-600 block">{language === 'mr' ? 'माहिती अधिकारी:' : 'Information Officer:'}</span>
+                <div className="truncate min-w-0 pr-1">
+                  <span className="text-[10px] text-slate-500 block">{language === 'mr' ? 'माहिती अधिकारी:' : 'Information Officer:'}</span>
                   <span className="font-semibold text-slate-800 text-xs truncate block">{officerName}</span>
                 </div>
                 <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0 ml-1">
@@ -1299,18 +1323,18 @@ export const GISMap: React.FC = () => {
                   {language === 'mr' ? 'कामगिरी निर्देशांक (CPI):' : 'Composite Index (CPI):'}
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
-                  <span className="text-2xl font-black font-mono text-slate-900 tracking-tight">
+                  <span className="text-2xl font-black font-mono text-slate-900 tracking-tight tabular-nums">
                     {inspectedDetails?.cpi || storeDistrict?.cpi || 88.5}{' '}
                     <span className="text-xs font-normal text-slate-500">/ 100</span>
                   </span>
-                  <span className="text-xs font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
+                  <span className="text-xs font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded shrink-0">
                     Rank #{DISTRICT_NUMBERS[inspected.id]}
                   </span>
                 </div>
               </div>
               <div className="text-xs text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
-                <span>{language === 'mr' ? 'दर्जा:' : 'Governance Grade:'} <strong className="text-emerald-700">A+ High Compliance</strong></span>
-                <span className="text-slate-600 font-mono text-xs">Top Quintile</span>
+                <span>{language === 'mr' ? 'दर्जा:' : 'Governance Grade:'} <strong className="text-emerald-700 font-semibold">A+ High Compliance</strong></span>
+                <span className="text-slate-500 font-mono text-xs shrink-0">Top Quintile</span>
               </div>
             </div>
 
@@ -1320,18 +1344,18 @@ export const GISMap: React.FC = () => {
                 <span className="text-slate-700 text-xs font-semibold block mb-1">
                   {language === 'mr' ? 'नागरिक सेवा व तक्रार निवारण:' : 'Citizen Services & Resolution:'}
                 </span>
-                <div className="flex items-baseline justify-between mt-1">
-                  <div>
-                    <span className="text-xl font-bold font-mono text-slate-900">
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <div className="flex flex-col">
+                    <span className="text-lg font-bold font-mono text-slate-900 tabular-nums">
                       {inspectedDetails?.releases || storeDistrict?.releases || 142}
                     </span>
-                    <span className="text-xs text-slate-500 ml-1">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Notices'}</span>
+                    <span className="text-[11px] text-slate-500 font-medium">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Notices'}</span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xl font-bold font-mono text-emerald-600">
+                  <div className="flex flex-col items-end">
+                    <span className="text-lg font-bold font-mono text-emerald-600 tabular-nums">
                       {storeDistrict?.avgTAT != null ? (Math.min(99.8, Math.max(93.5, 100 - (storeDistrict.avgTAT / 25)))).toFixed(1) : '98.4'}%
                     </span>
-                    <span className="text-xs text-slate-500 ml-1">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
+                    <span className="text-[11px] text-slate-500 font-medium">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
                   </div>
                 </div>
               </div>
@@ -1350,11 +1374,13 @@ export const GISMap: React.FC = () => {
                   {language === 'mr' ? 'होर्डिंग्ज व भौगोलिक व्याप्ती:' : 'Hoardings & Demographics:'}
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
-                  <span className="text-xl font-bold font-mono text-slate-900">
+                  <span className="text-lg font-bold font-mono text-slate-900 tabular-nums">
                     {inspectedDetails?.hoardings?.length || 0}{' '}
-                    <span className="text-xs font-normal text-slate-500">Hoardings</span>
+                    <span className="text-xs font-normal text-slate-500">
+                      {(inspectedDetails?.hoardings?.length || 0) === 1 ? 'Hoarding' : 'Hoardings'}
+                    </span>
                   </span>
-                  <span className="text-xs font-mono text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">
+                  <span className="text-xs font-mono text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded shrink-0">
                     {inspectedDetails?.quickStats.talukasCount || 8} Talukas
                   </span>
                 </div>
@@ -1367,31 +1393,38 @@ export const GISMap: React.FC = () => {
           </div>
 
           {/* 4-Pillar Breakdown Strip */}
-          <div className="bg-slate-50/80 rounded-lg p-2.5 border border-slate-200 flex flex-col gap-1.5">
+          <div className="bg-slate-50/80 rounded-lg p-2.5 border border-slate-200 flex flex-col gap-2">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-slate-700 uppercase tracking-wide">
-                {language === 'mr' ? '४-स्तंभ गुणवत्ता निर्देशांक:' : '4-Pillar Quality Scorecard (25 pts each):'}
-              </span>
-              <span className="font-mono text-slate-600 font-medium text-xs">
-                Headquarters: {inspectedDetails?.quickStats.headquarters || inspected.name} • Literacy: {inspectedDetails?.quickStats.literacyRate || '84%'}
+                {language === 'mr' ? '४-स्तंभ गुणवत्ता निर्देशांक:' : '4-Pillar Quality Scorecard:'}
               </span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-xs">1. Volume:</span>
-                <span className="font-bold font-mono text-slate-900">{storeDistrict?.volumeScore?.toFixed(1) || '24.2'} / 25</span>
+              <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col gap-0.5">
+                <span className="text-[10px] text-slate-500 font-medium truncate">1. Volume</span>
+                <span className="font-bold font-mono text-xs text-slate-900 tabular-nums">
+                  {(Math.min(35, storeDistrict?.volumeScore || 24.2)).toFixed(1)} / 35
+                </span>
               </div>
-              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-xs">2. Citizen Resolution:</span>
-                <span className="font-bold font-mono text-slate-900">{storeDistrict?.tatScore?.toFixed(1) || '23.8'} / 25</span>
+              <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col gap-0.5">
+                <span className="text-[10px] text-slate-500 font-medium truncate">2. Citizen Resolution</span>
+                <span className="font-bold font-mono text-xs text-slate-900 tabular-nums">
+                  {(Math.min(25, storeDistrict?.tatScore || 23.8)).toFixed(1)} / 25
+                </span>
               </div>
-              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-xs">3. Sentiment Index:</span>
-                <span className="font-bold font-mono text-slate-900">{storeDistrict?.sentimentScore?.toFixed(1) || '21.5'} / 25</span>
+              <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col gap-0.5">
+                <span className="text-[10px] text-slate-500 font-medium truncate">3. Sentiment Index</span>
+                <span className="font-bold font-mono text-xs text-slate-900 tabular-nums">
+                  {(Math.min(25, storeDistrict?.sentimentScore || 21.5)).toFixed(1)} / 25
+                </span>
               </div>
-              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-xs">4. Crisis SLA Resolution Rate:</span>
-                <span className="font-bold font-mono text-slate-900">{storeDistrict?.crisisScore?.toFixed(1) || '25.0'} / 25</span>
+              <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col gap-0.5">
+                <span className="text-[10px] text-slate-500 font-medium truncate">4. Crisis SLA Resolution</span>
+                <span className="font-bold font-mono text-xs text-slate-900 tabular-nums">
+                  {((storeDistrict?.crisisScore && storeDistrict.crisisScore > 15)
+                    ? (storeDistrict?.crisisSLA ? (storeDistrict.crisisSLA / 100) * 15 : 14.25)
+                    : Math.min(15, storeDistrict?.crisisScore || 14.25)).toFixed(1)} / 15
+                </span>
               </div>
             </div>
           </div>

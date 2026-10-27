@@ -4,6 +4,7 @@ import { INITIAL_DISTRICTS, INITIAL_INCIDENTS, INITIAL_OCR_FEED } from '@/data/d
 import { INITIAL_QUEUE_ITEMS } from '@/data/newsQueueData';
 import { computeSentimentFromNewsQueue, LiveSentimentResult } from '@/lib/sentimentEngine';
 import { detectMisinformationFromNews } from '@/lib/misinformationDetector';
+import { verifyAuthToken } from '@/lib/jwt';
 
 export interface OverviewMetricsData {
   scopeName: string;
@@ -43,12 +44,13 @@ interface DashboardStore {
   // Authentication & Session (JWT with 12h TTL)
   isAuthenticated: boolean;
   authInitialized: boolean;
+  isAuthLoading: boolean;
   currentUser: AuthUser | null;
   authToken: string | null;
   userRole: UserRole;
   login: (user: AuthUser, token?: string) => void;
   logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
+  checkAuth: (force?: boolean) => Promise<void>;
   setUserRole: (role: UserRole) => void;
 
   // Navigation & Localization
@@ -133,11 +135,13 @@ interface DashboardStore {
 // Internal sequence and timer tracking to debounce and prevent overlapping filter transitions
 let filterRequestSeq = 0;
 let filterTimeout: NodeJS.Timeout | null = null;
+let checkAuthPromise: Promise<void> | null = null;
 
 export const useDashboardStore = create<DashboardStore>((set, get) => ({
   // Authentication Defaults
   isAuthenticated: false,
   authInitialized: false,
+  isAuthLoading: true,
   currentUser: null,
   authToken: null,
   userRole: 'dg_admin',
@@ -163,6 +167,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
     set({
       isAuthenticated: true,
       authInitialized: true,
+      isAuthLoading: false,
       currentUser: user,
       authToken: token || get().authToken,
       userRole: user.role,
@@ -187,91 +192,112 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
     set({
       isAuthenticated: false,
       authInitialized: true,
+      isAuthLoading: false,
       currentUser: null,
       authToken: null,
       userRole: 'dg_admin',
-  copilotOpen: false,
-  setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
-  glossaryDrawerOpen: false,
-  glossaryTermKey: undefined,
-  setGlossaryDrawerOpen: (open: boolean, termKey?: string) =>
-    set({ glossaryDrawerOpen: open, glossaryTermKey: termKey }),
+      copilotOpen: false,
+      glossaryDrawerOpen: false,
+      glossaryTermKey: undefined,
       selectedDivision: 'All Maharashtra',
     });
   },
 
-  checkAuth: async () => {
-    // Check via API with JWT verification (strict 12-hour TTL validation)
-    try {
-      const storedToken = typeof window !== 'undefined' ? localStorage.getItem('maha_auth_token') : null;
-      const headers: Record<string, string> = {};
-      if (storedToken) {
-        headers['Authorization'] = `Bearer ${storedToken}`;
-      }
+  checkAuth: async (force?: boolean) => {
+    if (checkAuthPromise && !force) {
+      return checkAuthPromise;
+    }
 
-      const res = await fetch('/api/auth/me', { headers });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.authenticated && data.user) {
+    checkAuthPromise = (async () => {
+      set({ isAuthLoading: true });
+
+      // Check via API with JWT verification (strict 12-hour TTL validation)
+      try {
+        const storedToken = typeof window !== 'undefined' ? localStorage.getItem('maha_auth_token') : null;
+        const headers: Record<string, string> = {};
+        if (storedToken) {
+          headers['Authorization'] = `Bearer ${storedToken}`;
+        }
+
+        const res = await fetch('/api/auth/me', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.user) {
+            try {
+              localStorage.setItem('maha_auth_user', JSON.stringify(data.user));
+            } catch {}
+
+            set({
+              isAuthenticated: true,
+              authInitialized: true,
+              isAuthLoading: false,
+              currentUser: data.user,
+              authToken: storedToken || null,
+              userRole: data.user.role,
+              selectedDivision: data.user.division,
+              selectedDistrictId: data.user.district === 'All' ? 'thane' : data.user.district.toLowerCase(),
+            });
+            get().fetchAllData();
+            return;
+          }
+        } else if (res.status === 401) {
+          // Explicit 401: JWT expired (>12-hour TTL) or signature invalid
           try {
-            localStorage.setItem('maha_auth_user', JSON.stringify(data.user));
+            localStorage.removeItem('maha_auth_user');
+            localStorage.removeItem('maha_auth_token');
           } catch {}
-
           set({
-            isAuthenticated: true,
+            isAuthenticated: false,
             authInitialized: true,
-            currentUser: data.user,
-            authToken: storedToken || null,
-            userRole: data.user.role,
-            selectedDivision: data.user.division,
-            selectedDistrictId: data.user.district === 'All' ? 'thane' : data.user.district.toLowerCase(),
+            isAuthLoading: false,
+            currentUser: null,
+            authToken: null,
           });
-          get().fetchAllData();
           return;
         }
-      } else if (res.status === 401) {
-        // Explicit 401: JWT expired (>12-hour TTL) or signature invalid
-        try {
-          localStorage.removeItem('maha_auth_user');
-          localStorage.removeItem('maha_auth_token');
-        } catch {}
-        set({ isAuthenticated: false, authInitialized: true, currentUser: null, authToken: null });
-        return;
-      }
-    } catch {}
+      } catch {}
 
-    // Fallback to localStorage only if network error occurred, while validating officer names
-    try {
-      const stored = localStorage.getItem('maha_auth_user');
-      const storedToken = localStorage.getItem('maha_auth_token');
-      if (stored && storedToken) {
-        let user: AuthUser = JSON.parse(stored);
-        if (
-          user.name.includes('Chavan') ||
-          user.name.includes('Sanjay') ||
-          user.name.includes('Patil') ||
-          user.name.includes('Deshmukh') ||
-          user.name.includes('Shinde')
-        ) {
-          localStorage.removeItem('maha_auth_user');
-          localStorage.removeItem('maha_auth_token');
-        } else {
-          set({
-            isAuthenticated: true,
-            authInitialized: true,
-            currentUser: user,
-            authToken: storedToken,
-            userRole: user.role,
-            selectedDivision: user.division,
-            selectedDistrictId: user.district === 'All' ? 'thane' : user.district.toLowerCase(),
-          });
-          get().fetchAllData();
-          return;
+      // Fallback to cached token validation using verifyAuthToken on network error
+      try {
+        const storedToken = typeof window !== 'undefined' ? localStorage.getItem('maha_auth_token') : null;
+        if (storedToken) {
+          const verification = await verifyAuthToken(storedToken);
+          if (verification.valid && verification.payload?.user) {
+            const user = verification.payload.user;
+            set({
+              isAuthenticated: true,
+              authInitialized: true,
+              isAuthLoading: false,
+              currentUser: user,
+              authToken: storedToken,
+              userRole: user.role,
+              selectedDivision: user.division,
+              selectedDistrictId: user.district === 'All' ? 'thane' : user.district.toLowerCase(),
+            });
+            get().fetchAllData();
+            return;
+          } else {
+            // Invalid or expired token
+            try {
+              localStorage.removeItem('maha_auth_user');
+              localStorage.removeItem('maha_auth_token');
+            } catch {}
+          }
         }
-      }
-    } catch {}
+      } catch {}
 
-    set({ isAuthenticated: false, authInitialized: true, currentUser: null, authToken: null });
+      set({
+        isAuthenticated: false,
+        authInitialized: true,
+        isAuthLoading: false,
+        currentUser: null,
+        authToken: null,
+      });
+    })().finally(() => {
+      checkAuthPromise = null;
+    });
+
+    return checkAuthPromise;
   },
 
   setUserRole: (role) => {

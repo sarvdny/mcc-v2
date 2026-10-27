@@ -308,10 +308,8 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                       </span>
                     </MetricTip>
                   </td>
-                  <td className={`py-3 px-3 text-right font-mono text-xs sm:text-sm ${cpiColorClass}`}>
-                    <MetricTip metricKey="cpi" value={d.cpi}>
-                      <span className="cursor-help hover:underline">{d.cpi}</span>
-                    </MetricTip>
+                  <td className={`py-3 px-3 text-right font-mono text-xs sm:text-sm tabular-nums ${cpiColorClass}`}>
+                    <span className="cursor-help hover:underline">{d.cpi}</span>
                   </td>
                   <td className="py-3 px-3 text-center">
                     <button

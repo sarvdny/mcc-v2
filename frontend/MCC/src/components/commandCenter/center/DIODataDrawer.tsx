@@ -62,14 +62,11 @@ export const DIODataDrawer: React.FC = () => {
             <MaterialIcon name="person" size="xs" />
           </div>
           <div>
-            <div className="text-xs font-bold text-content-primary flex items-center gap-1.5">
-              <span>{officerDisplay}</span>
-              <span className="text-[10px] font-normal text-content-secondary">
-                ({designationDisplay})
-              </span>
+            <div className="text-xs font-bold text-content-primary">
+              {officerDisplay}
             </div>
             <div className="text-[10px] text-content-muted">
-              {divisionDisplay} • {language === 'mr' ? 'जिल्हा मुख्यालय' : 'District Headquarter'}
+              {designationDisplay} • {divisionDisplay}
             </div>
           </div>
         </div>
@@ -147,10 +144,10 @@ export const DIODataDrawer: React.FC = () => {
         <button
           type="button"
           onClick={handleDispatch}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-colors shadow-2xs cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium transition-all shadow-sm cursor-pointer ${
             dispatched
-              ? 'bg-emerald-700 text-white'
-              : 'bg-gov-primary text-white hover:bg-gov-primary-dark'
+              ? 'bg-emerald-600 text-white'
+              : 'bg-slate-900 hover:bg-slate-800 text-white'
           }`}
         >
           {dispatched ? (

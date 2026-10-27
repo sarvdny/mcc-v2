@@ -75,6 +75,9 @@ import {
   XMarkIcon,
   MegaphoneIcon,
   FingerPrintIcon,
+  DocumentDuplicateIcon,
+  ScissorsIcon,
+  BellAlertIcon,
 } from '@heroicons/react/20/solid';
 
 export type MaterialIconName =
@@ -194,7 +197,11 @@ export type MaterialIconName =
   | 'rss_feed'
   | 'cancel'
   | 'search_off'
-  | 'help_outline';
+  | 'help_outline'
+  | 'content_copy'
+  | 'content_cut'
+  | 'shuffle'
+  | 'notifications_active';
 
 const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>> = {
   add: PlusIcon,
@@ -218,6 +225,8 @@ const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>>
   checklist: ClipboardDocumentCheckIcon,
   chevron_left: ChevronLeftIcon,
   chevron_right: ChevronRightIcon,
+  content_copy: DocumentDuplicateIcon,
+  content_cut: ScissorsIcon,
   close: XMarkIcon,
   cloud_upload: ArrowUpTrayIcon,
   commute: ArrowTrendingUpIcon,
@@ -264,6 +273,7 @@ const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>>
   north_east: ArrowUpRightIcon,
   notification_add: BellIcon,
   notifications: BellIcon,
+  notifications_active: BellAlertIcon,
   open_in_new: ArrowTopRightOnSquareIcon,
   pause: PauseIcon,
   person: UserIcon,
@@ -280,6 +290,7 @@ const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>>
   send: PaperAirplaneIcon,
   share: ShareIcon,
   shield: ShieldCheckIcon,
+  shuffle: ArrowsRightLeftIcon,
   speaker_notes: ChatBubbleBottomCenterTextIcon,
   sync: ArrowPathIcon,
   table_chart: Squares2X2Icon,

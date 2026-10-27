@@ -70,8 +70,8 @@ export const PipelineFlowView: React.FC = () => {
   }, [liveAuditsActive]);
 
   const sections: SectionMeta[] = [
-    { id: 'telemetry', number: 1, titleEn: 'Telemetry (Animated Flow)', titleMr: 'दूरमिती प्रवाह (ॲनिमेटेड)', icon: 'podcasts', badge: '5 Gateways Live' },
-    { id: 'pipelining', number: 2, titleEn: 'Pipelining (Animated Flow)', titleMr: 'पाइपलाइन प्रवाह (ॲनिमेटेड)', icon: 'layers', badge: '6 Stages Live' },
+    { id: 'telemetry', number: 1, titleEn: 'Telemetry', titleMr: 'दूरमिती प्रवाह', icon: 'podcasts', badge: '5 Gateways Live' },
+    { id: 'pipelining', number: 2, titleEn: 'Pipelining', titleMr: 'पाइपलाइन प्रवाह', icon: 'layers', badge: '6 Stages Live' },
     { id: 'monitoring', number: 3, titleEn: 'Monitoring', titleMr: 'देखरेख व मॉनिटरिंग', icon: 'bar_chart', badge: '99.98% SLA' },
     { id: 'database', number: 4, titleEn: 'Database', titleMr: 'डेटाबेस व्यवस्थापन', icon: 'dns', badge: 'TimescaleDB' },
     { id: 'logs', number: 5, titleEn: 'Logs', titleMr: 'प्रणाली नोंदी', icon: 'description', badge: 'Live Stream' },
@@ -85,33 +85,27 @@ export const PipelineFlowView: React.FC = () => {
         HORIZONTAL 6-SECTION DROPDOWN / SWITCHER BAR:
         Allows switching between Telemetry, Pipelining, Monitoring, Database, Logs, Audit
       */}
-      <div className="bg-surface border border-borderLine-standard rounded-lg p-3 shadow-2xs">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          <div className="inline-flex items-center p-1 bg-slate-100/90 rounded-xl shadow-2xs border border-slate-200/60 overflow-x-auto max-w-full gap-1">
             {sections.map((sec) => {
               const isActive = activeSection === sec.id;
               return (
                 <button
                   key={sec.id}
+                  type="button"
                   onClick={() => setActiveSection(sec.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'bg-gov-primary text-white shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                      ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
                   }`}
                 >
-                  <span
-                    className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-mono font-bold ${
-                      isActive ? 'bg-amber-400 text-slate-900' : 'bg-slate-300 text-slate-700'
-                    }`}
-                  >
-                    {sec.number}
-                  </span>
                   <MaterialIcon name={sec.icon} size="xs" />
                   <span>{language === 'mr' ? sec.titleMr : sec.titleEn}</span>
                   <span
                     className={`text-[10px] font-normal px-1.5 py-0.2 rounded hidden sm:inline ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+                      isActive ? 'bg-slate-100 text-slate-700 font-mono' : 'bg-slate-200/60 text-slate-500 font-mono'
                     }`}
                   >
                     {sec.badge}

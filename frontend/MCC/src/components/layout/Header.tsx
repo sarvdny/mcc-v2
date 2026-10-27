@@ -143,7 +143,7 @@ export const Header: React.FC = () => {
   return (
     <header
       ref={navRef}
-      className="h-14 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
+      className="h-14 w-full max-w-full overflow-hidden shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
     >
       {/* 1. Brand Cell with Smooth Sidebar Collapse Synchronization */}
       <div
@@ -276,13 +276,13 @@ export const Header: React.FC = () => {
         )}
       </div>
 
-      {/* 3. Search Bar spanning the full width of available free space */}
-      <div className="flex-1 min-w-0 px-3 sm:px-6 flex items-center">
+      {/* 3. Global Search Bar with dedicated command center footprint */}
+      <div className="relative flex-1 min-w-[200px] xl:min-w-[340px] max-w-md px-2 sm:px-4 flex items-center">
         <GlobalSearchBar />
       </div>
 
       {/* 4. High-Utility Command Center Controls (Right Navbar Zone) */}
-      <div className="px-4 sm:px-6 flex items-center gap-2.5 sm:gap-3 shrink-0">
+      <div className="px-2 sm:px-3 flex items-center gap-2 shrink-0">
         {/* Live IST Duty Clock — Clean borderless element */}
         <div
           className="hidden xl:flex items-center gap-2 text-xs font-mono text-slate-400 px-2 h-9 tabular-nums"
@@ -419,11 +419,11 @@ export const Header: React.FC = () => {
                 <div className="w-7 h-7 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">
                   {displayInitials}
                 </div>
-                <div className="flex flex-col text-left hidden sm:flex">
-                  <span className="text-xs font-semibold text-white leading-tight truncate max-w-[140px]">
+                <div className="flex flex-col text-left hidden sm:flex shrink-0 min-w-fit pr-2">
+                  <span className="text-xs font-semibold text-white leading-tight truncate">
                     {displayName}
                   </span>
-                  <span className="text-[10px] text-amber-400 font-mono leading-none mt-0.5 truncate max-w-[140px]">
+                  <span className="text-[10px] text-amber-400 font-mono leading-none mt-0.5 tabular-nums whitespace-nowrap">
                     {userRole === 'dg_admin'
                       ? 'State DG Admin • Tier 1'
                       : userRole === 'director_konkan'

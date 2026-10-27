@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { GovEmblem } from '@/components/shared/GovEmblem';
+import { FullScreenAuthLoader } from '@/components/auth/FullScreenAuthLoader';
 import { UserRole, Language } from '@/types/dashboard';
 import {
   isWebAuthnAvailable,
@@ -522,27 +523,13 @@ export const LoginScreen: React.FC = () => {
     return t.loadingStage3;
   };
 
-  // Prevent showing the login form if already authenticated or restoring an active session
-  const hasStoredSession =
-    typeof window !== 'undefined' &&
-    (!!localStorage.getItem('maha_auth_token') || !!localStorage.getItem('maha_auth_user'));
-
-  if (isAuthenticated || (!authInitialized && hasStoredSession)) {
+  // Prevent showing the login form if uninitialized or already authenticated
+  if (!authInitialized || isAuthenticated) {
     return (
-      <div className="min-h-screen w-screen bg-slate-900 flex flex-col items-center justify-center p-6 space-y-4">
-        <GovEmblem size="lg" />
-        <div className="flex items-center gap-2 text-white text-sm font-semibold tracking-wide">
-          <MaterialIcon name="refresh" size="sm" spin className="text-amber-400" />
-          <span>
-            {currentLang === 'mr'
-              ? 'सक्रिय अधिकारी सत्र आढळले. मुख्य नियंत्रण कक्षाकडे पुनर्निर्देशित करत आहे...'
-              : 'Active Government Officer Session Detected...'}
-          </span>
-        </div>
-        <p className="text-slate-400 text-xs font-mono">
-          DGIPR State Information Operations System
-        </p>
-      </div>
+      <FullScreenAuthLoader
+        message="Redirecting to command center..."
+        subMessage="Active Government Officer Session Detected..."
+      />
     );
   }
 

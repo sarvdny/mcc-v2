@@ -77,7 +77,6 @@ export default function SourceDetailPage() {
               <span className="text-xs font-mono text-slate-500">{id}</span>
             </div>
           </div>
-          <SampleDataBadge />
         </div>
 
         {/* Loading State */}
@@ -171,7 +170,6 @@ export default function SourceDetailPage() {
                       </div>
                       <div className="border-t border-slate-300 dark:border-slate-700 pt-2 flex items-center justify-between text-[10px] text-slate-500">
                         <span>DGIPR Archival Record</span>
-                        <SampleDataBadge />
                       </div>
                     </div>
                   </div>

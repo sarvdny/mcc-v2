@@ -11,10 +11,10 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { DashboardToolbar } from './DashboardToolbar';
-import { LiveNewsTicker } from '@/components/dashboard/LiveNewsTicker';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { GlossaryDrawer } from '@/components/shared/GlossaryDrawer';
+import { FullScreenAuthLoader } from '@/components/auth/FullScreenAuthLoader';
 
 // Precision Skeletons for Route-Aware Initial Load
 import { DashboardPageSkeleton } from '@/components/skeletons/DashboardPageSkeleton';
@@ -67,9 +67,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   const router = useRouter();
   const pathname = usePathname();
   const isToolbarVisible =
-    !pathname?.startsWith('/command-center') &&
-    !pathname?.startsWith('/profile') &&
-    !pathname?.startsWith('/system-monitoring');
+    pathname !== '/' &&
+    pathname !== '/dashboard' &&
+    (pathname === '/districts' || pathname === '/konkan-index');
   const {
     isAuthenticated,
     authInitialized,
@@ -100,6 +100,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     }
   }, [toast, setToast]);
 
+  // Fail-safe protection: Prevent mounting Header, Sidebar or canvas until authenticated
+  if (!authInitialized || !isAuthenticated) {
+    return <FullScreenAuthLoader message="Verifying credentials..." />;
+  }
+
   const showProgressBar = !authInitialized || isLoadingData;
   const isVerifyingAuth = !authInitialized;
 
@@ -115,11 +120,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
         {/* Right Column Wrapper (The ONLY Scrollable Region) */}
         <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden relative">
-          {/* Stationary White Sub-Header Bar */}
+          {/* Stationary Sub-Header Bar (Mounted on secondary operational routes) */}
           {isToolbarVisible && <DashboardToolbar />}
-
-          {/* Statewide Horizontal Live News Ticker */}
-          {isToolbarVisible && <LiveNewsTicker />}
 
           {/* 2px Saffron Shimmer Progress Bar (Active when verifying or filtering) */}
           {showProgressBar && (

@@ -74,6 +74,24 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
     return <EmergencyAlertSkeleton isCollapsed={isCollapsed} isCrisisRoute={isCrisisRoute} />;
   }
 
+  // Dynamic Compact 44px Status Bar when 0 active incidents in non-crisis route
+  if (scopeIncidents.length === 0 && !isCrisisRoute) {
+    return (
+      <div className="bg-slate-900 text-white px-3.5 py-2.5 rounded-xl flex items-center justify-between text-xs select-none shadow-xs border border-slate-800">
+        <div className="flex items-center gap-2">
+          <ShieldExclamationIcon className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span className="font-semibold text-white text-xs sm:text-sm">
+            {language === 'mr' ? 'संकट संनियंत्रण कक्ष' : 'Crisis Monitor'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px] font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>{language === 'mr' ? '० सक्रिय घटना' : '0 Active (Konkan)'}</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs hover:shadow-sm transition-all duration-150 border-t-2 border-t-rose-600 flex flex-col overflow-hidden">
       {/* Sleek Dark-Slate Institutional Command Bar (Single Axis) */}
@@ -84,9 +102,9 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
             <div className="flex items-center gap-2">
               <ShieldExclamationIcon className="w-4 h-4 text-rose-500 shrink-0" />
               <span className={`font-semibold text-white whitespace-nowrap ${
-                isCrisisRoute ? 'text-xs sm:text-sm' : 'text-xs'
+                isCrisisRoute ? 'text-xs sm:text-sm' : 'text-sm'
               }`}>
-                {t.zone5.title}
+                {language === 'mr' ? 'संकट संनियंत्रण कक्ष' : 'Crisis Monitor'}
               </span>
             </div>
           }
@@ -155,32 +173,35 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
         </div>
       )}
 
-      {/* Professional Collapsed State (Tactical Live Summary Strip) */}
+      {/* Professional Collapsed State (Tactical Live Summary Strip - 2-Row Anti-Collision Layout) */}
       {!isCrisisRoute && isCollapsed && primaryIncident && (
         <div
           onClick={() => setIsCollapsed(false)}
-          className="px-4 py-3 rounded-b-xl border-b border-rose-100 flex items-center justify-between gap-3 cursor-pointer hover:bg-rose-50/70 transition-colors select-none"
+          className="px-3.5 py-2.5 rounded-b-xl border-b border-rose-100 flex flex-col gap-1.5 cursor-pointer hover:bg-rose-50/70 transition-colors select-none"
         >
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-600 inline-block animate-pulse shrink-0" />
-            <span className="font-mono font-bold text-slate-800 text-xs shrink-0">
-              {primaryIncident.id}
-            </span>
-            <span className="text-slate-300 select-none shrink-0">•</span>
-            <span className="text-[11px] font-semibold text-rose-700 whitespace-nowrap shrink-0">
-              {getLocalizedStatus(primaryIncident.severity, language)} {t.zone5.threatLabel}
-            </span>
-            <span className="text-slate-300 select-none shrink-0">•</span>
-            <span className="text-xs text-slate-700 truncate min-w-0 font-medium">
-              {getLocalizedIncidentSummary(primaryIncident, language)}
+          {/* Row 1: Status Dot, Incident ID, Threat Pill, and Expand Button */}
+          <div className="flex items-center justify-between gap-2 w-full">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-rose-600 inline-block animate-pulse shrink-0 ring-2 ring-rose-200" />
+              <span className="font-mono font-bold text-slate-900 text-xs shrink-0 tabular-nums">
+                {primaryIncident.id}
+              </span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-100 text-rose-800 border border-rose-200 shrink-0">
+                {getLocalizedStatus(primaryIncident.severity, language)} {t.zone5.threatLabel}
+              </span>
+            </div>
+
+            <span className="text-[11px] font-semibold text-rose-600 hover:text-rose-700 whitespace-nowrap shrink-0">
+              {language === 'mr'
+                ? `विस्तृत करा (+${secondaryIncidents.length} रांग)`
+                : `Expand (+${secondaryIncidents.length} Queue)`}
             </span>
           </div>
 
-          <div className="text-[11px] font-semibold text-rose-600 hover:text-rose-700 whitespace-nowrap shrink-0">
-            {language === 'mr'
-              ? `विस्तृत करा (+${secondaryIncidents.length} रांग)`
-              : `Expand (+${secondaryIncidents.length} Queue)`}
-          </div>
+          {/* Row 2: Clean 2-line clamped summary title with full horizontal room */}
+          <p className="text-xs text-slate-700 font-medium leading-relaxed line-clamp-2">
+            {getLocalizedIncidentSummary(primaryIncident, language)}
+          </p>
         </div>
       )}
 

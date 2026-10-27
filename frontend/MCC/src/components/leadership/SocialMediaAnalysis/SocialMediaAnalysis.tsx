@@ -143,18 +143,22 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
     (activeTab === "meta" && !showXStream);
 
   return (
-    <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 flex flex-col h-auto overflow-hidden hover:shadow-sm transition-all duration-150">
+    <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 flex flex-col h-full min-h-0 overflow-hidden hover:shadow-sm transition-all duration-150">
       {/* Header matching Reference */}
-      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
+      <div className="p-3 sm:p-3.5 border-b border-slate-100 bg-white shrink-0">
         <MinimalCardHeader
-          title={language === "mr" ? "समाज माध्यम विश्लेषण" : "Social Media Analysis"}
+          title={
+            language === "mr"
+              ? "समाज माध्यम नाडी (Social Pulse)"
+              : "Social Pulse"
+          }
           subtitle={
             language === "mr"
-              ? "ट्विटर/एक्स व बहु-प्लॅटफॉर्म वाहिन्यांचा विभागलेला थेट प्रवाह"
-              : "Split streams for Twitter/X vs. Multi-Platform Channels"
+              ? "ट्विटर/एक्स व बहु-वाहिन्यांचा थेट प्रवाह"
+              : "Unified real-time feed across X, Meta & broadcast channels"
           }
           action={
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               {/* Stream Filter Pills */}
               <div
                 role="tablist"
@@ -166,7 +170,7 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                   role="tab"
                   aria-selected={activeTab === "all"}
                   onClick={() => setActiveTab("all")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
+                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
                     activeTab === "all"
                       ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
@@ -179,7 +183,7 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                   role="tab"
                   aria-selected={activeTab === "x"}
                   onClick={() => setActiveTab("x")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
+                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
                     activeTab === "x"
                       ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
@@ -192,19 +196,19 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                   role="tab"
                   aria-selected={activeTab === "meta"}
                   onClick={() => setActiveTab("meta")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
+                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
                     activeTab === "meta"
                       ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                   }`}
                 >
-                  Meta/DD
+                  Meta
                 </button>
               </div>
 
-              <div className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 inline-block"></span>
-                <span>{language === "mr" ? "थेट समक्रमण" : "Live Sync"}</span>
+              <div className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 inline-block"></span>
+                <span>Live</span>
               </div>
             </div>
           }
@@ -213,34 +217,37 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
       </div>
 
       {/* Internal Horizontal Stream Split Layout */}
-      <div className="p-4 sm:p-5 flex flex-col gap-4">
+      <div className="p-3 sm:p-4 flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
         <div
-          className={`grid gap-3.5 items-start ${
+          className={`grid gap-3 items-start ${
             isSingleStream ? "grid-cols-1" : "grid-cols-1 2xl:grid-cols-2"
           }`}
         >
           {/* Stream 1: Twitter / X Stream */}
           {showXStream && (
-            <div className="border border-slate-200/90 rounded-xl p-3 bg-white flex flex-col min-w-0 shadow-2xs">
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 text-xs">
+            <div className="border border-slate-200/90 rounded-xl p-2.5 bg-white flex flex-col min-w-0 shadow-2xs">
+              <div className="flex items-center justify-between py-1 text-xs text-slate-500 font-medium border-b border-slate-100 mb-2 shrink-0">
                 <span className="font-bold text-slate-900 flex items-center gap-1.5 min-w-0 truncate">
                   <span className="w-2 h-2 rounded-full bg-black shrink-0"></span>
                   <span className="truncate">
-                    {language === "mr"
-                      ? "ट्विटर / एक्स प्रवाह"
-                      : "Twitter / X Stream"}
+                    {language === "mr" ? "एक्स फीड (X Feed)" : "X Feed"}
                   </span>
                 </span>
-                <span className="font-mono text-[10px] text-slate-400 font-medium whitespace-nowrap uppercase tracking-wider shrink-0 ml-1">
-                  {language === "mr" ? "थेट एपीआय" : "Live API"}
+                <span className="font-mono text-[10px] text-emerald-600 font-semibold uppercase tracking-wider shrink-0 ml-1 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Active</span>
                 </span>
               </div>
 
-              <div className="space-y-2.5 overflow-y-auto max-h-[240px] pr-1.5">
+              <div
+                className={
+                  "space-y-2.5 overflow-y-auto max-h-[240px] pr-1 pt-1 scroll-pt-1"
+                }
+              >
                 {TWITTER_STREAM.map((post) => (
                   <div
                     key={post.id}
-                    className="p-2.5 bg-white rounded-lg border border-slate-200/80 shadow-2xs text-xs space-y-1.5 hover:border-slate-300 transition-colors"
+                    className="p-2.5 rounded-lg border border-slate-200/80 bg-slate-50/50 shadow-2xs text-xs space-y-1.5 hover:border-slate-300 transition-colors"
                   >
                     <div className="flex items-center justify-between text-[11px] gap-2">
                       <span className="font-bold text-slate-900 truncate">
@@ -255,12 +262,13 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                     <p className="text-[11px] text-slate-700 font-medium leading-relaxed">
                       {language === "mr" ? post.textMr : post.textEn}
                     </p>
-                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center gap-1 flex-wrap">
-                      <span>
-                        {language === "mr" ? post.statsMr : post.statsEn}
-                      </span>
-                      <span className="text-emerald-700 font-bold">
-                        {language === "mr" ? post.badgeMr : post.badgeEn}
+                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center justify-between gap-1 flex-wrap">
+                      <span className="font-medium text-slate-600">
+                        {post.id === "tw-1"
+                          ? "↻ 1.4K • ♥ 6.2K"
+                          : post.id === "tw-2"
+                            ? "↻ 890 • ♥ 4.1K"
+                            : "↻ 520 • ♥ 2.8K"}
                       </span>
                     </div>
                   </div>
@@ -271,24 +279,25 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
 
           {/* Stream 2: FB / Insta / YouTube / LinkedIn */}
           {showMetaStream && (
-            <div className="border border-slate-200/90 rounded-xl p-3 bg-white flex flex-col min-w-0 shadow-2xs">
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 text-xs">
+            <div className="border border-slate-200/90 rounded-xl p-2.5 bg-white flex flex-col min-w-0 shadow-2xs">
+              <div className="flex items-center justify-between py-1 text-xs text-slate-500 font-medium border-b border-slate-100 mb-2 shrink-0">
                 <span className="font-bold text-slate-900 flex items-center gap-1.5 min-w-0 truncate">
                   <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
                   <span className="truncate">
-                    FB / Insta / YouTube / LinkedIn
+                    {language === "mr" ? "मेटा / डीडी न्यूज" : "Meta / DD News"}
                   </span>
                 </span>
-                <span className="font-mono text-[10px] text-slate-400 font-medium whitespace-nowrap uppercase tracking-wider shrink-0 ml-1">
-                  {language === "mr" ? "एकत्रित" : "Unified"}
+                <span className="font-mono text-[10px] text-emerald-600 font-semibold uppercase tracking-wider shrink-0 ml-1 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Active</span>
                 </span>
               </div>
 
-              <div className="space-y-2.5 overflow-y-auto max-h-[240px] pr-1.5">
+              <div className="space-y-2.5 overflow-y-auto max-h-[240px] pr-1 pt-1 scroll-pt-1">
                 {MULTI_PLATFORM_STREAM.map((post) => (
                   <div
                     key={post.id}
-                    className="p-2.5 bg-white rounded-lg border border-slate-200/80 shadow-2xs text-xs space-y-1.5 hover:border-slate-300 transition-colors"
+                    className="p-2.5 rounded-lg border border-slate-200/80 bg-slate-50/50 shadow-2xs text-xs space-y-1.5 hover:border-slate-300 transition-colors"
                   >
                     <div className="flex items-center justify-between text-[11px] gap-2">
                       <span className="font-bold text-slate-900 truncate">
@@ -303,12 +312,13 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                     <p className="text-[11px] text-slate-700 font-medium leading-relaxed">
                       {language === "mr" ? post.textMr : post.textEn}
                     </p>
-                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center gap-1 flex-wrap">
-                      <span>
-                        {language === "mr" ? post.statsMr : post.statsEn}
-                      </span>
-                      <span className="text-emerald-700 font-bold">
-                        {language === "mr" ? post.badgeMr : post.badgeEn}
+                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center justify-between gap-1 flex-wrap">
+                      <span className="font-medium text-slate-600">
+                        {post.id === "mp-1"
+                          ? "👁 12K • 💬 1.1K"
+                          : post.id === "mp-2"
+                            ? "▶ 84.2K • ♥ 9.4K"
+                            : "▶ 35K • 👍 98%"}
                       </span>
                     </div>
                   </div>
@@ -316,20 +326,6 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
               </div>
             </div>
           )}
-        </div>
-
-        {/* Footer Metrics */}
-        <div className="mt-1 pt-3 border-t border-slate-100 flex flex-col gap-1">
-          <p className="text-[11px] text-slate-500 font-medium">
-            {language === "mr"
-              ? "सोशल मीडिया संनियंत्रण कक्ष: २४x७ थेट विश्लेषण"
-              : "Social Media Listening Wing: 24x7 Real-Time Stream Monitoring"}
-          </p>
-          <p className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
-            {language === "mr"
-              ? "एकूण पोहोच: ३.३ दशलक्ष नागरिक संवाद आज"
-              : "Total Reach: 3.3M Citizen Impressions Today"}
-          </p>
         </div>
       </div>
     </div>

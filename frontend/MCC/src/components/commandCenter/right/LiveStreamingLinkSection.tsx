@@ -94,15 +94,15 @@ export const LiveStreamingLinkSection: React.FC = () => {
       </div>
 
       {/* Source Selectors */}
-      <div className="flex gap-1.5 text-xs">
+      <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl w-full shadow-2xs">
         {sources.map((s) => (
           <button
             key={s.id}
             onClick={() => setSelectedSource(s.id)}
-            className={`flex-1 py-1 px-2 rounded text-[11px] font-semibold transition-colors text-center cursor-pointer ${
+            className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all text-center cursor-pointer ${
               selectedSource === s.id
-                ? 'bg-gov-primary text-white shadow-2xs'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             {s.label}
@@ -158,10 +158,7 @@ export const LiveStreamingLinkSection: React.FC = () => {
             )}
           </button>
           <div className="text-center mt-2">
-            <span className="text-[11px] font-bold text-white block">
-              {currentSource.title}
-            </span>
-            <span className="text-[10px] text-slate-400 font-mono">
+            <span className="text-[10px] text-slate-300 font-mono">
               {isMr ? 'सह्याद्री अतिथीगृह • चॅनेल १ थेट ऑप्टिकल फीड' : 'Sahyadri Guest House • Channel 1 Direct Optical Feed'}
             </span>
           </div>

@@ -26,33 +26,9 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
   const t = useTranslation(language);
 
   const isAllDistricts = !selectedDistrictId || selectedDistrictId === 'all';
+  const thaneDistrict = districts.find((d) => d.id === 'thane') || districts[0];
   const matchedDistrict = districts.find((d) => d.id === selectedDistrictId?.toLowerCase());
-
-  // Statewide view: average the four pillars across the ingested districts so the
-  // panel describes the whole scope instead of borrowing one district's numbers.
-  const statewide = useMemo(() => {
-    if (districts.length === 0) return undefined;
-    const agg = calculateStatewideAggregates(districts);
-
-    return {
-      ...districts[0],
-      id: 'all',
-      name: 'All Districts',
-      nameMr: 'सर्व जिल्हे',
-      rank: 0,
-      releases: agg.totalReleases,
-      avgTAT: agg.avgTAT,
-      sentiment: agg.avgSentiment,
-      crisisSLA: agg.avgCrisisSLA,
-      cpi: agg.avgCPI,
-      volumeScore: agg.volumeScore,
-      tatScore: agg.speedScore,
-      sentimentScore: agg.sentimentScore,
-      crisisScore: agg.crisisScore,
-    };
-  }, [districts]);
-
-  const selected = isAllDistricts ? statewide : matchedDistrict;
+  const selected = isAllDistricts ? thaneDistrict : (matchedDistrict || thaneDistrict);
 
   const sentimentBreakdown = useMemo(() => {
     return getDistrictSentiment(selected && !isAllDistricts ? selected.id : undefined, selectedPeriod);
@@ -134,30 +110,41 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
       {/* 3 Constituent Scores */}
       <div className="p-5 space-y-4 bg-white">
         {/* 1. Volume Score (35 pts) */}
-        <ScoreMetricBar
-          icon="newspaper"
-          title={t.zone3.volumeTitle}
-          subtitle={t.zone3.volumeSub}
-          score={selected.volumeScore}
-          maxScore={35}
-          valueLabel={`${selected.releases} ${language === 'mr' ? 'पत्रके' : 'releases'}`}
-          gapLabel={`${35 - selected.volumeScore} ${t.zone3.gapSuffix}`}
-          metricKey="volumeScore"
-        />
+        {(() => {
+          const safeVolume = Math.min(35, Number(selected.volumeScore || 0));
+          const volumeGap = Number((35 - safeVolume).toFixed(2));
+          return (
+            <ScoreMetricBar
+              icon="newspaper"
+              title={t.zone3.volumeTitle}
+              subtitle={t.zone3.volumeSub}
+              score={safeVolume}
+              maxScore={35}
+              valueLabel={`${selected.releases} ${language === 'mr' ? 'पत्रके' : 'releases'}`}
+              gapLabel={`${volumeGap} ${t.zone3.gapSuffix}`}
+              metricKey="volumeScore"
+            />
+          );
+        })()}
 
         {/* 2. Media Sentiment Index (Multi-Channel 4-Stream Composite, 25 pts) */}
-
         <div className="space-y-1.5 p-2 rounded-md hover:bg-slate-50 transition-colors">
-          <ScoreMetricBar
-            icon="chat_bubble"
-            title={t.zone3.sentimentTitle}
-            subtitle={t.zone3.sentimentSub}
-            score={selected.sentimentScore}
-            maxScore={35}
-            valueLabel={`${selected.sentiment}%`}
-            gapLabel={`${35 - selected.sentimentScore} ${t.zone3.gapSuffix}`}
-            metricKey="sentimentIndex"
-          />
+          {(() => {
+            const safeSentiment = Math.min(25, Number(selected.sentimentScore || 0));
+            const sentimentGap = Number((25 - safeSentiment).toFixed(2));
+            return (
+              <ScoreMetricBar
+                icon="chat_bubble"
+                title={t.zone3.sentimentTitle}
+                subtitle={t.zone3.sentimentSub}
+                score={safeSentiment}
+                maxScore={25}
+                valueLabel={`${selected.sentiment}%`}
+                gapLabel={`${sentimentGap} ${t.zone3.gapSuffix}`}
+                metricKey="sentimentIndex"
+              />
+            );
+          })()}
 
           {/* 4-Channel Weighted Breakdown Badges */}
           <div className="mt-2 pt-2 border-t border-slate-100">
@@ -220,17 +207,26 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
           </div>
         </div>
 
-        {/* 3. Crisis SLA Resolution Rate */}
-        <ScoreMetricBar
-          icon="warning"
-          title={t.zone3.crisisTitle}
-          subtitle={t.zone3.crisisSub}
-          score={selected.crisisScore}
-          maxScore={15}
-          valueLabel={`${selected.crisisSLA}%`}
-          gapLabel={`${15 - selected.crisisScore} ${t.zone3.gapSuffix}`}
-          metricKey="crisisSlaResolutionRate"
-        />
+        {/* 3. Crisis SLA Resolution Rate (15 pts) */}
+        {(() => {
+          const rawCrisis = Number(selected.crisisScore || 0);
+          const safeCrisis = rawCrisis > 15
+            ? Number(((selected.crisisSLA / 100) * 15).toFixed(2))
+            : Math.min(15, rawCrisis);
+          const crisisGap = Number((15 - safeCrisis).toFixed(2));
+          return (
+            <ScoreMetricBar
+              icon="warning"
+              title={t.zone3.crisisTitle}
+              subtitle={t.zone3.crisisSub}
+              score={safeCrisis}
+              maxScore={15}
+              valueLabel={`${selected.crisisSLA}%`}
+              gapLabel={`${crisisGap} ${t.zone3.gapSuffix}`}
+              metricKey="crisisSlaResolutionRate"
+            />
+          );
+        })()}
       </div>
 
       <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center">

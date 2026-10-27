@@ -21,7 +21,7 @@ export default function SystemMonitoringPage() {
             </h3>
             <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-emerald-700 whitespace-nowrap">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-              <span>CRC-32 & SHA-256 Validated</span>
+              <span>Integrity Verified</span>
             </span>
           </div>
           <RawEventStreamInspector />

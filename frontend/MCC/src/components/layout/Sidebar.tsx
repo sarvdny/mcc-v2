@@ -133,36 +133,6 @@ export const Sidebar: React.FC = () => {
 
         {/* Scrollable Grouped Navigation */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-5 scrollbar-none">
-          {/* Top Relocated Collapse Menu Button (directly above Command & Telemetry) */}
-          <div className="hidden md:block mb-2">
-            <button
-              type="button"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className={`w-full flex items-center ${
-                sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
-              } text-xs rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer`}
-              title={
-                sidebarCollapsed
-                  ? (language === 'mr' ? 'मेन्यू विस्तार करा' : 'Expand Menu (Ctrl+B)')
-                  : (language === 'mr' ? 'मेन्यू संक्षिप्त करा' : 'Collapse Menu (Ctrl+B)')
-              }
-              aria-label={sidebarCollapsed ? 'Expand Menu' : 'Collapse Menu'}
-            >
-              <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                {sidebarCollapsed ? (
-                  <ChevronDoubleRightIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
-                ) : (
-                  <ChevronDoubleLeftIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
-                )}
-              </div>
-              {(!sidebarCollapsed || mobileMenuOpen) && (
-                <span className="truncate font-medium text-slate-300">
-                  {language === 'mr' ? 'मेन्यू संक्षिप्त करा' : 'Collapse Menu'}
-                </span>
-              )}
-            </button>
-          </div>
-
           {/* 0. EXECUTIVE DASHBOARD - Always visible, collapsed & expanded */}
           <div className="mb-2">
             <Link
@@ -193,14 +163,11 @@ export const Sidebar: React.FC = () => {
             </Link>
           </div>
 
-          {/* GROUP 1: DGPR PORTALS (DGPR) */}
+          {/* GROUP 1: DGIPR PORTALS */}
           <div className="pt-2 border-t border-slate-800/70">
             {(!sidebarCollapsed || mobileMenuOpen) && (
               <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-3 mb-2 tracking-normal">
                 <span>{language === 'mr' ? 'माहिती व जनसंपर्क दालने' : 'DGIPR Portals'}</span>
-                <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  DGPR
-                </span>
               </div>
             )}
 
@@ -226,7 +193,7 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'वृत्तपत्र (Newspaper)' : 'Newspaper'}</span>
-                    <span className="text-xs font-medium bg-blue-500/20 text-blue-300 px-1.5 py-0.2 rounded border border-blue-500/30 shrink-0 ml-1">
+                    <span className="text-xs font-mono text-slate-500 tabular-nums shrink-0 ml-1">
                       516
                     </span>
                   </div>
@@ -254,7 +221,7 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'थेट वृत्त (Live News)' : 'Live News'}</span>
-                    <span className="flex items-center gap-1 text-xs font-medium font-bold text-rose-400 shrink-0 ml-1">
+                    <span className="flex items-center gap-1 text-xs font-bold text-rose-400 shrink-0 ml-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block " />
                       LIVE
                     </span>
@@ -283,7 +250,7 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'जाहिरात (Advertisements)' : 'Advertisements'}</span>
-                    <span className="text-xs font-medium text-emerald-400 shrink-0 ml-1">42 ROs</span>
+                    <span className="text-xs text-slate-500 tabular-nums shrink-0 ml-1">42 ROs</span>
                   </div>
                 )}
               </Link>
@@ -309,7 +276,7 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'होर्डिंग्ज व फलक (Hoardings)' : 'Outdoor Hoardings'}</span>
-                    <span className="text-xs font-medium text-amber-400 shrink-0 ml-1">140 Sites</span>
+                    <span className="text-xs text-slate-500 tabular-nums shrink-0 ml-1">140 Sites</span>
                   </div>
                 )}
               </Link>
@@ -318,7 +285,7 @@ export const Sidebar: React.FC = () => {
               <Link
                 href="/fact-check"
                 onClick={() => setMobileMenuOpen(false)}
-                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'DGPR Fact-Check Desk') : undefined}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'DGIPR Fact-Check Desk') : undefined}
                 className={`w-full flex items-center overflow-hidden ${
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
@@ -335,9 +302,6 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'Fact-Check Desk'}</span>
-                    <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/30 shrink-0 ml-1">
-                      Live 24x7
-                    </span>
                   </div>
                 )}
               </Link>
@@ -363,9 +327,6 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'माध्यम संवेदनशीलता (Sentiment Radar)' : 'Media Sentiment Radar'}</span>
-                    <span className="text-xs font-medium text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/30 shrink-0 ml-1">
-                      08:00 AM
-                    </span>
                   </div>
                 )}
               </Link>
@@ -391,7 +352,6 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'प्रसिद्धी व मासिक (Publications)' : 'Publications'}</span>
-                    <span className="text-xs font-medium text-amber-400 shrink-0 ml-1">लोकराज्य</span>
                   </div>
                 )}
               </Link>
@@ -417,7 +377,7 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'प्रसिद्धीपत्रके (Press Releases)' : 'Press Releases'}</span>
-                    <span className="text-xs font-medium text-blue-300 bg-blue-500/20 px-1.5 py-0.2 rounded border border-blue-500/30 shrink-0 ml-1">142</span>
+                    <span className="text-xs font-mono text-slate-500 tabular-nums shrink-0 ml-1">142</span>
                   </div>
                 )}
               </Link>
@@ -644,7 +604,7 @@ export const Sidebar: React.FC = () => {
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="ml-auto text-xs font-mono font-semibold text-rose-400 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block animate-pulse shrink-0" />
-                    <span>{language === 'mr' ? '१ सक्रिय' : '1 Active'}</span>
+                    <span>{language === 'mr' ? '३ सक्रिय' : '3 Active'}</span>
                   </span>
                 )}
               </Link>
@@ -797,6 +757,38 @@ export const Sidebar: React.FC = () => {
             </div>
           </div>
         </nav>
+
+        {/* Bottom Rail Footer: Docked Collapse Menu Toggle */}
+        <div className="hidden md:block p-3 border-t border-slate-800/80 shrink-0 bg-slate-900/60">
+          <button
+            type="button"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className={`w-full flex items-center ${
+              sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-1.5' : 'gap-2.5 px-3 py-2'
+            } text-xs rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer group`}
+            title={
+              sidebarCollapsed
+                ? (language === 'mr' ? 'मेन्यू विस्तार करा (Ctrl+B)' : 'Expand Menu (Ctrl+B)')
+                : (language === 'mr' ? 'मेन्यू संक्षिप्त करा (Ctrl+B)' : 'Collapse Menu (Ctrl+B)')
+            }
+            aria-label={sidebarCollapsed ? 'Expand Menu' : 'Collapse Menu'}
+          >
+            <div className="w-6 h-6 rounded-md bg-slate-800 group-hover:bg-slate-700 flex items-center justify-center shrink-0 transition-colors border border-slate-700/60">
+              {sidebarCollapsed ? (
+                <ChevronDoubleRightIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
+              ) : (
+                <ChevronDoubleLeftIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
+              )}
+            </div>
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <span className="truncate font-medium text-slate-300">
+                {sidebarCollapsed
+                  ? (language === 'mr' ? 'मेन्यू विस्तार' : 'Expand Menu')
+                  : (language === 'mr' ? 'मेन्यू संक्षिप्त करा' : 'Collapse Menu')}
+              </span>
+            )}
+          </button>
+        </div>
       </aside>
     </>
   );

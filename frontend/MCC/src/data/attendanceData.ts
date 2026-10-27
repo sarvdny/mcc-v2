@@ -30,7 +30,7 @@ export const STATE_ATTENDANCE_SUMMARY = {
   biometricDevicesOnline: 37,
   biometricDevicesTotal: 37,
   syncStatus: 'Real-time Aadhaar BAS Synced' as const,
-  lastSyncTime: '23 Oct 2026, 10:15 AM IST',
+  lastSyncTime: '27 Oct 2026, 09:45 AM IST',
 };
 
 export const OFFICES_ATTENDANCE_DATA: OfficeAttendanceRecord[] = [

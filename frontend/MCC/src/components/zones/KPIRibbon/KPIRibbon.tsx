@@ -57,7 +57,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
 
   if (isDistrictSelected && !currentDistrict) {
     return (
-      <section className="w-full space-y-2 select-none" aria-label={t.zone1.sectionTitle}>
+      <section className="w-full space-y-1.5 select-none" aria-label={t.zone1.sectionTitle}>
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" aria-hidden="true" />
@@ -69,18 +69,20 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
             {prettyDistrictName} {language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}
           </span>
         </div>
-        <div className="bg-white rounded-lg border border-slate-200 px-6 py-8 flex flex-col items-center justify-center text-center gap-2">
-          <MaterialIcon name="bar_chart" size="md" className="text-slate-400" aria-hidden="true" />
-          <p className="text-sm font-semibold text-slate-800">
+        <div className="h-11 px-4 py-2 flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600 w-full">
+          <div className="flex items-center gap-2 min-w-0">
+            <MaterialIcon name="bar_chart" size="xs" className="w-4 h-4 text-slate-400 shrink-0" aria-hidden="true" />
+            <span className="font-medium text-slate-700 truncate">
+              {language === 'mr'
+                ? 'या जिल्ह्यासाठी टेलीमेट्री उपलब्ध नाही.'
+                : 'No telemetry ingested for this district yet.'}
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-400 shrink-0 hidden sm:inline">
             {language === 'mr'
-              ? 'या जिल्ह्याची अद्याप टेलीमेट्री उपलब्ध नाही'
-              : 'No telemetry ingested for this district yet'}
-          </p>
-          <p className="text-xs text-slate-500 max-w-sm">
-            {language === 'mr'
-              ? 'सध्या केवळ कोकण विभागाच्या पाच जिल्ह्यांची माहिती उपलब्ध आहे.'
-              : 'KPI aggregation covers all reporting districts. Choose another district to inspect its releases, response speed and sentiment.'}
-          </p>
+              ? 'केपीआय तपासण्यासाठी वरील सक्रिय जिल्हा निवडा.'
+              : 'Select an active reporting district above to inspect KPIs.'}
+          </span>
         </div>
       </section>
     );
@@ -88,7 +90,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
 
   return (
     <section className="w-full space-y-2 select-none" aria-label={t.zone1.sectionTitle}>
-      {/* Scope Sub-label */}
+      {/* Scope Sub-label & Unified Sync Badge */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block" aria-hidden="true" />
@@ -96,9 +98,14 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
             {t.zone1.sectionTitle}
           </h2>
         </div>
-        <span className="text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
-          {reactiveMetrics.scopeName}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-mono text-slate-500 tabular-nums">
+            {language === 'mr' ? 'शेवटचे अद्यतन' : 'Last synced'} • {lastSentimentComputedAt || '18:25 IST'}
+          </span>
+          <span className="text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+            {reactiveMetrics.scopeName}
+          </span>
+        </div>
       </div>
 
       {/* KPI Cards: 3 cards matching Volume, Sentiment, and Crisis SLA */}
@@ -126,7 +133,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           icon="analytics"
           title={t.zone1.sentimentIndex}
           value={reactiveMetrics.sentimentVal}
-          targetText={`${reactiveMetrics.sentimentTarget} · ${language === 'mr' ? 'शेवटची गणना' : 'Computed'}: ${lastSentimentComputedAt || '18:25 IST'}`}
+          targetText={reactiveMetrics.sentimentTarget}
           trendDirection="up"
           trendValue={reactiveMetrics.sentimentTrend}
           positiveTrend={true}
@@ -141,7 +148,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           title={t.zone1.misinformation}
           value={reactiveMetrics.openTicketsCount}
           unit={language === 'mr' ? 'चालू' : 'open'}
-          targetText={`${reactiveMetrics.misinfoTarget} · ${language === 'mr' ? 'शेवटची गणना' : 'Computed'}: ${lastTicketsComputedAt || '18:25 IST'}`}
+          targetText={reactiveMetrics.misinfoTarget}
           trendDirection="down"
           trendValue={reactiveMetrics.misinfoTrend}
           positiveTrend={false}

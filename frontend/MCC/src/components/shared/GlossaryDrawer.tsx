@@ -189,11 +189,6 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
                           {item.categoryLabel[lang]}
                         </span>
-                        {item.isSampleData && (
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
-                            {lang === 'mr' ? 'नमुना डेटा' : 'Sample data'}
-                          </span>
-                        )}
                       </div>
                       <p className="text-xs text-slate-600 mt-1">{item.shortDescription[lang]}</p>
                     </div>
@@ -214,12 +209,19 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
                         <p className="text-slate-700">{item.detailedMeaning[lang]}</p>
                       </div>
 
-                      <div className="bg-slate-900 text-amber-300 p-3 rounded-lg font-mono text-[11px] border border-slate-800">
-                        <div className="text-[10px] font-sans font-bold uppercase text-slate-400 tracking-wider mb-1">
-                          {lang === 'mr' ? 'गणितीय सूत्र / कार्यप्रणाली' : 'Calculation Formula'}
-                        </div>
-                        <div className="font-medium break-words">{item.formula[lang]}</div>
-                      </div>
+                      {(() => {
+                        const isProcessOrRole = item.category === 'administration' || !item.formula[lang].match(/[=+*/%]/);
+                        return (
+                          <div className="bg-slate-900 text-amber-300 p-3 rounded-lg font-mono text-[11px] border border-slate-800">
+                            <div className="text-[10px] font-sans font-bold uppercase text-slate-400 tracking-wider mb-1">
+                              {isProcessOrRole
+                                ? (lang === 'mr' ? 'प्रशासकीय कार्यपद्धती मानक' : 'OPERATIONAL STANDARD')
+                                : (lang === 'mr' ? 'गणितीय सूत्र / कार्यप्रणाली' : 'Calculation Formula')}
+                            </div>
+                            <div className="font-medium break-words">{item.formula[lang]}</div>
+                          </div>
+                        );
+                      })()}
 
                       {item.inputs && item.inputs[lang]?.length > 0 && (
                         <div>

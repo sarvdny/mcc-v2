@@ -25,6 +25,13 @@ export const PublicationsScreen: React.FC = () => {
     });
   }, [selectedType, searchQuery]);
 
+  const archiveIssues = useMemo(() => {
+    if (selectedType === 'all' && !searchQuery) {
+      return filteredIssues.filter((pub) => !pub.featured);
+    }
+    return filteredIssues;
+  }, [filteredIssues, selectedType, searchQuery]);
+
   const handleDownload = (pub: PublicationIssue) => {
     setToast({
       message:
@@ -76,7 +83,7 @@ export const PublicationsScreen: React.FC = () => {
       {/* Power BI Interactive Filter Bar */}
       <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl overflow-x-auto max-w-full shadow-2xs">
           {[
             { id: 'all', label: language === 'mr' ? 'सर्व प्रकाशने' : 'All Publications', icon: 'auto_stories' as MaterialIconName },
             { id: 'magazine', label: language === 'mr' ? 'लोकराज्य मासिक' : 'Lokrajya Monthly', icon: 'menu_book' as MaterialIconName },
@@ -86,10 +93,10 @@ export const PublicationsScreen: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedType(cat.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
                 selectedType === cat.id
-                  ? 'bg-gov-primary text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <MaterialIcon name={cat.icon} size="xs" />
@@ -211,14 +218,14 @@ export const PublicationsScreen: React.FC = () => {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   onClick={() => setReadingIssue(PUBLICATIONS_DATA[0])}
-                  className="px-4 py-2 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+                  className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm flex items-center gap-2 cursor-pointer"
                 >
                   <MaterialIcon name="visibility" size="xs" />
                   <span>{language === 'mr' ? 'ऑनलाइन अंक वाचा' : 'Read Issue Online'}</span>
                 </button>
                 <button
                   onClick={() => handleDownload(PUBLICATIONS_DATA[0])}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs flex items-center gap-2 cursor-pointer"
                 >
                   <MaterialIcon name="download" size="xs" />
                   <span>{language === 'mr' ? 'पीडीएफ डाउनलोड करा (१८.४ MB)' : 'Download PDF (18.4 MB)'}</span>
@@ -236,8 +243,8 @@ export const PublicationsScreen: React.FC = () => {
             <MaterialIcon name="grid_view" size="xs" />
             <span>
               {language === 'mr'
-                ? `उपलब्ध अंक व प्रकाशने (${filteredIssues.length})`
-                : `Available Publications Archive (${filteredIssues.length})`}
+                ? `उपलब्ध अंक व प्रकाशने (${archiveIssues.length})`
+                : `Available Publications Archive (${archiveIssues.length})`}
             </span>
           </h3>
           <span className="text-xs text-slate-500">
@@ -246,7 +253,7 @@ export const PublicationsScreen: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredIssues.map((issue) => (
+          {archiveIssues.map((issue) => (
             <div
               key={issue.id}
               className="bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between h-full group"
@@ -282,8 +289,7 @@ export const PublicationsScreen: React.FC = () => {
 
                 <div className="text-[11px] text-slate-500 flex justify-between pt-2 border-t border-slate-100 mt-auto">
                   <span>{issue.totalPages} {language === 'mr' ? 'पृष्ठे' : 'Pages'}</span>
-                  <span className="font-medium text-slate-600">{issue.language}</span>
-                  <span className="font-semibold text-slate-700">{issue.editionMonth} {issue.editionYear}</span>
+                  <span className="font-semibold text-slate-700">{issue.language} • {issue.editionMonth.slice(0, 3)} {issue.editionYear}</span>
                 </div>
               </div>
 
@@ -291,14 +297,14 @@ export const PublicationsScreen: React.FC = () => {
               <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-100 flex items-center gap-2 mt-auto">
                 <button
                   onClick={() => setReadingIssue(issue)}
-                  className="flex-1 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-xs"
+                  className="flex-1 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <MaterialIcon name="visibility" size="xs" />
                   <span>{language === 'mr' ? 'वाचा' : 'Read'}</span>
                 </button>
                 <button
                   onClick={() => handleDownload(issue)}
-                  className="p-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded text-xs transition-colors cursor-pointer"
+                  className="p-1.5 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs transition-all shadow-2xs cursor-pointer"
                   title="Download PDF"
                 >
                   <MaterialIcon name="download" size="xs" />
@@ -383,17 +389,17 @@ export const PublicationsScreen: React.FC = () => {
               </span>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setReadingIssue(null)}
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs cursor-pointer"
+                >
+                  {language === 'mr' ? 'बंद करा' : 'Close'}
+                </button>
+                <button
                   onClick={() => handleDownload(readingIssue)}
-                  className="px-4 py-2 bg-gov-primary text-white rounded-lg text-xs font-bold hover:bg-gov-primary-dark transition-colors cursor-pointer flex items-center gap-1.5"
+                  className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm cursor-pointer flex items-center gap-1.5"
                 >
                   <MaterialIcon name="download" size="xs" />
                   <span>{language === 'mr' ? 'पीडीएफ सेव्ह करा' : 'Save PDF'}</span>
-                </button>
-                <button
-                  onClick={() => setReadingIssue(null)}
-                  className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-200 transition-colors cursor-pointer"
-                >
-                  {language === 'mr' ? 'बंद करा' : 'Close'}
                 </button>
               </div>
             </div>

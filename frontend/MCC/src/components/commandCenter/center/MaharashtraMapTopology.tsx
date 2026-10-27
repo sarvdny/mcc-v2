@@ -103,13 +103,13 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
           </span>
         </div>
 
-        {/* Division Filter Badges */}
-        <div className="flex items-center gap-1 overflow-x-auto text-[10px] no-scrollbar">
+        {/* Division Filter Badges (Wrap to prevent clipping of Chh. Sambhajinagar, Amravati, Nagpur) */}
+        <div className="flex flex-wrap items-center gap-1 text-[10px]">
           <button
             onClick={() => setActiveDivisionFilter('all')}
-            className={`px-2 py-0.5 rounded transition-colors font-semibold cursor-pointer ${
+            className={`px-2 py-1 rounded-lg transition-colors font-semibold cursor-pointer ${
               activeDivisionFilter === 'all'
-                ? 'bg-gov-primary text-white'
+                ? 'bg-gov-primary text-white shadow-2xs'
                 : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
             }`}
           >
@@ -119,9 +119,9 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
             <button
               key={divId}
               onClick={() => setActiveDivisionFilter(activeDivisionFilter === divId ? 'all' : divId)}
-              className={`px-2 py-0.5 rounded transition-colors whitespace-nowrap font-medium cursor-pointer ${
+              className={`px-2 py-1 rounded-lg transition-colors whitespace-nowrap font-medium cursor-pointer ${
                 activeDivisionFilter === divId
-                  ? 'bg-gov-primary text-white font-bold'
+                  ? 'bg-gov-primary text-white font-bold shadow-2xs'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
               }`}
             >

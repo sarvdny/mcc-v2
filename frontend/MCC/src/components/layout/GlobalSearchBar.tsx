@@ -115,17 +115,17 @@ const NAVIGATION_ROUTES: NavRouteDef[] = [
     iconName: 'crisis',
   },
   {
-    title: 'DGPR Press Releases',
-    marathiTitle: 'माहिती व जनसंपर्क (DGPR) प्रसिद्धीपत्रके',
+    title: 'DGIPR Press Releases',
+    marathiTitle: 'माहिती व जनसंपर्क (DGIPR) प्रसिद्धीपत्रके',
     route: '/press-releases',
     keywords: 'press releases dgpr dgipr news bulletins cabinet official announcements',
-    marathiKeywords: 'प्रसिद्धीपत्रके शासकीय निर्णय बातम्या पत्रक डीजीपीआर',
+    marathiKeywords: 'प्रसिद्धीपत्रके शासकीय निर्णय बातम्या पत्रक डीजीआयपीआर',
     description: 'Official government bulletins, cabinet press releases & releases archive',
     marathiDescription: 'शासकीय निर्णय व प्रसिद्धीपत्रके संग्रह',
     iconName: 'press',
   },
   {
-    title: 'DGPR Fact-Check & Verification Desk',
+    title: 'DGIPR Fact-Check & Verification Desk',
     marathiTitle: 'तथ्य पडताळणी व अफवा खंडन कक्ष (Fact-Check)',
     route: '/fact-check',
     keywords: 'fact check debunk rumor fake news forged gr verification misinformation debunking',
@@ -135,7 +135,7 @@ const NAVIGATION_ROUTES: NavRouteDef[] = [
     iconName: 'activities',
   },
   {
-    title: 'DGPR Media Sentiment & Narrative Radar',
+    title: 'DGIPR Media Sentiment & Narrative Radar',
     marathiTitle: 'माध्यम कल व संवेदनशीलता रडार (Media Radar)',
     route: '/media-intelligence',
     keywords: 'media intelligence sentiment narrative tracking 8am brief newspaper analysis radar',
@@ -145,11 +145,11 @@ const NAVIGATION_ROUTES: NavRouteDef[] = [
     iconName: 'media',
   },
   {
-    title: 'Advertisements & Hoardings (DGPR)',
+    title: 'Advertisements & Hoardings (DGIPR)',
     marathiTitle: 'शासकीय जाहिराती व होर्डिंग्ज नोंदवही',
     route: '/advertisements',
     keywords: 'advertisements hoardings release orders ro davp campaigns print broadcast bill boards',
-    marathiKeywords: 'जाहिरात होर्डिंग्ज प्रसिद्धी आदेश बिलबोर्ड डीजीपीआर वृत्तपत्र जाहिरात',
+    marathiKeywords: 'जाहिरात होर्डिंग्ज प्रसिद्धी आदेश बिलबोर्ड डीजीआयपीआर वृत्तपत्र जाहिरात',
     description: 'Release orders (ROs), 140 geotagged outdoor hoardings ledger & print insertions',
     marathiDescription: 'शासकीय प्रसिद्धी आदेश (RO) आणि १४० होर्डिंग्ज नोंदवही',
     iconName: 'media',
@@ -539,14 +539,14 @@ export const GlobalSearchBar: React.FC = () => {
           onKeyDown={handleInputKeyDown}
           placeholder={
             language === 'mr'
-              ? 'पृष्ठ मजकूर, कार्ड्स, मेट्रिक्स किंवा मार्ग शोधा...'
-              : 'Search page content, cards, metrics, or routes...'
+              ? 'कमांड सेंटर शोधा...'
+              : 'Search command center...'
           }
-          className="h-9 w-full pl-9 pr-9 bg-slate-900/80 hover:bg-slate-900 focus:bg-slate-900 border border-slate-800 hover:border-slate-700 focus:border-amber-500/70 rounded-lg text-xs text-slate-200 placeholder-slate-500 transition-all outline-hidden shadow-2xs"
+          className="h-9 w-full pl-9 pr-14 truncate bg-slate-900/80 hover:bg-slate-900 focus:bg-slate-900 border border-slate-800 hover:border-slate-700 focus:border-amber-500/70 rounded-lg text-xs text-slate-200 placeholder-slate-500 transition-all outline-hidden shadow-2xs"
           aria-label={language === 'mr' ? 'थेट शोध' : 'Live Search'}
         />
 
-        {query && (
+        {query ? (
           <button
             type="button"
             onClick={() => {
@@ -559,6 +559,12 @@ export const GlobalSearchBar: React.FC = () => {
           >
             <XMarkIcon className="w-4 h-4" />
           </button>
+        ) : (
+          <div className="absolute right-2.5 pointer-events-none hidden sm:flex items-center">
+            <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-400 bg-slate-800/90 rounded border border-slate-700/80 shadow-2xs">
+              ⌘K
+            </kbd>
+          </div>
         )}
       </div>
 

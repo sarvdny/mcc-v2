@@ -116,27 +116,64 @@ export const ExternalLinkIcon: React.FC<{ className?: string }> = ({
   <ArrowTopRightOnSquareIcon className={`${className} shrink-0`} />
 );
 
-// Clickable Interactive Endpoint Pill Badge
+// Clickable Interactive Endpoint Pill Badge (Copies rtsp/s3 or non-web endpoints; links web endpoints)
 export const ClickableEndpoint: React.FC<{ url: string; label?: string }> = ({ url, label }) => {
+  const [copied, setCopied] = useState(false);
   const endpointLabel = label || url;
-  const endpointUrl =
-    url.startsWith('http://') || url.startsWith('https://')
-      ? url
-      : url.startsWith('s3://') || url.startsWith('rtsp://')
-      ? `https://${url.replace(/^[a-z0-9]+:\/\//, '')}`
-      : `https://${url}`;
+  const isWebUrl = url.startsWith('http://') || url.startsWith('https://');
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard?.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (!isWebUrl) {
+    return (
+      <div className="inline-flex items-center gap-1.5 font-mono text-xs text-slate-700 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-lg max-w-full">
+        <span className="truncate max-w-[280px]" title={url}>{endpointLabel}</span>
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="p-1 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded transition-colors shrink-0 cursor-pointer"
+          title="Copy URI"
+        >
+          {copied ? (
+            <span className="text-[10px] text-emerald-600 font-bold">Copied</span>
+          ) : (
+            <MaterialIcon name="content_copy" size="xs" />
+          )}
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <a
-      href={endpointUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-sky-700 bg-sky-50/90 hover:bg-sky-100/90 hover:text-sky-900 border border-sky-200/80 px-2.5 py-1 rounded-md transition-all group cursor-pointer max-w-full"
-      title={endpointLabel}
-    >
-      <span className="truncate max-w-[340px]">{endpointLabel}</span>
-      <ExternalLinkIcon className="w-3 h-3 text-sky-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
-    </a>
+    <div className="inline-flex items-center gap-1.5 font-mono text-xs text-sky-700 bg-sky-50 border border-sky-200/80 px-2 py-0.5 rounded-lg max-w-full">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="truncate max-w-[280px] hover:underline"
+        title={url}
+      >
+        {endpointLabel}
+      </a>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="p-1 hover:bg-sky-100 text-sky-600 rounded transition-colors shrink-0 cursor-pointer"
+        title="Copy URL"
+      >
+        {copied ? (
+          <span className="text-[10px] text-emerald-600 font-bold">Copied</span>
+        ) : (
+          <MaterialIcon name="content_copy" size="xs" />
+        )}
+      </button>
+    </div>
   );
 };
 
@@ -258,11 +295,8 @@ const StyledModuleDropdown = memo<StyledModuleDropdownProps>(
         >
           {/* Left Content */}
           <div className="flex items-center gap-2.5">
-            <span className="bg-amber-500 text-slate-950 w-5 h-5 rounded-full text-[11px] font-bold flex items-center justify-center shrink-0">
-              {activeDef.number}
-            </span>
             <span className="font-semibold text-white whitespace-nowrap">
-              {activeDef.number}. {language === 'mr' ? activeDef.titleMr : activeDef.titleEn}
+              {language === 'mr' ? activeDef.titleMr : activeDef.titleEn}
             </span>
             <span className="text-slate-400 font-mono text-[11px] shrink-0 hidden sm:inline whitespace-nowrap">
               • {activeDef.badge}
@@ -312,7 +346,7 @@ const StyledModuleDropdown = memo<StyledModuleDropdownProps>(
                       <div>
                         <div className="flex items-center gap-1.5">
                           <span className={isSelected ? 'font-bold text-slate-900' : 'font-medium text-slate-800'}>
-                            {m.number}. {language === 'mr' ? m.titleMr : m.titleEn}
+                            {language === 'mr' ? m.titleMr : m.titleEn}
                           </span>
                           <span className="bg-slate-100 text-slate-500 font-mono text-[9px] px-1.5 py-0.2 rounded">
                             {m.badge}

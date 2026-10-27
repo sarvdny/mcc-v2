@@ -52,7 +52,6 @@ export const DIPRDivisionsPanel: React.FC = () => {
           ? '३६ जिल्ह्यांमधील विभागीय माहिती कार्यालये, डीआयओ संपर्क, कामगिरी गुण व माध्यम संदर्भ'
           : 'Divisional Information Offices, District Information Officers, Scores & Direct Media Feeds'
       }
-      actions={<SampleDataBadge size="xs" />}
       accentColor="navy"
       className="w-full"
     >

@@ -48,7 +48,7 @@ const DISTRICT_NODES: DistrictNodeItem[] = [
     nameEn: 'Raigad Coastal Gateway',
     nameMr: 'रायगड तटीय गेटवे',
     district: 'Raigad',
-    linkType: 'Coastal Optical Fiber Ring',
+    linkType: 'Coastal Fiber Ring',
     latency: '18ms',
     status: 'Online',
     rate: '280 ev/min',
@@ -250,7 +250,7 @@ const OpticalTelemetryBusBridge = memo<OpticalTelemetryBusBridgeProps>(
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500 shrink-0" />
               </span>
-              <span>OPTICAL BUS (5/5 CONDUITS)</span>
+              <span>TELEMETRY BUS (5 CONDUITS)</span>
             </div>
           )}
         </div>
@@ -478,7 +478,7 @@ const CentralHubEnclosure = memo<CentralHubEnclosureProps>(
             <MaterialIcon name="check_circle" size="xs" className="text-emerald-400 shrink-0" />
             <span>
               {focusedNode
-                ? `Direct Optical Channel Locked: ${focusedNode.id} (100% Ingestion Integrity)`
+                ? `Direct Channel Active: ${focusedNode.id} (100% Ingestion Integrity)`
                 : '5/5 District Gateways Active (0.00% Packet Loss)'}
             </span>
           </div>

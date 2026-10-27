@@ -32,6 +32,15 @@ export const KonkanIndexScreen: React.FC = () => {
       .catch(() => {});
   }, []);
 
+  const activeDistrictLost = useMemo(() => {
+    const id = selectedDistrictId?.toLowerCase();
+    if (id) {
+      const match = pointsLost.find((p) => p.district.toLowerCase() === id);
+      if (match) return match;
+    }
+    return pointsLost.find((p) => p.district.toLowerCase() === 'sindhudurg') || pointsLost[0];
+  }, [pointsLost, selectedDistrictId]);
+
   const konkanDistricts = useMemo(() => {
     const rawData = [
       { id: 'thane', name: 'Thane', nameMr: 'ठाणे', releases: 462, tat: 38, sentiment: 87, crisisSLA: 100 },
@@ -207,17 +216,17 @@ export const KonkanIndexScreen: React.FC = () => {
                           isSelected ? 'bg-amber-50/70 font-semibold' : 'hover:bg-slate-50'
                         }`}
                       >
-                        <td className="py-2.5 px-3 font-mono font-bold text-slate-500">#{dist.rank}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-slate-500 tabular-nums">#{dist.rank}</td>
                         <td className="py-2.5 px-3">
                           <div className="font-bold text-slate-900">{language === 'mr' ? dist.nameMr : dist.name}</div>
                           {dist.highlight && (
                             <span className="text-[10px] text-rose-600 font-medium">{dist.highlight}</span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono font-medium">{dist.releases}</td>
-                        <td className="py-2.5 px-3 text-right font-mono">{dist.tat}m</td>
-                        <td className="py-2.5 px-3 text-right font-mono">{dist.sentiment}%</td>
-                        <td className="py-2.5 px-3 text-right font-mono">{dist.crisisSLA}%</td>
+                        <td className="py-2.5 px-3 text-right font-mono font-medium tabular-nums">{dist.releases}</td>
+                        <td className="py-2.5 px-3 text-right font-mono tabular-nums">{dist.tat}m</td>
+                        <td className="py-2.5 px-3 text-right font-mono tabular-nums">{dist.sentiment}%</td>
+                        <td className="py-2.5 px-3 text-right font-mono tabular-nums">{dist.crisisSLA}%</td>
                         <td className="py-2.5 px-3">
                           {/* Stacked 4-Pillar Bar (Volume, Speed, Sentiment, Crisis) */}
                           <div className="h-4 w-full bg-slate-100 rounded overflow-hidden flex" title={`Vol: ${dist.scores.volume}, Spd: ${dist.scores.speed}, Sent: ${dist.scores.sentiment}, Crisis: ${dist.scores.crisis}`}>
@@ -226,7 +235,7 @@ export const KonkanIndexScreen: React.FC = () => {
                             <div style={{ width: `${(dist.scores.sentiment / 25) * 25}%` }} className="bg-emerald-500 h-full" />
                             <div style={{ width: `${(dist.scores.crisis / 25) * 25}%` }} className="bg-purple-600 h-full" />
                           </div>
-                          <div className="flex justify-between text-[9px] font-mono text-slate-400 mt-0.5">
+                          <div className="flex justify-between text-[9px] font-mono text-slate-400 mt-0.5 tabular-nums">
                             <span>V:{dist.scores.volume}</span>
                             <span>T:{dist.scores.speed}</span>
                             <span>S:{dist.scores.sentiment}</span>
@@ -234,12 +243,12 @@ export const KonkanIndexScreen: React.FC = () => {
                           </div>
                         </td>
                         <td className="py-2.5 px-3 text-right">
-                          <span className="font-black text-sm font-mono text-slate-900">{dist.cpi.toFixed(2)}</span>
+                          <span className="font-black text-sm font-mono text-slate-900 tabular-nums">{dist.cpi.toFixed(2)}</span>
                         </td>
                         <td className="py-2.5 px-3 text-center">
                           <button
                             type="button"
-                            className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700"
+                            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 shadow-2xs transition-all cursor-pointer"
                           >
                             Inspect
                           </button>
@@ -292,7 +301,7 @@ export const KonkanIndexScreen: React.FC = () => {
               </div>
               <span className="text-xs font-mono text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200 font-semibold flex items-center gap-1">
                 <ExclamationTriangleIcon className="w-3.5 h-3.5" />
-                Sindhudurg Volume Gap: -9.08 pts
+                {language === 'mr' ? activeDistrictLost.districtMr : activeDistrictLost.district} {language === 'mr' ? 'गमावलेले गुण' : 'Pillar Gap'}: -{activeDistrictLost.totalLost.toFixed(2)} pts
               </span>
             </div>
 

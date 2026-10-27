@@ -85,7 +85,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         {/* 3. Supporting Context Footer */}
         <div className="flex items-center justify-between text-xs mt-2 pt-1.5 border-t border-slate-100">
           <span
-            className={`inline-flex items-center gap-1.5 text-xs truncate max-w-[180px] ${
+            className={`inline-flex items-center gap-1.5 text-xs min-w-0 flex-1 mr-2 ${
               isTargetMet ? 'text-emerald-700 font-medium' : 'text-slate-600'
             }`}
             title={targetText}

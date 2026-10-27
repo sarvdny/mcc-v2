@@ -136,8 +136,8 @@ export const PressReleasesScreen: React.FC = () => {
         pendingStepMr: 'प्राथमिक छाननी व जिल्हाधिकारी डिजिटल स्वाक्षरी',
         submittedAt: 'Today, 14:40 IST',
         submittedAtMr: 'आज, १४:४० IST',
-        nextStep: 'Official publication to DGPR media wire & regional dailies',
-        nextStepMr: 'डीजीपीआर मीडिया वायर व प्रादेशिक वर्तमानपत्रांमध्ये अधिकृत प्रकाशन',
+        nextStep: 'Official publication to DGIPR media wire & regional dailies',
+        nextStepMr: 'डीजीआयपीआर मीडिया वायर व प्रादेशिक वर्तमानपत्रांमध्ये अधिकृत प्रकाशन',
       },
     };
 
@@ -171,7 +171,7 @@ export const PressReleasesScreen: React.FC = () => {
 
         <button
           onClick={() => setIsDraftModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm self-start sm:self-auto cursor-pointer"
         >
           <MaterialIcon name="add" size="xs" className="text-amber-400" />
           <span>
@@ -183,16 +183,16 @@ export const PressReleasesScreen: React.FC = () => {
       </div>
 
       {/* Filters and Search Bar */}
-      <div className="bg-surface border border-slate-200 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+      <div className="bg-surface border border-slate-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
+        <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl overflow-x-auto max-w-full shadow-2xs">
           {filterTabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1 rounded text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 filter === tab
-                  ? 'bg-gov-primary text-white font-bold shadow-2xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {tab === 'All'
@@ -256,7 +256,7 @@ export const PressReleasesScreen: React.FC = () => {
                   <th className="py-2.5 px-3">{language === 'mr' ? 'विभाग' : 'Department'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'जिल्हा' : 'District'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'दिनांक' : 'Release Date'}</th>
-                  <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'प्रकाशन वेळ' : 'Publish Time'}</th>
+                  <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'प्रकाशन वेळ (SLA ≤४५ मि.)' : 'TAT (SLA Target: ≤45m)'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                   <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'डाउनलोड्स' : 'Downloads'}</th>
                   <th className="py-2.5 px-3 text-center">{language === 'mr' ? 'कृती' : 'Action'}</th>
@@ -271,34 +271,24 @@ export const PressReleasesScreen: React.FC = () => {
 
                   return (
                     <tr key={pr.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-2.5 px-3 font-mono font-bold text-slate-700">{pr.id}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-slate-700">{pr.id.toUpperCase()}</td>
                       <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-md">{localizedTitle}</td>
                       <td className="py-2.5 px-3 text-slate-600 font-medium">{localizedDept}</td>
                       <td className="py-2.5 px-3 text-slate-700 font-medium">{pr.district || 'State HQ'}</td>
                       <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">{pr.date}</td>
-                      <td className="py-2.5 px-3 font-mono">
-                        <div className="flex flex-col items-end gap-0.5">
-                          <span className="font-bold text-slate-900">{tat}m</span>
+                      <td className="py-2.5 px-3 font-mono text-right">
+                        <div className="inline-flex items-center justify-end gap-1.5">
                           <span
-                            className={`text-[10px] px-1.5 py-0.2 rounded font-semibold whitespace-nowrap ${
+                            className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                               tat <= 45
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                ? 'bg-emerald-500'
                                 : tat <= 120
-                                ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                                : 'bg-rose-50 text-rose-700 border border-rose-200'
+                                ? 'bg-amber-500'
+                                : 'bg-rose-500'
                             }`}
-                          >
-                            {tat <= 45
-                              ? language === 'mr'
-                                ? 'विहित वेळेत'
-                                : 'SLA Met (≤45m)'
-                              : tat <= 120
-                              ? language === 'mr'
-                                ? 'विलंबित'
-                                : 'Degraded'
-                              : language === 'mr'
-                              ? 'उल्लंघन'
-                              : 'Breached'}
+                          />
+                          <span className="font-semibold text-slate-900 tabular-nums">
+                            {tat} {language === 'mr' ? 'मि.' : 'mins'}
                           </span>
                         </div>
                       </td>
@@ -354,7 +344,7 @@ export const PressReleasesScreen: React.FC = () => {
                                         {language === 'mr' ? 'पुनरावलोकन स्थिती (Under Review)' : 'Under Review Details'}
                                       </span>
                                       <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1 rounded">
-                                        {pr.id}
+                                        {pr.id.toUpperCase()}
                                       </span>
                                     </div>
 
@@ -425,14 +415,14 @@ export const PressReleasesScreen: React.FC = () => {
                           isLeadershipRole ? (
                             <button
                               onClick={() => handleApprove(pr.id)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border border-amber-300 bg-amber-50 text-amber-800 rounded font-semibold hover:bg-amber-100 transition-colors shadow-2xs cursor-pointer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-xs transition-all cursor-pointer"
                               title="Review and approve draft dispatch"
                             >
-                              <MaterialIcon name="verified_user" size="xs" className="text-amber-600" />
+                              <MaterialIcon name="verified_user" size="xs" className="text-white" />
                               <span>{language === 'mr' ? 'पुनरावलोकन व मंजुरी' : 'Review & Approve'}</span>
                             </button>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 font-medium whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium whitespace-nowrap">
                               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                               <span>{language === 'mr' ? 'मंजुरी प्रलंबित' : 'Pending Approval'}</span>
                             </span>
@@ -442,10 +432,10 @@ export const PressReleasesScreen: React.FC = () => {
                             onClick={() => handleDownload(pr.id)}
                             disabled={isDownloading}
                             aria-label={`Download PDF for ${localizedTitle}`}
-                            className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border rounded transition-colors shadow-2xs cursor-pointer ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl transition-all shadow-2xs cursor-pointer ${
                               isDownloading
-                                ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                                : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                                ? 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-300'
+                                : 'bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90'
                             }`}
                           >
                             {isDownloading ? (

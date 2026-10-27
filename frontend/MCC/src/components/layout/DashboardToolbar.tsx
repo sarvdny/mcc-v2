@@ -5,6 +5,7 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { LockClosedIcon, ChevronDownIcon, ArrowDownTrayIcon } from '@heroicons/react/20/solid';
 import { getDistrictName } from '@/lib/dataLocalization';
+import { DISTRICT_NUMBERS } from '@/components/leadership/GISMap/GISMap';
 
 export interface DashboardToolbarProps {
   /** Optional preset district ID to pre-select (for deep linking) */
@@ -15,6 +16,8 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
   const {
     selectedPeriod,
     setSelectedPeriod,
+    selectedDivision,
+    setSelectedDivision,
     userRole,
     currentUser,
     language,
@@ -56,25 +59,33 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
   const currentDistrictValue =
     selectedDistrictId && selectedDistrictId !== 'all' ? selectedDistrictId : '';
 
-  // Options mirror the dashboard dataset, localized.
+  // Options mirror the dashboard dataset, localized with district numbers.
   const districtOptions = React.useMemo(() => {
     const options = [...districts]
       .sort((a, b) => a.name.localeCompare(b.name))
-      .map((d) => ({
-        id: d.id,
-        label: language === 'mr' ? d.nameMr || getDistrictName(d.name, 'mr') : d.name,
-      }));
+      .map((d) => {
+        const num = DISTRICT_NUMBERS[d.id];
+        const numPrefix = num ? `#${num} ` : '';
+        return {
+          id: d.id,
+          label: (language === 'mr'
+            ? `${numPrefix}${d.nameMr || getDistrictName(d.name, 'mr')}`
+            : `${numPrefix}${d.name}`).replace(/,\s*$/, ''),
+        };
+      });
 
     if (
       selectedDistrictId &&
       selectedDistrictId !== 'all' &&
       !options.some((o) => o.id === selectedDistrictId)
     ) {
+      const num = DISTRICT_NUMBERS[selectedDistrictId];
+      const numPrefix = num ? `#${num} ` : '';
       const fallbackLabel = selectedDistrictId
         .split('-')
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join(' ');
-      options.push({ id: selectedDistrictId, label: fallbackLabel });
+      options.push({ id: selectedDistrictId, label: `${numPrefix}${fallbackLabel}`.replace(/,\s*$/, '') });
     }
 
     return options;
@@ -82,23 +93,38 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
 
   return (
     <div className="shrink-0 backdrop-blur-md bg-white/90 border-b border-slate-200/80 px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 select-none z-10 sticky top-0">
-      {/* Left: Operations Title & Clearance Status */}
+      {/* Left: Operations Title */}
       <div className="flex items-center gap-2.5">
         <h1 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-none">
           {language === 'mr' ? 'राज्य संनियंत्रण दृश्यावलोकन' : 'State Operations Overview'}
         </h1>
-        <span className="text-slate-300 select-none font-normal" aria-hidden="true">|</span>
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/80">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" aria-hidden="true" />
-          <span className="leading-none">
-            {scopeBadgeText}
-          </span>
-        </div>
       </div>
 
-      {/* Right: Pure Actionable Filter Controls Only */}
+      {/* Right: Centralized Global Scope Selection Controls */}
       <div className="flex items-center gap-2.5 flex-wrap">
-        {/* 1. District Scope Filter with cross-panel highlighting */}
+        {/* 1. Division Scope Filter */}
+        <div className="relative flex items-center z-20">
+          <select
+            value={selectedDivision || 'Konkan'}
+            onChange={(e) => setSelectedDivision(e.target.value)}
+            aria-label={language === 'mr' ? 'विभाग निवडा' : 'Select division'}
+            className="h-9 pl-3 pr-8 rounded-xl border border-slate-200/80 bg-white/95 text-xs font-medium text-slate-700 shadow-xs hover:border-slate-300 hover:shadow-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-gov-accent focus-visible:border-transparent cursor-pointer appearance-none transition-all duration-100 ease-out"
+          >
+            <option value="All Maharashtra">{language === 'mr' ? 'सर्व विभाग' : 'All Divisions'}</option>
+            <option value="Konkan">{language === 'mr' ? 'विभाग: कोकण' : 'Division: Konkan'}</option>
+            <option value="Pune">{language === 'mr' ? 'विभाग: पुणे' : 'Division: Pune'}</option>
+            <option value="Nashik">{language === 'mr' ? 'विभाग: नाशिक' : 'Division: Nashik'}</option>
+            <option value="Chhatrapati Sambhajinagar">{language === 'mr' ? 'विभाग: छ. संभाजीनगर' : 'Division: Chh. Sambhajinagar'}</option>
+            <option value="Amravati">{language === 'mr' ? 'विभाग: अमरावती' : 'Division: Amravati'}</option>
+            <option value="Nagpur">{language === 'mr' ? 'विभाग: नागपूर' : 'Division: Nagpur'}</option>
+          </select>
+          <ChevronDownIcon
+            className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 shrink-0"
+            aria-hidden="true"
+          />
+        </div>
+
+        {/* 2. District Scope Filter with cross-panel highlighting */}
         {isDistrictScoped ? (
           <div className="h-9 px-3 rounded-xl border border-slate-200/80 bg-slate-50 text-xs font-medium text-slate-700 flex items-center gap-1.5 shadow-xs">
             <LockClosedIcon className="w-4 h-4 text-slate-500 shrink-0" aria-hidden="true" />

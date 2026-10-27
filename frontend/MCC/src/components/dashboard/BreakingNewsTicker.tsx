@@ -49,57 +49,58 @@ export const BreakingNewsTicker: React.FC = () => {
   return (
     <>
       <div
-        className="w-full h-11 bg-red-600 text-white rounded-xl px-4 py-2 flex items-center justify-between gap-3 shadow-md border border-red-700 overflow-hidden select-none relative"
+        className="w-full h-10 bg-red-600 text-white rounded-xl px-4 py-1.5 flex items-center justify-between gap-3 shadow-xs border border-red-700 overflow-hidden select-none relative"
         role="region"
-        aria-label={language === 'mr' ? 'थेट वृत्त टिकर' : 'Breaking News Ticker'}
+        aria-label={language === 'mr' ? 'थेट वृत्त टिकर' : 'Live Wire Ticker'}
       >
         {/* 1. Left: White Pill Badge with Pulsing Red Dot & LIVE Indicator */}
         <div className="shrink-0 z-20 flex items-center gap-2 bg-white text-red-600 font-bold text-xs px-3 py-1 rounded-md shadow-xs">
           <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse shrink-0 ring-2 ring-red-200" />
           <span className="font-black">{language === 'mr' ? 'थेट घडामोड' : 'BREAKING NEWS'}</span>
-          <span className="hidden sm:inline-block w-px h-3 bg-red-200" />
-          
         </div>
 
-        {/* 2. Center: Continuous Infinite Marquee Scroll with Rich Detailed Headlines */}
+        {/* 2. Center: Continuous Infinite Marquee Scroll with Semantic Inline Pills */}
         <div
           id="continuous-news-ticker-container"
-          className="flex-1 min-w-0 overflow-hidden relative h-full flex items-center mask-gradient"
+          className="flex-1 min-w-0 overflow-hidden relative h-full flex items-center [mask-image:linear-gradient(to_right,transparent_0%,black_3%,black_92%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_3%,black_92%,transparent_100%)]"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
           <div
-            className={`animate-marquee-scroll items-center gap-8 text-xs font-medium cursor-pointer ${
+            className={`animate-marquee-scroll items-center gap-6 text-xs font-medium cursor-pointer ${
               isPaused ? '[animation-play-state:paused]' : ''
             }`}
           >
             {marqueeItems.map((item, idx) => {
               const localizedDistrict = getDistrictName(item.district, language);
               const headline = language === 'mr' ? item.newsMr : item.newsEn;
-              const isCritical = item.sentiment === 'Critical' || item.scoreLevel === 'Critical';
+              const isBreaking = item.sentiment === 'Critical' || item.scoreLevel === 'Critical';
+              const isAlert = item.sentiment === 'Negative' || item.scoreLevel === 'High' || item.scoreLevel === 'Moderate';
 
               return (
                 <div
                   key={`${item.id}-${idx}`}
                   onClick={() => setSelectedArticle(item)}
-                  className="inline-flex items-center gap-2.5 shrink-0 group hover:bg-red-700/80 px-2 py-0.5 rounded transition-all duration-150"
+                  className="inline-flex items-center gap-2 shrink-0 group hover:bg-red-700/80 px-2 py-0.5 rounded transition-all duration-150"
                   title={language === 'mr' ? 'तपशील पाहण्यासाठी क्लिक करा' : 'Click to inspect detailed dispatch'}
                 >
-                  {/* Urgency Badge */}
-                  <span
-                    className={`text-xs font-bold px-1.5 py-0.5 rounded tracking-wide uppercase shrink-0 ${
-                      isCritical
-                        ? 'bg-amber-300 text-slate-900 animate-pulse'
-                        : 'bg-red-800 text-red-100 border border-red-500/60'
-                    }`}
-                  >
-                    {isCritical
-                      ? language === 'mr' ? 'तातडीचे' : 'URGENT'
-                      : language === 'mr' ? 'अधिकृत' : 'OFFICIAL'}
-                  </span>
+                  {/* Semantic Inline Pill: [BREAKING • RED], [ALERT • AMBER], or [NOTICE • BLUE] */}
+                  {isBreaking ? (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-amber-300 text-slate-900 border border-amber-400 shrink-0">
+                      {language === 'mr' ? 'थेट • तातडीचे' : 'BREAKING • RED'}
+                    </span>
+                  ) : isAlert ? (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-amber-500/30 text-amber-100 border border-amber-400/50 shrink-0">
+                      {language === 'mr' ? 'इशारा • सतर्क' : 'ALERT • AMBER'}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-red-900/90 text-red-100 border border-red-500/60 shrink-0">
+                      {language === 'mr' ? 'सूचना • अधिकृत' : 'NOTICE • BLUE'}
+                    </span>
+                  )}
 
                   {/* District / Source Pill */}
-                  <span className="font-bold text-xs bg-red-900/90 text-red-100 px-1.5 py-0.5 rounded font-mono shrink-0 border border-red-400/40">
+                  <span className="font-semibold text-xs bg-red-900/90 text-red-100 px-1.5 py-0.5 rounded font-mono shrink-0 border border-red-400/40">
                     {localizedDistrict} • {item.sourceShort || item.source}
                   </span>
 
@@ -109,15 +110,15 @@ export const BreakingNewsTicker: React.FC = () => {
                   </span>
 
                   {/* Headline */}
-                  <span className="text-white text-xs font-semibold group-hover:underline underline-offset-2 tracking-tight line-clamp-1 max-w-[340px] md:max-w-[460px]">
+                  <span className="text-white text-xs font-semibold group-hover:underline underline-offset-2 tracking-tight line-clamp-1 max-w-[340px] md:max-w-[480px]">
                     {headline}
                   </span>
 
                   {/* Arrow Icon */}
-                  <ArrowTopRightOnSquareIcon className="w-3 h-3 text-white/80 group-hover:text-white shrink-0 opacity-90 group-hover:opacity-100" />
+                  <ArrowTopRightOnSquareIcon className="w-3 h-3 text-white/80 group-hover:text-white shrink-0 transition-colors" />
 
                   {/* Separator Bullet */}
-                  <span className="text-red-300/80 font-black ml-3 text-sm">◆</span>
+                  <span className="text-red-200 font-bold ml-2 text-xs select-none">◆</span>
                 </div>
               );
             })}

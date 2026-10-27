@@ -7,6 +7,8 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 
 interface ItineraryItem {
   id: number;
+  timeEn: string;
+  timeMr: string;
   titleEn: string;
   titleMr: string;
   locationEn: string;
@@ -20,6 +22,8 @@ interface ItineraryItem {
 const BASE_ITINERARY_EVENTS: ItineraryItem[] = [
   {
     id: 1,
+    timeEn: '09:30 AM IST',
+    timeMr: 'सकाळी ०९:३०',
     titleEn: 'State Seed & Fertilizer Distribution Review',
     titleMr: 'राज्य बियाणे व खते वितरण आढावा बैठक',
     locationEn: 'Pune District Collectorate',
@@ -31,6 +35,8 @@ const BASE_ITINERARY_EVENTS: ItineraryItem[] = [
   },
   {
     id: 2,
+    timeEn: '11:45 AM IST',
+    timeMr: 'सकाळी ११:४५',
     titleEn: 'Review Meeting: Monsoon Disaster Readiness & Dam Levels',
     titleMr: 'आढावा बैठक: मान्सून आपत्ती सज्जता व धरण पाणी पातळी',
     locationEn: 'Mantralaya Conference Hall, Mumbai',
@@ -42,6 +48,8 @@ const BASE_ITINERARY_EVENTS: ItineraryItem[] = [
   },
   {
     id: 3,
+    timeEn: '02:30 PM IST',
+    timeMr: 'दुपारी ०२:३०',
     titleEn: 'Press Briefing: State Cabinet Decisions',
     titleMr: 'वार्ताहर परिषद: राज्य मंत्रिमंडळ महत्त्वपूर्ण निर्णय',
     locationEn: 'Sahyadri Guest House, Mumbai',
@@ -53,6 +61,8 @@ const BASE_ITINERARY_EVENTS: ItineraryItem[] = [
   },
   {
     id: 4,
+    timeEn: '04:15 PM IST',
+    timeMr: 'दुपारी ०४:१५',
     titleEn: 'District Information Officers Performance Review',
     titleMr: 'जिल्हा माहिती अधिकारी कामकाज कामगिरी आढावा',
     locationEn: 'Virtual Command Link (All 36 Districts)',
@@ -137,14 +147,14 @@ export const ActivitiesScreen: React.FC = () => {
                 : "Today's High-Level Public Schedules & VIP Itinerary"}
             </h3>
             <span className="text-slate-600 text-xs font-mono border-l-2 border-slate-300 pl-2 whitespace-nowrap">
-              {language === 'mr' ? '६-तास चक्र आवर्तन' : '6h Cycle Rotation'}
+              {language === 'mr' ? 'दैनिक वेळापत्रक' : 'Daily Schedule'}
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-[11px] font-mono text-content-muted flex-wrap">
-            <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-amber-700 whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
-              <span>{language === 'mr' ? '५०% टप्प्यावर स्वयंचलित बदल' : 'Midpoint Trigger @ 50%'}</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-700 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+              <span>{language === 'mr' ? 'थेट समन्वय सुरू' : 'Live Coordination'}</span>
             </span>
             <span>
               {language === 'mr' ? `${itineraryEvents.length} उपक्रम नोंदवले` : `${itineraryEvents.length} Events Tracked`}
@@ -159,8 +169,8 @@ export const ActivitiesScreen: React.FC = () => {
               className="p-3 bg-surface-secondary/40 border border-borderLine-subtle rounded space-y-2 text-xs"
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-content-primary text-xs whitespace-nowrap">
-                  {language === 'mr' ? `क्रमवारी #${String(ev.id).padStart(2, '0')}` : `Sequence #${String(ev.id).padStart(2, '0')}`}
+                <span className="font-mono font-bold text-slate-800 text-xs whitespace-nowrap">
+                  {language === 'mr' ? ev.timeMr : ev.timeEn}
                 </span>
                 <span className="flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap">
                   <span

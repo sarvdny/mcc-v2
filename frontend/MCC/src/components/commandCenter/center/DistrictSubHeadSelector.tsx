@@ -28,8 +28,8 @@ export const DistrictSubHeadSelector: React.FC = () => {
 
   return (
     <div className="bg-surface rounded-lg border border-slate-200 p-3 space-y-2.5 shadow-2xs">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+      {/* Row 1: Header Title & Count */}
+      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
         <div className="flex items-center gap-1.5">
           <MaterialIcon name="location_on" size="xs" className="text-gov-primary" />
           <span className="text-xs font-bold text-gov-primary">
@@ -41,53 +41,56 @@ export const DistrictSubHeadSelector: React.FC = () => {
             • {filteredDistricts.length} {language === 'mr' ? 'जिल्हे' : 'Districts'}
           </span>
         </div>
+      </div>
 
+      {/* Row 2: Search + Division Filter Tabs */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
         {/* Quick District Search Input */}
-        <div className="relative w-full sm:w-44">
+        <div className="relative w-full sm:w-44 shrink-0">
           <MaterialIcon name="search" size="xs" className="absolute left-2 top-2 text-slate-400" />
           <input
             type="text"
             placeholder={language === 'mr' ? 'जिल्हा शोधा...' : 'Search district...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-6 pr-2 py-1 text-xs border border-slate-200 rounded bg-slate-50 focus:bg-white focus:outline-none focus:border-gov-blue text-slate-800"
+            className="w-full pl-6 pr-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:border-gov-blue text-slate-800"
           />
+        </div>
+
+        {/* Division Tabs */}
+        <div className="flex flex-wrap items-center gap-1 text-[10px]">
+          {divisions.map((div) => {
+            const tabLabel =
+              div === 'All'
+                ? language === 'mr'
+                  ? 'सर्व'
+                  : 'All'
+                : div === 'Aurangabad'
+                ? language === 'mr'
+                  ? 'छ. संभाजीनगर'
+                  : 'Chh. Sambhajinagar'
+                : getDistrictName(div, language);
+
+            return (
+              <button
+                type="button"
+                key={div}
+                onClick={() => setSelectedDivisionTab(div)}
+                className={`px-2 py-1 rounded-lg transition-colors whitespace-nowrap font-medium cursor-pointer ${
+                  selectedDivisionTab === div
+                    ? 'bg-gov-primary text-white font-bold shadow-2xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {tabLabel}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Division Tabs */}
-      <div className="flex items-center gap-1 overflow-x-auto text-[10px] no-scrollbar">
-        {divisions.map((div) => {
-          const tabLabel =
-            div === 'All'
-              ? language === 'mr'
-                ? 'सर्व'
-                : 'All'
-              : div === 'Aurangabad'
-              ? language === 'mr'
-                ? 'छ. संभाजीनगर'
-                : 'Chh. Sambhajinagar'
-              : getDistrictName(div, language);
-
-          return (
-            <button
-              type="button"
-              key={div}
-              onClick={() => setSelectedDivisionTab(div)}
-              className={`px-2 py-1 rounded transition-colors whitespace-nowrap font-medium cursor-pointer ${
-                selectedDivisionTab === div
-                  ? 'bg-gov-primary text-white font-bold shadow-2xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {tabLabel}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Compact Grid with max height */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 max-h-48 overflow-y-auto pr-0.5">
+      {/* Compact Grid with min column width to prevent duplicate truncation */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-1.5 max-h-48 overflow-y-auto pr-0.5">
         {filteredDistricts.map((d) => {
           const isSelected =
             d.id === selectedDistrictId ||
@@ -102,7 +105,8 @@ export const DistrictSubHeadSelector: React.FC = () => {
               type="button"
               key={d.id}
               onClick={() => setSelectedDistrictId(d.id)}
-              className={`p-2 rounded text-left border transition-colors text-xs flex flex-col justify-between cursor-pointer ${
+              title={districtDisplay}
+              className={`p-2 rounded-lg text-left border transition-colors text-xs flex flex-col justify-between cursor-pointer min-w-0 ${
                 isSelected
                   ? 'bg-gov-primary text-white border-gov-primary shadow-xs'
                   : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-800'

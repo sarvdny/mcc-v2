@@ -55,7 +55,6 @@ export const MetricTip: React.FC<MetricTipProps> = ({
             className={`inline-flex items-center cursor-help group transition-all rounded focus:outline-none focus:ring-2 focus:ring-gov-accent focus:ring-offset-1 ${className}`}
           >
             {children}
-            <span className="sr-only">({name} - {shortDesc})</span>
           </span>
         </Tooltip.Trigger>
         <Tooltip.Portal>

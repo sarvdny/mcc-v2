@@ -31,7 +31,7 @@ export const CoreOperationalSwitchDeck: React.FC<CoreOperationalSwitchDeckProps>
       id: 'command-center',
       href: '/command-center',
       labelEn: 'Command Center',
-      labelMr: '१. कमांड सेंटर',
+      labelMr: 'कमांड सेंटर',
       subEn: 'All 36 DIOs & Media Desk',
       subMr: 'सर्व ३६ जिल्हे व माध्यम कक्ष',
       icon: CpuChipIcon,
@@ -40,7 +40,7 @@ export const CoreOperationalSwitchDeck: React.FC<CoreOperationalSwitchDeckProps>
       id: 'konkan-index',
       href: '/konkan-index',
       labelEn: 'Konkan Index',
-      labelMr: '२. कोकण १००-गुणांक निर्देशांक',
+      labelMr: 'कोकण निर्देशांक',
       subEn: 'Pilot 100-Point Index',
       subMr: '५ पायलट जिल्हे विश्लेषण',
       icon: ChartBarIcon,
@@ -49,7 +49,7 @@ export const CoreOperationalSwitchDeck: React.FC<CoreOperationalSwitchDeckProps>
       id: 'crisis',
       href: '/crisis',
       labelEn: 'Crisis Desk',
-      labelMr: '३. आपत्कालीन कक्ष',
+      labelMr: 'आपत्कालीन कक्ष',
       subEn: '90-min SLA & Action Console',
       subMr: '९०-मि. एसएलए व कृती मंच',
       icon: ShieldExclamationIcon,
@@ -91,47 +91,32 @@ export const CoreOperationalSwitchDeck: React.FC<CoreOperationalSwitchDeckProps>
         </div>
       </div>
 
-      {/* 3 Core Switcher Tabs */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3">
-        {tabs.map((tab) => {
-          const isActive = currentActive === tab.id;
-          const Icon = tab.icon;
+      {/* 3 Core Switcher Tabs compressed into 40px segmented bar */}
+      <div className="pt-3">
+        <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl w-full sm:w-auto overflow-x-auto shadow-2xs">
+          {tabs.map((tab) => {
+            const isActive = currentActive === tab.id;
+            const Icon = tab.icon;
 
-          return (
-            <Link
-              key={tab.id}
-              href={tab.href}
-              className={`p-3 rounded-xl border text-left transition-all flex items-center gap-3 cursor-pointer ${
-                isActive
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                  : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
-              }`}
-            >
-              <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                  isActive ? 'bg-amber-400/20 text-amber-400' : 'bg-slate-200 text-slate-700'
+            return (
+              <Link
+                key={tab.id}
+                href={tab.href}
+                className={`h-8 px-3.5 rounded-lg text-xs transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+                    : 'text-slate-600 hover:text-slate-900 font-medium'
                 }`}
               >
-                <Icon className="w-4 h-4 shrink-0" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-1">
-                  <h3 className={`text-xs font-bold truncate ${isActive ? 'text-white' : 'text-slate-900'}`}>
-                    {language === 'mr' ? tab.labelMr : tab.labelEn}
-                  </h3>
-                  {isActive && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                      Active
-                    </span>
-                  )}
-                </div>
-                <p className={`text-[11px] truncate mt-0.5 ${isActive ? 'text-slate-300' : 'text-slate-500'}`}>
-                  {language === 'mr' ? tab.subMr : tab.subEn}
-                </p>
-              </div>
-            </Link>
-          );
-        })}
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-slate-900' : 'text-slate-500'}`} />
+                <span>{language === 'mr' ? tab.labelMr : tab.labelEn}</span>
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

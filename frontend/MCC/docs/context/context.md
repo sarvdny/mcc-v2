@@ -64,14 +64,17 @@ The project uses **461 installed npm packages** managed via `package-lock.json`.
 [ Next.js 16 Application Shell (DashboardLayout) ]
      │
      ├── [ Header ] (Gov Emblem, Persona Switcher, Bilingual Toggle, Biometrics, Glossary Quick Access)
-     ├── [ DashboardToolbar ] (Time Range 24h/7d/30d, Division Filter, PDF Export)
-     ├── [ Sidebar ] (20 Screen Links, Command Center Accordion, Incident Badges)
+     ├── [ Sidebar ] (20 Screen Links, Command Center Accordion, Incident Badges, Docked Collapse Toggle)
+     ├── [ DashboardToolbar ] (Mounted on secondary routes; hidden on main dashboard to eliminate 4-bar clutter)
      │
      ├──► [ ThreeColumnDashboard (Main Dashboard View) ]
-     │     ├── Top: BreakingNewsTicker + KPIRibbon (with MetricTip & TermInfo)
-     │     ├── Left: ScoreDecomposition + KeyMetricsTrends + TopLowerMatrix
-     │     ├── Center: GISMap + DIPRDivisionsPanel + CitizenServicesCard + HoardingsPanel + DistrictLeaderboard
-     │     └── Right: EmergencyAlert (90m SLA) + LiveStreaming + SocialMediaAnalysis + LiveNewsQueue
+     │     ├── Tier 1: Unified Context & Navigation Bar (Identity, View Switcher Segmented Control, Scope Filters: Division, District, Timeframe, Export)
+     │     ├── Tier 2: Unified Dual-Mode Live Wire Ticker (40px, pause-on-hover, semantic pills: [BREAKING], [ALERT], [NOTICE])
+     │     ├── KPI Ribbon: 5 Core Metrics with unified Last Synced badge and GIGW tooltips
+     │     └── 3-Column Bento Operational Workspace (640px height budget with scroll isolation):
+     │           ├── Column 1 (Left 3/12): Incident Response Rail — Crisis Monitor docked above Grievances & SLA
+     │           ├── Column 2 (Center 6/12): Maharashtra State GIS with grid-cols-12 filter bar, single SVG text, and 2x2 Bento Scorecard Drawer
+     │           └── Column 3 (Right 3/12): Full-height Social Pulse & Multi-Platform Listening Stream (X Feed, Meta/DD News)
      │
      └──► [ Global Floating AI Assistant FAB & Copilot Drawer ]
 ```
@@ -959,6 +962,150 @@ The citizen services & grievance resolution card (`src/components/dashboard/Citi
 5. **Interactive Accountability Dimensions:**
    - Hover and keyboard focus reveal all 7 accountability dimensions in an Apple dark glass tooltip.
    - Clicking opens `<CitizenServiceDetailDrawer>` for full chronological timeline and remediation actions.
+
+---
+
+## 16. Minimalist Full-Screen Auth Loading Screen & Zero-Flash Auth Gating
+
+### 16.1 Architecture Overview
+To eliminate unauthenticated layout flashing and protected data leakage during initial application boot or page reload, a zero-flash client-side authentication boundary was deployed.
+- **Root-Level Interception (`src/components/auth/AuthGate.tsx`):**
+  - Wraps `{children}` at the root level inside `src/app/layout.tsx`.
+  - While authentication state is resolving (`!authInitialized || isAuthLoading`), mounts `<FullScreenAuthLoader message="Verifying session..." />`.
+  - Strictly prevents mounting of `Header`, `Sidebar`, `DashboardToolbar`, telemetry charts, or login forms until JWT session status is completely resolved.
+  - Automatically triggers `router.replace('/login')` for unauthenticated requests attempting to access protected command routes, and `router.replace('/')` for authenticated users attempting to access `/login`.
+
+### 16.2 Minimalist Full-Screen Auth Loader (`src/components/auth/FullScreenAuthLoader.tsx`)
+Conforms to Apple Human Interface Guidelines and state government visual design:
+- **Canvas:** Fullscreen fixed overlay (`fixed inset-0 z-[9999] flex flex-col justify-between items-center bg-white select-none text-slate-900`).
+- **Accessibility:** `role="status"`, `aria-live="polite"`, `aria-busy="true"`, plus a screen-reader announcement (`sr-only`).
+- **Optical Centering:** Top and bottom spacers (`<div className="flex-1 w-full" />`) achieve balanced vertical composition across all desktop and mobile viewports.
+- **Center Institutional Block:**
+  - Scaled Government of Maharashtra emblem using `<GovEmblem size="xl" showText={false} className="scale-125 sm:scale-150 transform-gpu" />` in a `w-24 h-24 sm:w-28 sm:h-28` container.
+  - Bilingual typography: English `h1` "Maha-Command Center" (`text-2xl sm:text-3xl font-extrabold text-slate-900`), Marathi Devanagari "महा-कमांड सेंटर" (`text-base sm:text-lg text-amber-600 font-marathi font-semibold`), and DGIPR subtitle (`text-xs sm:text-sm text-slate-500 font-medium`).
+  - Rotating spinner: `w-16 h-16 rounded-full border-8 border-slate-200 border-t-amber-600 animate-spin` with status text (`{message}`) and optional subtext (`{subMessage}`).
+- **Attribution Footer:**
+  - Attribution strip: `w-full max-w-xl mx-auto pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400 font-mono`.
+  - Left: `महाराष्ट्र शासन • Government of Maharashtra`.
+  - Right: `NIC • DGIPR Secure Gateway`.
+
+### 16.3 Defense-in-Depth Layout Gating
+- **`DashboardLayout.tsx`:** Adds a top fail-safe guard returning `<FullScreenAuthLoader message="Verifying credentials..." />` if `!authInitialized || !isAuthenticated`, guaranteeing that navigation chrome and child views never mount until authenticated.
+- **`LoginScreen.tsx`:** Adds reverse-gating returning `<FullScreenAuthLoader message="Redirecting to command center..." subMessage="Active Government Officer Session Detected..." />` if `!authInitialized || isAuthenticated`, eliminating form flicker while preserving session-detection feedback.
+
+### 16.4 Zustand Store Deduplication (`src/stores/dashboardStore.ts`)
+- Added `isAuthLoading: boolean` (initial: `true`) and `authInitialized: boolean` (initial: `false`).
+- Implemented module-level cached promise `checkAuthPromise` to deduplicate concurrent `checkAuth()` invocations from multiple components.
+- On network error, gracefully validates cached tokens in `localStorage` using cryptographic verification via `verifyAuthToken` from `src/lib/jwt.ts`.
+
+### 16.5 Automated Test Verification (`tests/auth-initialization.test.mjs`)
+- 6 automated tests verify:
+  1. `FullScreenAuthLoader.tsx` accessibility semantics, white background, emblem, and spinner.
+  2. `AuthGate.tsx` client-side route boundary and redirect enforcement.
+  3. `RootLayout` integration wrapping children in `AuthGate`.
+  4. `DashboardLayout` fail-safe guard preventing unauthenticated canvas mounting.
+  5. `LoginScreen` reverse-gating and session-detected messaging.
+  6. `dashboardStore.ts` `isAuthLoading` declaration, deduplicated `checkAuthPromise`, and `verifyAuthToken` fallback.
+- **Test Integrity:** 143/143 tests passing across 44 test suites (`npm test`).
+
+---
+
+## 17. 3-Column Operational Workspace Refactoring & Responsive Architecture (v5.5)
+
+### 17.1 Responsive Grid Architecture (`ThreeColumnDashboard.tsx`)
+- **Responsive CSS Grid Container:** `grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full`
+- **Mobile / Tablet Stacking (`< 1024px`):** Single column with mobile-first CSS Grid ordering:
+  - GIS Map first (`order-1 lg:order-2`)
+  - Grievances second (`order-2 lg:order-1`)
+  - Crisis + Social third (`order-3 lg:order-3`)
+- **Standard Desktop (`1024px - 1439px` / `lg:`):**
+  - Column 1 (Grievances & SLA): `lg:col-span-4`
+  - Column 2 (Maharashtra GIS): `lg:col-span-5`
+  - Column 3 (Crisis Monitor & Social Pulse): `lg:col-span-3`
+- **Wide Command Center (`>= 1440px` / `xl:`):**
+  - Column 1 (Grievances & SLA): `xl:col-span-3 xl:min-w-[310px]`
+  - Column 2 (Maharashtra GIS): `xl:col-span-6`
+  - Column 3 (Crisis Monitor & Social Pulse): `xl:col-span-3 xl:min-w-[310px]`
+- **Synchronized Viewport Budget:** All 3 columns share an identical `lg:h-[640px] flex flex-col` budget with internal scrolling (`overflow-y-auto`) to ensure bottom baselines align cleanly without vertical drift.
+
+### 17.2 Above-Grid KPI Empty State Alert Bar (`KPIRibbon.tsx`)
+- Collapsed 160px placeholder into a slim, single-line alert bar (`h-11 px-4 py-2 flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600 w-full`) when a selected district has no ingested telemetry.
+- Bilingual messaging:
+  - English: "No telemetry ingested for this district yet." / "Select an active reporting district above to inspect KPIs."
+  - Marathi: "या जिल्ह्यासाठी टेलीमेट्री उपलब्ध नाही." / "केपीआय तपासण्यासाठी वरील सक्रिय जिल्हा निवडा."
+
+### 17.3 Grievances & SLA Redesign (`CitizenServicesCard.tsx`)
+- **Header:** Retitled to "Grievances & SLA" (Marathi: "तक्रारी व हमी कायदा (SLA)") with `94.2% SLA` emerald pill.
+- **4-Cell Summary Strip:** `grid grid-cols-4 gap-1.5 p-2 bg-slate-50 rounded-lg border-b border-slate-100 text-center`:
+  - `TOTAL`: 5
+  - `ACTIVE`: 3 (amber)
+  - `AFFECTED`: 13.4K (formatted with 'K' to eliminate text wrapping)
+  - `RESOLVED`: 2/5 (emerald)
+  - Removed wrapping sub-words ("Cases", "Active", "(On-Time)").
+- **Category Filter Pills:** Smooth scrollable strip (`px-2.5 py-1 text-xs font-medium rounded-full shrink-0`) with zero clipping.
+- **Card Collision Bugfix:**
+  - Row 1: Status dot + District name (`truncate`) + Shortened ID (`#PAL-4412`, full in `title` tooltip) + compact status badge.
+  - Row 2: Clamped to 2 lines (`line-clamp-2 leading-relaxed`).
+  - Row 3: Category badge + Users icon + numeric count ONLY (`1,450`, dropped "affected") on left; right-aligned action link (`ml-auto font-medium hover:underline`).
+
+### 17.4 Maharashtra GIS Optimization (`GISMap.tsx`)
+- **Header:** Retitled to "Maharashtra GIS" (Marathi: "महाराष्ट्र जीआयएस (GIS)"). Removed redundant `36 Districts (#1 to #36)` status pill.
+- **Compact 2-Select Filter Bar:** Replaced two multi-row pill strips ("Division:" and "Districts (#1-36):") with a compact 2-select filter bar:
+  - Division dropdown (`<select className="h-8 px-2.5 ...">`)
+  - District select with `#1 - #36` indices (`<select className="h-8 px-2.5 ...">`)
+  - Reset / Zoom 100% button
+- **Floating Layers Popover:** Replaced 7 floating black/white buttons that occluded the Konkan coastline with a top-right `[ Layers (activeCount) ▾ ]` popover button and dropdown menu.
+- **SVG Halo Accessibility:** Added `aria-hidden="true"` and `pointerEvents="none"` to SVG halo/outline `<text>` elements.
+
+### 17.5 Crisis Monitor & Social Pulse Optimization
+- **`EmergencyAlert.tsx`:** Retitled to "Crisis Monitor" (Marathi: "संकट संनियंत्रण कक्ष"). Dynamic 44px status bar when 0 active incidents (`scopeIncidents.length === 0 && !isCrisisRoute`), displaying shield icon, "Crisis Monitor", and pulsing green dot with "0 Active (Konkan)".
+- **`SocialMediaAnalysis.tsx`:** Retitled to "Social Pulse" (Marathi: "समाज माध्यम नाडी (Social Pulse)"). Compact segmented tabs (`All` | `X` | `Meta`), pulsing green dot with "Live", sticky minimalist channel divider (`X Feed` / `Meta / DD News` + `API Active`), and formatted metrics (`↻ 1.4K • ♥ 6.2K`, `👁 12K • 💬 1.1K`).
+
+### 17.6 Test Suite Verification
+- Added `tests/three_column_operational_workspace.test.mjs` verifying all architectural and UI specifications across 5 suites.
+- **Overall Test Pass Rate:** 157/157 tests passing across all 50 test suites (`npm test`).
+
+---
+
+## 18. Complete Dashboard UI/UX Overhaul & Spatial Optimization (Apple HIG + Tailwind)
+
+### 18.1 Executive Scope & Objectives
+A total zero-defect overhaul eliminating all text truncation, badge overlapping, scroll collision, map occlusion, and spatial mispositioning across the executive dashboard cockpit:
+1. **Top Command Header & Navigation (`Header.tsx`, `GlobalSearchBar.tsx`, `Sidebar.tsx`)**:
+   - Expanded search footprint to `min-w-[260px] lg:min-w-[340px] max-w-md flex-1` with dedicated desktop keyboard shortcut badge (`⌘K`).
+   - Removed `max-w-[140px]` string truncation on user profile pill using `shrink-0 min-w-fit pr-2` with `tabular-nums whitespace-nowrap`, rendering `"Divisional Director • Tier 2"` in full.
+   - Relocated sidebar collapse toggle into a docked bottom rail footer (`border-t border-slate-800/80 shrink-0 bg-slate-900/60`).
+2. **State Operations Bar & Ticker (`DashboardToolbar.tsx`, `BreakingNewsTicker.tsx`)**:
+   - Centralized global scope selection with segmented Apple-style select pills: `[Division: Konkan ▾] [District: #4 Mumbai Suburban ▾] [Timeframe: Last 7 Days ▾]` with deterministic district numbering.
+   - Applied smooth CSS gradient fade mask (`[mask-image:linear-gradient(to_right,transparent_0%,black_3%,black_92%,transparent_100%)]`) to `#continuous-news-ticker-container`.
+3. **Key Performance Indicators (`KPIRibbon.tsx`, `KPICard.tsx`)**:
+   - Relocated computed timestamp to a single unified sync badge in the ribbon section header (`Last synced • {lastSentimentComputedAt || '18:25 IST'}`).
+   - Removed card footer truncation: passed clean `targetText` without appending `· Computed: ...`, and removed `max-w-[180px]` with `min-w-0 flex-1 mr-2` so `Above Target (>65%)` and `0 Active in SLA` display with zero truncation.
+4. **Grievances & SLA (`CitizenServicesCard.tsx`)**:
+   - Implemented 3-zone architecture: `shrink-0` header/metrics/pills, `flex-1 min-h-0 overflow-y-auto` grievance feed, `shrink-0` footer.
+   - Compacted category filter pills with `flex-wrap gap-1.5` so all 5 pills (`All 5`, `Health 1`, `Water 1`, `Infra 2`, `Agri 1`) are 100% visible.
+   - Provided `p-2.5 pt-3 space-y-2.5` list padding preventing the first grievance card from underlapping the filter bar.
+   - Enforced `whitespace-nowrap shrink-0` on timeline CTA so `"Click row for timeline →"` never wraps the `→` arrow.
+5. **Maharashtra State GIS & Bento Scorecard (`GISMap.tsx`)**:
+   - Guaranteed dedicated `min-h-[300px] sm:min-h-[360px] shrink-0` map footprint so map canvas and district pins remain interactive.
+   - Refactored District Scorecard into an Apple Bento 2×2 Grid (`grid grid-cols-1 sm:grid-cols-2 gap-3`):
+     - Relocated `HQ: Bandra (East) • Literacy: 89.91%` to District Header subtitle.
+     - Cell 1 (Leadership): Full collector name on line 1, DIO + on duty badge cleanly aligned.
+     - Cell 2 (Composite Index): `94.2 / 100` alongside `Rank #4` pill on top; `Grade: A+ (High Compliance) • Top Quintile` cleanly stacked below.
+     - Cell 3 (Citizen Services): Sub-grid (`grid grid-cols-2 gap-2 mt-1`) eliminating the horizontal collision between `385 Notices` and `98.6% Resolved`.
+     - Cell 4 (Demographics & Assets): Grammatically correct pluralization (`1 Hoarding` vs `N Hoardings`) paired with `3 Talukas` pill and area/population stats.
+     - 4-Pillar Quality Scorecard: Vertically stacked labels (`text-[10px] font-medium truncate`) and scores (`font-bold font-mono text-xs tabular-nums`) preventing multi-line text crushing.
+6. **Crisis Monitor & Social Pulse (`SocialMediaAnalysis.tsx`, `EmergencyAlert.tsx`)**:
+   - Stream channel headers (`X Feed`, `Meta / DD News`) structured as `shrink-0` siblings with `space-y-2.5 overflow-y-auto max-h-[240px] pr-1 pt-0.5 scroll-pt-1` ensuring Post 1 (`@MahaDGIPR 12m ago`) is 100% visible at scroll position 0.
+
+### 18.2 Verification & Build Status
+- **Automated Test Suite:** `tests/dashboard_ui_ux_overhaul.test.mjs` (19/19 tests passing).
+- **Full Test Suite:** 176/176 tests passing across all 57 test suites (`npm test`).
+- **Static Typing:** `npx tsc --noEmit` passed with 0 errors.
+- **Production Build:** `npm run build` passed with 43/43 static pages prerendered.
+
+
+
 
 
 

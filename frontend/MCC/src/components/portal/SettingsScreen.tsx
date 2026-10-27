@@ -71,16 +71,16 @@ export const SettingsScreen: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={handleResetDefaults}
-            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 ring-1 ring-slate-200/90 rounded-xl text-xs font-medium transition-all shadow-2xs cursor-pointer"
           >
             {language === 'mr' ? 'डीफॉल्ट पुनर्संचयित करा' : 'Reset Defaults'}
           </button>
           <button
             onClick={handleSaveSettings}
-            className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-medium transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
             <MaterialIcon name="check" size="xs" />
             <span>{language === 'mr' ? 'सेटिंग्ज जतन करा' : 'Save Changes'}</span>
@@ -88,54 +88,54 @@ export const SettingsScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Horizontal Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      {/* 2. Horizontal Navigation Tabs (Segmented Control without number prefixes) */}
+      <div className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl overflow-x-auto max-w-full shadow-2xs">
         <button
           onClick={() => setActiveTab('general')}
-          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeTab === 'general'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <MaterialIcon name="language" size="xs" />
-          <span>{language === 'mr' ? '१. सामान्य व भाषा' : '1. General & Language'}</span>
+          <span>{language === 'mr' ? 'सामान्य व भाषा' : 'General & Language'}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('alerts')}
-          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeTab === 'alerts'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <MaterialIcon name="notifications" size="xs" />
-          <span>{language === 'mr' ? '२. क्रायसिस एसएलए सूचना' : '2. Crisis SLA Alerts'}</span>
+          <span>{language === 'mr' ? 'क्रायसिस एसएलए सूचना' : 'Crisis SLA Alerts'}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('map')}
-          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeTab === 'map'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <MaterialIcon name="map" size="xs" />
-          <span>{language === 'mr' ? '३. जीआयएस नकाशा सेटिंग्ज' : '3. GIS Map Settings'}</span>
+          <span>{language === 'mr' ? 'जीआयएस नकाशा सेटिंग्ज' : 'GIS Map Settings'}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('security')}
-          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeTab === 'security'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-white text-slate-900 shadow-xs ring-1 ring-slate-950/5 font-semibold'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <MaterialIcon name="shield" size="xs" />
-          <span>{language === 'mr' ? '४. अधिकारी सुरक्षा व टोकन' : '4. Security & Officer Profile'}</span>
+          <span>{language === 'mr' ? 'सुरक्षा व अधिकारी प्रोफाइल' : 'Security & Officer Profile'}</span>
         </button>
       </div>
 
