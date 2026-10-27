@@ -14,8 +14,8 @@ export const SampleDataBadge: React.FC<SampleDataBadgeProps> = ({ className = ''
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-mono font-medium tracking-wide bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase select-none ${
-        isSm ? 'text-[11px]' : 'text-[10px]'
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md font-medium bg-amber-100/90 text-amber-950 border border-amber-300/80 select-none ${
+        isSm ? 'text-xs' : 'text-[11px]'
       } ${className}`}
       title={
         language === 'mr'
@@ -23,8 +23,8 @@ export const SampleDataBadge: React.FC<SampleDataBadgeProps> = ({ className = ''
           : 'Synthetic Demonstration Data (Fictional)'
       }
     >
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-      <span>{language === 'mr' ? 'नमुना माहिती' : 'Sample Data'}</span>
+      <span className="w-1.5 h-1.5 rounded-full bg-amber-700 shrink-0" aria-hidden="true" />
+      <span>{language === 'mr' ? 'नमुना माहिती' : 'Sample data'}</span>
     </span>
   );
 };

@@ -1,6 +1,9 @@
 import { create } from 'zustand';
-import { UserRole, Language, DistrictData, IncidentData, OCRRecord, AuthUser } from '@/types/dashboard';
+import { UserRole, Language, DistrictData, IncidentData, OCRRecord, AuthUser, NewsQueueItem } from '@/types/dashboard';
 import { INITIAL_DISTRICTS, INITIAL_INCIDENTS, INITIAL_OCR_FEED } from '@/data/dashboardData';
+import { INITIAL_QUEUE_ITEMS } from '@/data/newsQueueData';
+import { computeSentimentFromNewsQueue, LiveSentimentResult } from '@/lib/sentimentEngine';
+import { detectMisinformationFromNews } from '@/lib/misinformationDetector';
 
 export interface OverviewMetricsData {
   scopeName: string;
@@ -18,6 +21,7 @@ export interface OverviewMetricsData {
     trendDirection: 'up' | 'down';
     trendValue: string;
     positiveTrend: boolean;
+    lastComputedAt?: string;
   };
   misinformationTickets: {
     value: number;
@@ -26,6 +30,7 @@ export interface OverviewMetricsData {
     trendDirection: 'up' | 'down';
     trendValue: string;
     positiveTrend: boolean;
+    lastComputedAt?: string;
   };
 }
 
@@ -81,6 +86,13 @@ interface DashboardStore {
   setSentimentFilter: (sentiment: string) => void;
   isLoadingData: boolean;
 
+  // Live Intelligence & Queue Tracking
+  newsQueue: NewsQueueItem[];
+  addNewsQueueItem: (item: NewsQueueItem) => void;
+  lastSentimentComputedAt: string;
+  lastTicketsComputedAt: string;
+  recomputeLiveIntelligence: () => void;
+
   // Toast Notification
   toast: ToastNotification | null;
   setToast: (toast: ToastNotification | null) => void;
@@ -111,6 +123,11 @@ interface DashboardStore {
   // OpenUI Copilot Drawer state
   copilotOpen: boolean;
   setCopilotOpen: (open: boolean) => void;
+
+  // Glossary Drawer state
+  glossaryDrawerOpen: boolean;
+  glossaryTermKey?: string;
+  setGlossaryDrawerOpen: (open: boolean, termKey?: string) => void;
 }
 
 // Internal sequence and timer tracking to debounce and prevent overlapping filter transitions
@@ -126,6 +143,10 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   userRole: 'dg_admin',
   copilotOpen: false,
   setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
+  glossaryDrawerOpen: false,
+  glossaryTermKey: undefined,
+  setGlossaryDrawerOpen: (open: boolean, termKey?: string) =>
+    set({ glossaryDrawerOpen: open, glossaryTermKey: termKey }),
 
   login: (user: AuthUser, token?: string) => {
     try {
@@ -171,6 +192,10 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
       userRole: 'dg_admin',
   copilotOpen: false,
   setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
+  glossaryDrawerOpen: false,
+  glossaryTermKey: undefined,
+  setGlossaryDrawerOpen: (open: boolean, termKey?: string) =>
+    set({ glossaryDrawerOpen: open, glossaryTermKey: termKey }),
       selectedDivision: 'All Maharashtra',
     });
   },
@@ -288,10 +313,81 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   districts: INITIAL_DISTRICTS,
   incidents: INITIAL_INCIDENTS,
   ocrFeed: INITIAL_OCR_FEED,
+  newsQueue: INITIAL_QUEUE_ITEMS,
+  lastSentimentComputedAt: '12:00:00 IST',
+  lastTicketsComputedAt: '12:00:00 IST',
   sentimentFilter: 'All',
   isLoadingData: false,
   toast: null,
   setToast: (toast) => set({ toast }),
+
+  recomputeLiveIntelligence: () => {
+    const { newsQueue, incidents, selectedPeriod, selectedDistrictId, overviewMetrics } = get();
+    const sentimentRes = computeSentimentFromNewsQueue(newsQueue, selectedPeriod, selectedDistrictId);
+    const misinfoRes = detectMisinformationFromNews(newsQueue, incidents);
+
+    // Merge new tickets if found
+    const updatedIncidents = misinfoRes.newTickets.length > 0
+      ? [...misinfoRes.newTickets, ...incidents]
+      : incidents;
+
+    const baseMetrics = overviewMetrics || {
+      scopeName: 'State Operations Overview',
+      scopeType: 'division',
+      totalReleases: {
+        value: 1482,
+        targetText: 'Target: 1,200 (Met)',
+        trendDirection: 'up' as const,
+        trendValue: '+12%',
+        positiveTrend: true,
+      },
+      sentimentIndex: {
+        value: '78.5%',
+        targetText: 'Target: ≥65% (Met)',
+        trendDirection: 'up' as const,
+        trendValue: '+6%',
+        positiveTrend: true,
+        lastComputedAt: sentimentRes.lastComputedAt,
+      },
+      misinformationTickets: {
+        value: updatedIncidents.length,
+        unit: 'active',
+        targetText: `${updatedIncidents.filter(i => i.authorized).length} Resolved · ${updatedIncidents.filter(i => !i.authorized).length} In SLA`,
+        trendDirection: 'down' as const,
+        trendValue: '-33%',
+        positiveTrend: false,
+        lastComputedAt: misinfoRes.lastComputedAt,
+      },
+    };
+
+    const updatedMetrics: OverviewMetricsData = {
+      ...baseMetrics,
+      sentimentIndex: {
+        ...baseMetrics.sentimentIndex,
+        value: `${sentimentRes.composite}%`,
+        lastComputedAt: sentimentRes.lastComputedAt,
+      },
+      misinformationTickets: {
+        ...baseMetrics.misinformationTickets,
+        value: updatedIncidents.length,
+        lastComputedAt: misinfoRes.lastComputedAt,
+      },
+    };
+
+    set({
+      incidents: updatedIncidents,
+      lastSentimentComputedAt: sentimentRes.lastComputedAt,
+      lastTicketsComputedAt: misinfoRes.lastComputedAt,
+      overviewMetrics: updatedMetrics,
+    });
+  },
+
+  addNewsQueueItem: (item: NewsQueueItem) => {
+    set((state) => ({
+      newsQueue: [item, ...state.newsQueue],
+    }));
+    get().recomputeLiveIntelligence();
+  },
 
   setSentimentFilter: (sentimentFilter) => {
     set({ sentimentFilter });
@@ -313,6 +409,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
         const result = await res.json();
         if (result.success) {
           set({ overviewMetrics: result.data });
+          get().recomputeLiveIntelligence();
         }
       }
     } catch (err) {

@@ -17,6 +17,7 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon,
   CheckIcon,
+  QuestionMarkCircleIcon,
 } from '@heroicons/react/20/solid';
 
 export const Header: React.FC = () => {
@@ -34,6 +35,7 @@ export const Header: React.FC = () => {
     setSidebarCollapsed,
     copilotOpen,
     setCopilotOpen,
+    setGlossaryDrawerOpen,
   } = useDashboardStore();
   const t = useTranslation(language);
 
@@ -141,7 +143,7 @@ export const Header: React.FC = () => {
   return (
     <header
       ref={navRef}
-      className="h-16 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
+      className="h-14 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
     >
       {/* 1. Brand Cell with Smooth Sidebar Collapse Synchronization */}
       <div
@@ -179,8 +181,8 @@ export const Header: React.FC = () => {
               <span className="text-[15px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
                 {language === 'mr' ? 'महा-कमांड' : 'Maha-Command'}
               </span>
-              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-amber-500 mt-1.5 leading-none whitespace-nowrap">
-                {language === 'mr' ? 'माहिती व जनसंपर्क (DGPR) • महाराष्ट्र' : 'DGPR • MAHARASHTRA'}
+              <span className="text-xs font-medium text-amber-400 mt-1 leading-none whitespace-nowrap">
+                {language === 'mr' ? 'माहिती व जनसंपर्क, महाराष्ट्र' : 'DGIPR, Maharashtra'}
               </span>
             </div>
           )}
@@ -298,7 +300,7 @@ export const Header: React.FC = () => {
               setIsLanguageMenuOpen(!isLanguageMenuOpen);
               setIsProfileMenuOpen(false);
             }}
-            className="h-9 px-2.5 hover:bg-slate-800/60 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-9 px-2.5 hover:bg-slate-800/60 rounded-xl text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer"
             title={language === 'mr' ? 'भाषा निवडा' : 'Select Language'}
           >
             <GlobeAltIcon className="w-4 h-4 text-slate-400 shrink-0" />
@@ -355,7 +357,7 @@ export const Header: React.FC = () => {
         {/* Notification Bell Button — Clean borderless element */}
         <Link
           href="/notifications"
-          className="w-9 h-9 rounded-lg hover:bg-slate-800/60 text-slate-400 hover:text-white relative flex items-center justify-center transition-colors cursor-pointer"
+          className="w-9 h-9 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-white relative flex items-center justify-center active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer"
           title={language === 'mr' ? 'शासकीय सूचना (२ न वाचलेले इशारे)' : 'Operational Notifications (2 Unread Alerts)'}
           aria-label={language === 'mr' ? 'सूचना' : 'Notifications'}
         >
@@ -363,12 +365,23 @@ export const Header: React.FC = () => {
           <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
         </Link>
 
+        {/* Glossary & Terminology Help Button */}
+        <button
+          type="button"
+          onClick={() => setGlossaryDrawerOpen(true)}
+          className="w-9 h-9 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-amber-400 relative flex items-center justify-center active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer"
+          title={language === 'mr' ? 'प्रणाली शब्दकोश व मानके (Glossary)' : 'System Glossary & Standards'}
+          aria-label={language === 'mr' ? 'शब्दकोश' : 'Glossary'}
+        >
+          <QuestionMarkCircleIcon className="w-4 h-4" />
+        </button>
+
                 {/* DGIPR OpenUI Copilot Header Trigger */}
         {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== 'false' && (
           <button
             type="button"
             onClick={() => setCopilotOpen(!copilotOpen)}
-            className="hover:bg-amber-500/15 border border-amber-500/40 hover:border-amber-500/60 bg-amber-500/10 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-2 text-amber-300 font-semibold text-xs shadow-2xs select-none group"
+            className="hover:bg-amber-500/15 border border-amber-500/40 hover:border-amber-500/60 bg-amber-500/10 px-2.5 py-1.5 rounded-xl active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer flex items-center gap-2 text-amber-300 font-semibold text-xs shadow-xs select-none group"
             title={language === 'mr' ? 'डीजीआयपीआर निर्देशक उघडा' : 'Open DGIPR Nirdeshak'}
             aria-label="DGIPR Nirdeshak"
           >
@@ -376,8 +389,8 @@ export const Header: React.FC = () => {
               <MaterialIcon name="auto_awesome" size="xs" />
             </div>
             <span className="font-bold tracking-wide">Nirdeshak</span>
-            <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden md:inline">
-              निर्देशाक
+            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden md:inline">
+              निर्देशक
             </span>
           </button>
         )}
@@ -393,7 +406,7 @@ export const Header: React.FC = () => {
               setIsProfileMenuOpen(!isProfileMenuOpen);
               setIsLanguageMenuOpen(false);
             }}
-            className="hover:bg-slate-900/80 border border-slate-700/60 hover:border-slate-600/70 bg-slate-900/40 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-2 select-none shadow-2xs"
+            className="hover:bg-slate-900/80 border border-slate-700/60 hover:border-slate-600/70 bg-slate-900/40 px-2.5 py-1.5 rounded-xl active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer flex items-center gap-2 select-none shadow-xs"
             title={`${language === 'mr' ? 'अधिकारी प्रोफाइल:' : 'Officer Profile:'} ${displayName}`}
           >
             {!currentUser ? (

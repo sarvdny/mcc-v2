@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStatewideHoardings } from '@/lib/backendClient';
+import { getHoardingsSyncStatus } from '@/data/hoardingsSyncState';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,7 +16,15 @@ export async function GET(request: NextRequest) {
     const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : undefined;
 
     const data = await getStatewideHoardings({ district, department, scheme }, token);
-    return NextResponse.json(data);
+    const syncStatus = getHoardingsSyncStatus();
+
+    return NextResponse.json({
+      ...data,
+      schedule: syncStatus.schedule,
+      scheduleMr: syncStatus.scheduleMr,
+      lastFetchedAt: syncStatus.lastFetchedAt,
+      isStale: syncStatus.isStale,
+    });
   } catch (error: any) {
     return NextResponse.json(
       { status: 'error', message: error?.message || 'Failed to fetch hoardings' },

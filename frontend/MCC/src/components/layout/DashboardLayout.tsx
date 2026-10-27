@@ -14,6 +14,7 @@ import { DashboardToolbar } from './DashboardToolbar';
 import { LiveNewsTicker } from '@/components/dashboard/LiveNewsTicker';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { GlossaryDrawer } from '@/components/shared/GlossaryDrawer';
 
 // Precision Skeletons for Route-Aware Initial Load
 import { DashboardPageSkeleton } from '@/components/skeletons/DashboardPageSkeleton';
@@ -76,6 +77,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     isLoadingData,
     toast,
     setToast,
+    glossaryDrawerOpen,
+    setGlossaryDrawerOpen,
+    glossaryTermKey,
   } = useDashboardStore();
 
   useEffect(() => {
@@ -130,6 +134,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
         {/* Open UI Copilot Drawer */}
         {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== 'false' && <CopilotDrawer />}
+
+        {/* Universal DGIPR Standards & Glossary Help Drawer */}
+        <GlossaryDrawer
+          isOpen={glossaryDrawerOpen}
+          onClose={() => setGlossaryDrawerOpen(false)}
+          initialTermKey={glossaryTermKey}
+        />
 
         {/* Floating Operational Toast Feedback */}
         {toast && (

@@ -21,6 +21,7 @@ import {
 import { DIO_BY_DISTRICT, type DioStatus } from '@/data/dioDirectory';
 import { DISTRICT_DETAILS_BY_ID, ALL_HOARDINGS, HoardingRecord } from '@/data/maharashtraDistrictsData';
 import { INITIAL_DISTRICTS } from '@/data/dashboardData';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 import {
   HIGHWAY_CORRIDORS,
   MAJOR_RIVERS,
@@ -267,9 +268,9 @@ export const GISMap: React.FC = () => {
   const [showHighways, setShowHighways] = useState<boolean>(true);
   const [showRailways, setShowRailways] = useState<boolean>(true);
   const [showWaterAndTerrain, setShowWaterAndTerrain] = useState<boolean>(true);
-  const [showTowns, setShowTowns] = useState<boolean>(true);
+  const [showTowns, setShowTowns] = useState<boolean>(false);
   const [showHoardings, setShowHoardings] = useState<boolean>(false);
-  const [showGraticule, setShowGraticule] = useState<boolean>(true);
+  const [showGraticule, setShowGraticule] = useState<boolean>(false);
 
   const [view, setView] = useState<ViewBox>(FULL_VIEW);
   const [pxWidth, setPxWidth] = useState(700);
@@ -413,39 +414,37 @@ export const GISMap: React.FC = () => {
   }
 
   return (
-    <div className="w-full bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden flex flex-col">
+    <div className="w-full bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 overflow-hidden flex flex-col">
       {/* 1. Header Toolbar */}
       <div className="p-3 sm:p-4 border-b border-slate-200 flex flex-col gap-3 bg-white">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100" />
-              <h3 className="text-base font-bold text-slate-900 tracking-tight">
-                {language === 'mr'
-                  ? 'महाराष्ट्र राज्य जीआयएस नकाशा (प्रशासकीय व भौगोलिक माहिती)'
-                  : 'Maharashtra State Geographic Information System (GIS)'}
-              </h3>
+        <MinimalCardHeader
+          title={
+            language === 'mr'
+              ? 'महाराष्ट्र राज्य जीआयएस नकाशा (प्रशासकीय व भौगोलिक माहिती)'
+              : 'Maharashtra State Geographic Information System (GIS)'
+          }
+          subtitle={
+            language === 'mr'
+              ? '३६ जिल्हे, महामार्ग, जलसंपदा व तालुका संपर्क जाळे (थेट संनियंत्रण)'
+              : '36 Districts, Highway Network, Water Reservoirs & Sub-District Talukas'
+          }
+          badge={<span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100 inline-block shrink-0" />}
+          action={
+            <div className="flex items-center gap-2 text-xs font-medium">
+              <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-xs">
+                Zoom: {Math.round(zoomFactor * 100)}%
+              </span>
+              <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-xs">
+                36 Districts (#1 to #36)
+              </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {language === 'mr'
-                ? '३६ जिल्हे, महामार्ग, जलसंपदा व तालुका संपर्क जाळे (गुगल मॅप्स शैली)'
-                : '36 Districts, Highway Network, Water Reservoirs & Sub-District Talukas (Google Maps Style)'}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs font-medium">
-            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-[11px]">
-              Zoom: {Math.round(zoomFactor * 100)}%
-            </span>
-            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-[11px]">
-              36 Districts (#1 to #36)
-            </span>
-          </div>
-        </div>
+          }
+          className="w-full"
+        />
 
         {/* Division Filter Bar */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          <span className="text-slate-500 font-medium shrink-0 mr-1 text-[11px]">
+          <span className="text-slate-500 font-medium shrink-0 mr-1 text-xs">
             {language === 'mr' ? 'विभाग निवडा:' : 'Division:'}
           </span>
           <button
@@ -489,7 +488,7 @@ export const GISMap: React.FC = () => {
 
         {/* Quick District Index Selector Ribbon (#1 to #36) */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs border-t border-slate-100 pt-2">
-          <span className="text-slate-500 font-bold shrink-0 mr-1 text-[11px] uppercase tracking-wider flex items-center gap-1">
+          <span className="text-slate-700 font-semibold shrink-0 mr-1 text-xs flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             {language === 'mr' ? 'जिल्हा क्रमांक (#१-३६):' : 'Districts (#1-36):'}
           </span>
@@ -506,7 +505,7 @@ export const GISMap: React.FC = () => {
                   selectDistrict(d.id);
                   setView(fitView(d.bbox));
                 }}
-                className={`px-2 py-0.5 rounded-md text-[11px] font-medium transition-all shrink-0 cursor-pointer flex items-center gap-1 border ${
+                className={`px-2 py-0.5 rounded-md text-xs font-medium transition-all shrink-0 cursor-pointer flex items-center gap-1 border ${
                   active
                     ? 'bg-slate-900 text-white border-slate-900 font-semibold shadow-xs'
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
@@ -514,7 +513,7 @@ export const GISMap: React.FC = () => {
                 title={`#${num} ${d.name} (${d.nameMr})`}
               >
                 <span
-                  className={`w-3.5 h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center shrink-0 ${
+                  className={`w-3.5 h-3.5 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
                     active ? 'bg-amber-400 text-slate-900' : 'bg-slate-100 text-slate-600'
                   }`}
                 >
@@ -576,16 +575,7 @@ export const GISMap: React.FC = () => {
                       strokeWidth={0.7 * unit}
                       strokeDasharray="3 4"
                     />
-                    <text
-                      x={grid.type === 'lat' ? 104 : grid.x1}
-                      y={grid.type === 'lat' ? grid.y1 - 2 : 65}
-                      fontSize={7 * unit}
-                      fill="#64748B"
-                      fontFamily="monospace"
-                      fontWeight="bold"
-                    >
-                      {grid.label}
-                    </text>
+                    
                   </g>
                 ))}
               </g>
@@ -951,7 +941,7 @@ export const GISMap: React.FC = () => {
                     stroke="#FFFFFF"
                     strokeWidth={2.4 * unit}
                     strokeLinejoin="round"
-                    fontSize={10 * unit}
+                    fontSize={Math.max(12, 11 * unit)}
                     fontWeight={700}
                     textAnchor="middle"
                     dominantBaseline="central"
@@ -963,7 +953,7 @@ export const GISMap: React.FC = () => {
                     x={d.pin.x}
                     y={labelY}
                     fill={isSelected ? '#1B2A4A' : isInspected ? '#1E40AF' : '#0F172A'}
-                    fontSize={10 * unit}
+                    fontSize={Math.max(12, 11 * unit)}
                     fontWeight={700}
                     textAnchor="middle"
                     dominantBaseline="central"
@@ -1036,10 +1026,10 @@ export const GISMap: React.FC = () => {
               <rect x={0} y={0} width={scalePxWidth} height={3} fill="#0F172A" />
               <line x1={0} y1={-2} x2={0} y2={5} stroke="#0F172A" strokeWidth={1} />
               <line x1={scalePxWidth} y1={-2} x2={scalePxWidth} y2={5} stroke="#0F172A" strokeWidth={1} />
-              <text x={0} y={-3} fontSize={5} fontWeight="bold" fill="#0F172A">
+              <text x={0} y={-4} fontSize={12} fontWeight="bold" fill="#0F172A">
                 0
               </text>
-              <text x={scalePxWidth} y={-3} textAnchor="end" fontSize={5} fontWeight="bold" fill="#0F172A">
+              <text x={scalePxWidth} y={-4} textAnchor="end" fontSize={12} fontWeight="bold" fill="#0F172A">
                 {scaleKm} km
               </text>
             </g>
@@ -1085,7 +1075,7 @@ export const GISMap: React.FC = () => {
                 setView(FULL_VIEW);
                 setSelectedDivisionFilter('all');
               }}
-              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 text-[10px] font-mono font-bold transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 text-xs font-mono font-bold transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
               title="Reset to 100% full view"
               aria-label="Reset view"
             >
@@ -1191,46 +1181,46 @@ export const GISMap: React.FC = () => {
             >
               <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded bg-slate-100 text-slate-900 font-bold font-mono text-[11px] flex items-center justify-center shrink-0">
+                  <span className="w-5 h-5 rounded bg-slate-100 text-slate-900 font-bold font-mono text-xs flex items-center justify-center shrink-0">
                     #{DISTRICT_NUMBERS[hoveredDistrict.id]}
                   </span>
                   <div>
                     <h5 className="font-bold text-white text-xs">{hoveredDistrict.name}</h5>
-                    <span className="text-[10px] text-slate-400">{hoveredDistrict.nameMr}</span>
+                    <span className="text-xs text-slate-400">{hoveredDistrict.nameMr}</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">
+                <span className="text-xs font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">
                   {DIVISIONS[hoveredDistrict.division].name}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-1.5 pt-1 text-[11px]">
+              <div className="grid grid-cols-2 gap-1.5 pt-1 text-xs">
                 <div>
-                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Collector:</span>
+                  <span className="text-slate-400 block text-xs font-semibold">Collector:</span>
                   <span className="text-slate-200 font-medium truncate block">
                     {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.dioOffice.collectorName || 'Collector Desk'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[9px] uppercase font-bold">DIO Officer:</span>
+                  <span className="text-slate-400 block text-xs font-semibold">DIO Officer:</span>
                   <span className="text-slate-200 font-medium truncate block">
                     {DIO_BY_DISTRICT[hoveredDistrict.id]?.officer || 'DIO Officer'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Citizen Resolution:</span>
+                  <span className="text-slate-400 block text-xs font-semibold">Citizen Resolution:</span>
                   <span className="text-emerald-400 font-mono font-semibold">
                     {hoveredDistrict ? (Math.min(99.8, Math.max(93.5, 100 - ((DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.quickStats ? 35 : 38) / 25)))).toFixed(1) : '98.4'}% (Met)
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Public Sentiment:</span>
+                  <span className="text-slate-400 block text-xs font-semibold">Public Sentiment:</span>
                   <span className="text-emerald-400 font-mono font-semibold">
                     {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.sentiment || 76}% Favorable
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Hoardings:</span>
+                  <span className="text-slate-400 block text-xs font-semibold">Hoardings:</span>
                   <span className="text-amber-300 font-mono font-semibold">
                     {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.hoardings?.length || 0} Locations
                   </span>
@@ -1251,7 +1241,7 @@ export const GISMap: React.FC = () => {
                 <h4 className="text-sm font-bold text-slate-900">
                   {inspected.name} ({inspected.nameMr})
                 </h4>
-                <span className="text-[11px] text-slate-500 font-medium">
+                <span className="text-xs text-slate-500 font-medium">
                   {divisionName} Division • Census Code: {inspected.censusCode} • LGD: {inspected.lgdCode}
                 </span>
               </div>
@@ -1281,22 +1271,22 @@ export const GISMap: React.FC = () => {
             {/* Box 1: Administrative Leadership */}
             <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-700 text-xs font-semibold block mb-1">
                   {language === 'mr' ? 'प्रशासकीय नेतृत्व:' : 'Administrative Leadership:'}
                 </span>
                 <div className="truncate">
-                  <span className="text-[10px] text-slate-500 block">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector & DM:'}</span>
+                  <span className="text-xs text-slate-600 block">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector & DM:'}</span>
                   <strong className="text-slate-900 truncate text-xs block font-bold" title={inspectedDetails?.dioOffice.collectorName}>
                     {inspectedDetails?.dioOffice.collectorName || 'District Collector, IAS'}
                   </strong>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 truncate border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
+              <div className="text-xs text-slate-600 truncate border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
                 <div className="truncate">
-                  <span className="text-[10px] text-slate-400 block">{language === 'mr' ? 'माहिती अधिकारी:' : 'Information Officer:'}</span>
-                  <span className="font-semibold text-slate-800 text-[11px] truncate block">{officerName}</span>
+                  <span className="text-xs text-slate-600 block">{language === 'mr' ? 'माहिती अधिकारी:' : 'Information Officer:'}</span>
+                  <span className="font-semibold text-slate-800 text-xs truncate block">{officerName}</span>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0 ml-1">
+                <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0 ml-1">
                   {inspectedDetails?.dioOffice.staffPresentToday || 8} on duty
                 </span>
               </div>
@@ -1305,7 +1295,7 @@ export const GISMap: React.FC = () => {
             {/* Box 2: Composite Performance Index */}
             <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-700 text-xs font-semibold block mb-1">
                   {language === 'mr' ? 'कामगिरी निर्देशांक (CPI):' : 'Composite Index (CPI):'}
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
@@ -1313,21 +1303,21 @@ export const GISMap: React.FC = () => {
                     {inspectedDetails?.cpi || storeDistrict?.cpi || 88.5}{' '}
                     <span className="text-xs font-normal text-slate-500">/ 100</span>
                   </span>
-                  <span className="text-[11px] font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
+                  <span className="text-xs font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
                     Rank #{DISTRICT_NUMBERS[inspected.id]}
                   </span>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
+              <div className="text-xs text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
                 <span>{language === 'mr' ? 'दर्जा:' : 'Governance Grade:'} <strong className="text-emerald-700">A+ High Compliance</strong></span>
-                <span className="text-slate-400 font-mono text-[10px]">Top Quintile</span>
+                <span className="text-slate-600 font-mono text-xs">Top Quintile</span>
               </div>
             </div>
 
             {/* Box 3: Citizen Services & Resolution Rate */}
             <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-700 text-xs font-semibold block mb-1">
                   {language === 'mr' ? 'नागरिक सेवा व तक्रार निवारण:' : 'Citizen Services & Resolution:'}
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
@@ -1335,19 +1325,19 @@ export const GISMap: React.FC = () => {
                     <span className="text-xl font-bold font-mono text-slate-900">
                       {inspectedDetails?.releases || storeDistrict?.releases || 142}
                     </span>
-                    <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Notices'}</span>
+                    <span className="text-xs text-slate-500 ml-1">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Notices'}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-bold font-mono text-emerald-600">
                       {storeDistrict?.avgTAT != null ? (Math.min(99.8, Math.max(93.5, 100 - (storeDistrict.avgTAT / 25)))).toFixed(1) : '98.4'}%
                     </span>
-                    <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
+                    <span className="text-xs text-slate-500 ml-1">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
                   </div>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
+              <div className="text-xs text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
                 <span>{language === 'mr' ? 'तक्रार निवारण दर्जा:' : 'Citizen Charter:'}</span>
-                <span className="font-bold text-emerald-700 font-mono text-[11px]">
+                <span className="font-bold text-emerald-700 font-mono text-xs">
                   ≥ 95% ({language === 'mr' ? 'साध्य' : 'Met'})
                 </span>
               </div>
@@ -1356,20 +1346,20 @@ export const GISMap: React.FC = () => {
             {/* Box 4: Hoardings & Demographics */}
             <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-700 text-xs font-semibold block mb-1">
                   {language === 'mr' ? 'होर्डिंग्ज व भौगोलिक व्याप्ती:' : 'Hoardings & Demographics:'}
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
                   <span className="text-xl font-bold font-mono text-slate-900">
                     {inspectedDetails?.hoardings?.length || 0}{' '}
-                    <span className="text-[10px] font-normal text-slate-500">Hoardings</span>
+                    <span className="text-xs font-normal text-slate-500">Hoardings</span>
                   </span>
-                  <span className="text-[10px] font-mono text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">
+                  <span className="text-xs font-mono text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">
                     {inspectedDetails?.quickStats.talukasCount || 8} Talukas
                   </span>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
+              <div className="text-xs text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
                 <span>Area: {inspectedDetails?.quickStats.areaKm2 || '8,420 km²'}</span>
                 <span>Pop: {inspectedDetails?.quickStats.population || '2.4M'}</span>
               </div>
@@ -1378,29 +1368,29 @@ export const GISMap: React.FC = () => {
 
           {/* 4-Pillar Breakdown Strip */}
           <div className="bg-slate-50/80 rounded-lg p-2.5 border border-slate-200 flex flex-col gap-1.5">
-            <div className="flex items-center justify-between text-[11px]">
+            <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-slate-700 uppercase tracking-wide">
                 {language === 'mr' ? '४-स्तंभ गुणवत्ता निर्देशांक:' : '4-Pillar Quality Scorecard (25 pts each):'}
               </span>
-              <span className="font-mono text-slate-500 text-[10px]">
+              <span className="font-mono text-slate-600 font-medium text-xs">
                 Headquarters: {inspectedDetails?.quickStats.headquarters || inspected.name} • Literacy: {inspectedDetails?.quickStats.literacyRate || '84%'}
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-[10px]">1. Volume:</span>
+                <span className="text-slate-500 text-xs">1. Volume:</span>
                 <span className="font-bold font-mono text-slate-900">{storeDistrict?.volumeScore?.toFixed(1) || '24.2'} / 25</span>
               </div>
               <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-[10px]">2. Citizen Resolution:</span>
+                <span className="text-slate-500 text-xs">2. Citizen Resolution:</span>
                 <span className="font-bold font-mono text-slate-900">{storeDistrict?.tatScore?.toFixed(1) || '23.8'} / 25</span>
               </div>
               <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-[10px]">3. Sentiment:</span>
+                <span className="text-slate-500 text-xs">3. Sentiment Index:</span>
                 <span className="font-bold font-mono text-slate-900">{storeDistrict?.sentimentScore?.toFixed(1) || '21.5'} / 25</span>
               </div>
               <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-[10px]">4. Crisis SLA:</span>
+                <span className="text-slate-500 text-xs">4. Crisis SLA Resolution Rate:</span>
                 <span className="font-bold font-mono text-slate-900">{storeDistrict?.crisisScore?.toFixed(1) || '25.0'} / 25</span>
               </div>
             </div>

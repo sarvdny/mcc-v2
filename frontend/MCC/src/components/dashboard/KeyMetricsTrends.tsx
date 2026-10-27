@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/translations';
 import { DistrictPerformanceChart } from '@/components/zones/DistrictLeaderboard/DistrictPerformanceChart';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 export const KeyMetricsTrends: React.FC = () => {
   const {
@@ -20,7 +21,7 @@ export const KeyMetricsTrends: React.FC = () => {
 
   if (isLoadingData) {
     return (
-      <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-4 min-h-[240px]">
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-4 min-h-[240px]">
         <div className="flex justify-between items-center pb-2 border-b border-slate-100">
           <Skeleton className="h-5 w-56 rounded" />
           <Skeleton variant="subtle" className="h-4 w-32 rounded" />
@@ -37,30 +38,23 @@ export const KeyMetricsTrends: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-5 sm:p-6 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-blue-50 text-gov-blue">
-            <MaterialIcon name="bar_chart" size="sm" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-              {language === 'mr' ? 'प्रमुख निर्देशक व कल विश्लेषण' : 'Key Metrics & Trends'}
-            </h3>
-            <p className="text-[11px] text-slate-500 font-medium">
-              {language === 'mr'
-? 'शीर्ष ५ जिल्ह्यांचे ३ सीपीआय घटकांनुसार तुलनात्मक विश्लेषण'
-                : 'Top 5 District Comparative Breakdown (Volume, Sentiment, Crisis SLA)'}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded">
-            {selectedDivision}
-          </span>
-        </div>
+      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
+        <MinimalCardHeader
+          title={language === 'mr' ? 'प्रमुख निर्देशक व कल विश्लेषण' : 'Key Metrics & Trends'}
+          subtitle={
+            language === 'mr'
+              ? 'शीर्ष ५ जिल्ह्यांचे ३ सीपीआय घटकांनुसार तुलनात्मक विश्लेषण'
+              : 'Top 5 District Comparative Breakdown (Volume, Sentiment Index, Crisis SLA Resolution Rate)'
+          }
+          action={
+            <span className="text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded">
+              {selectedDivision}
+            </span>
+          }
+          className="w-full"
+        />
       </div>
 
       {/* Chart Canvas */}

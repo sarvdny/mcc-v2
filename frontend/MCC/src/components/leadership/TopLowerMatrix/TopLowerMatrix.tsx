@@ -11,6 +11,10 @@ import {
   getLocalizedStatus,
 } from '@/lib/dataLocalization';
 import { TopLowerMatrixSkeleton } from '@/components/skeletons/TopLowerMatrixSkeleton';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
+import { calculateTopLowerMatrix } from '@/calculations';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 interface MatrixRow {
   id: string;
@@ -47,67 +51,13 @@ export const TopLowerMatrix: React.FC = () => {
   const t = useTranslation(language);
   const [filterMode, setFilterMode] = useState<'all' | 'top' | 'lower'>('all');
 
-  // Compute dynamic top 5 and bottom 5 from live store
+  // Compute dynamic top 5 and bottom 5 from live store using centralized calculation engine
   const matrixData: MatrixRow[] = useMemo(() => {
-    // 1. Filter by selected division if not "All Maharashtra"
-    const pool = districts.filter(
-      (d) => selectedDivision === 'All Maharashtra' || d.division === selectedDivision
-    );
-
-    // Deterministic sort with tie-breaker: CPI desc -> Volume desc -> Name asc
-    const sorted = [...pool].sort((a, b) => {
-      if (b.cpi !== a.cpi) return b.cpi - a.cpi;
-      if (b.releases !== a.releases) return b.releases - a.releases;
-      return a.name.localeCompare(b.name);
-    });
-
-    // Assign true 1-based ranks
-    const rankedPool = sorted.map((d, idx) => ({ ...d, calculatedRank: idx + 1 }));
-
-    if (rankedPool.length <= 5) {
-      return rankedPool.map((d, index) => ({
-        id: d.id,
-        rank: d.calculatedRank,
-        name: d.name,
-        nameMr: d.nameMr,
-        division: d.division,
-        event: d.releases * 3 + Math.round(d.cpi * 1.5),
-        category: DISTRICT_CATEGORIES[d.id] || 'District Dev',
-        extreme: (index < Math.ceil(rankedPool.length / 2) ? 'Top High' : 'Lower Band') as 'Top High' | 'Lower Band',
-        metricPercent: Math.round(d.cpi),
-        cpi: d.cpi,
-      }));
-    }
-
-    const topCount = Math.min(5, Math.floor(rankedPool.length / 2));
-    const top5 = rankedPool.slice(0, topCount).map((d) => ({
-      id: d.id,
-      rank: d.calculatedRank,
-      name: d.name,
-      nameMr: d.nameMr,
-      division: d.division,
-      event: d.releases * 3 + Math.round(d.cpi * 1.5),
-      category: DISTRICT_CATEGORIES[d.id] || 'District Dev',
-      extreme: 'Top High' as const,
-      metricPercent: Math.round(d.cpi),
-      cpi: d.cpi,
+    const res = calculateTopLowerMatrix(districts, selectedDivision);
+    return res.all.map((item) => ({
+      ...item,
+      category: DISTRICT_CATEGORIES[item.id] || (item.extreme === 'Top High' ? 'District Dev' : 'Field Welfare'),
     }));
-
-    const bottomCount = Math.min(5, rankedPool.length - topCount);
-    const bottom5 = rankedPool.slice(-bottomCount).reverse().map((d) => ({
-      id: d.id,
-      rank: d.calculatedRank,
-      name: d.name,
-      nameMr: d.nameMr,
-      division: d.division,
-      event: d.releases * 2 + Math.round(d.cpi * 0.8),
-      category: DISTRICT_CATEGORIES[d.id] || 'Field Welfare',
-      extreme: 'Lower Band' as const,
-      metricPercent: Math.round(d.cpi),
-      cpi: d.cpi,
-    }));
-
-    return [...top5, ...bottom5];
   }, [districts, selectedDivision]);
 
   const displayedRows = matrixData.filter((r) => {
@@ -124,57 +74,68 @@ export const TopLowerMatrix: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden">
       {/* Header matching Wireframe 2 */}
-      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-              {t.leadership.matrixTitle}
-            </h3>
-            {selectedDivision !== 'All Maharashtra' && (
+      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
+        <MinimalCardHeader
+          title={t.leadership.matrixTitle}
+          subtitle={t.leadership.matrixSub}
+          badge={
+            selectedDivision !== 'All Maharashtra' ? (
               <span className="text-xs font-mono border-l-2 border-gov-blue pl-2 text-gov-blue font-semibold whitespace-nowrap">
                 {language === 'mr' ? getDivisionName(selectedDivision, 'mr') : selectedDivision}
               </span>
-            )}
-          </div>
-          <p className="text-[11px] text-slate-500 font-medium">
-            {t.leadership.matrixSub}
-          </p>
-        </div>
-
-        <div className="flex gap-1 text-xs">
-          <button
-            onClick={() => setFilterMode('all')}
-            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-              filterMode === 'all'
-                ? 'bg-gov-primary text-white shadow-2xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {t.leadership.matrixAllBtn}
-          </button>
-          <button
-            onClick={() => setFilterMode('top')}
-            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-              filterMode === 'top'
-                ? 'bg-emerald-700 text-white shadow-2xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {t.leadership.matrixTopBtn}
-          </button>
-          <button
-            onClick={() => setFilterMode('lower')}
-            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-              filterMode === 'lower'
-                ? 'bg-rose-700 text-white shadow-2xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {t.leadership.matrixLowerBtn}
-          </button>
-        </div>
+            ) : undefined
+          }
+          action={
+            <div
+              role="tablist"
+              aria-label="Filter matrix by performance"
+              className="flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/80 shadow-xs text-xs"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={filterMode === 'all'}
+                onClick={() => setFilterMode('all')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
+                  filterMode === 'all'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                {t.leadership.matrixAllBtn}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={filterMode === 'top'}
+                onClick={() => setFilterMode('top')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
+                  filterMode === 'top'
+                    ? 'bg-emerald-700 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                {t.leadership.matrixTopBtn}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={filterMode === 'lower'}
+                onClick={() => setFilterMode('lower')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold active:scale-[0.98] transition-all duration-150 cursor-pointer ${
+                  filterMode === 'lower'
+                    ? 'bg-rose-700 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                {t.leadership.matrixLowerBtn}
+              </button>
+            </div>
+          }
+          className="w-full"
+        />
       </div>
 
       {/* Wireframe Diagram Table Representation */}
@@ -184,7 +145,12 @@ export const TopLowerMatrix: React.FC = () => {
             <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-[11px]">
               <tr>
                 <th className="py-3 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
-                <th className="py-3 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
+                <th className="py-3 px-3">
+                  <div className="flex items-center gap-1">
+                    <span>{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</span>
+                    <TermInfo termKey="cpi" size="xs" />
+                  </div>
+                </th>
                 <th className="py-3 px-3">{language === 'mr' ? 'प्रमुख क्षेत्र' : 'Focus Category'}</th>
                 <th className="py-3 px-3 text-right">{language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}</th>
               </tr>
@@ -209,19 +175,19 @@ export const TopLowerMatrix: React.FC = () => {
                     className={`cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov-blue ${
                       isSelected
                         ? 'bg-blue-50/70 border-l-2 border-l-gov-blue font-medium'
-                        : 'hover:bg-slate-50/80'
+                        : 'hover:bg-slate-50/90 active:bg-amber-500/20 active:brightness-95 transition-colors duration-100'
                     }`}
                   >
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-[11px] text-slate-400 w-5">
+                        <span className="font-mono text-xs font-mono text-slate-600 font-semibold w-5">
                           #{row.rank}
                         </span>
                         <div>
                           <span className="font-bold text-slate-900 block leading-tight">
                             {row.name} {row.nameMr || getDistrictName(row.name, 'mr') ? `• ${row.nameMr || getDistrictName(row.name, 'mr')}` : ''}
                           </span>
-                          <span className="text-[10px] text-slate-500 font-medium">
+                          <span className="text-xs text-slate-600 font-medium">
                             {row.division} {language === 'mr' ? `(${getDivisionName(row.division, 'mr')})` : ''}
                           </span>
                         </div>
@@ -238,9 +204,11 @@ export const TopLowerMatrix: React.FC = () => {
                             style={{ width: `${row.metricPercent}%` }}
                           ></div>
                         </div>
-                        <span className="font-mono font-bold text-slate-800 text-[11px]">
-                          {row.cpi}
-                        </span>
+                        <MetricTip metricKey="cpi" value={row.cpi}>
+                          <span className="font-mono font-bold text-slate-800 text-[11px] cursor-help hover:text-gov-primary hover:underline">
+                            {row.cpi}
+                          </span>
+                        </MetricTip>
                       </div>
                     </td>
 
@@ -271,7 +239,7 @@ export const TopLowerMatrix: React.FC = () => {
           </table>
         </div>
 
-        <div className="mt-2.5 px-2 text-[10px] text-slate-500 flex justify-between items-center">
+        <div className="mt-2.5 px-2 text-xs text-slate-600 flex justify-between items-center">
           <span>
             {language === 'mr'
               ? '३६ जिल्ह्यांचे सांख्यिकी संकलन — संमिश्र तफावत विश्लेषण'

@@ -5,6 +5,7 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { LiveAudioTranscriptionPanel } from '@/components/dashboard/LiveAudioTranscriptionPanel';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 export interface LiveStreamingProps {
   layout?: 'default' | 'column';
@@ -92,22 +93,20 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
   const currentChannel = channels.find((c) => c.id === activeChannel) || channels[0];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
-            {t.leadership.liveTitle}
-          </h3>
-          <p className="text-[11px] text-slate-500 font-medium">
-            {t.leadership.liveSub}
-          </p>
-        </div>
-
-        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 whitespace-nowrap">
-          <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0 inline-block"></span>
-          <span>{t.leadership.liveOnAirBadge}</span>
-        </div>
+      <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-white">
+        <MinimalCardHeader
+          title={t.leadership.liveTitle}
+          subtitle={t.leadership.liveSub}
+          action={
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 whitespace-nowrap">
+              <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0 inline-block"></span>
+              <span>{t.leadership.liveOnAirBadge}</span>
+            </div>
+          }
+          className="w-full"
+        />
       </div>
 
       {/* Main Content Layout */}
@@ -118,18 +117,18 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
             {/* Top Video Status Overlay */}
             <div className="p-2.5 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
               <div className="flex items-center gap-2">
-                <span className="px-1.5 py-0.2 rounded bg-red-600 text-[10px] font-bold">
+                <span className="px-1.5 py-0.2 rounded bg-red-600 text-xs font-bold">
                   {language === 'mr' ? 'थेट' : 'LIVE'}
                 </span>
                 <span className="font-semibold truncate max-w-[220px]">{currentChannel.title}</span>
               </div>
 
-              <div className="flex items-center gap-2 font-mono text-[10px]">
+              <div className="flex items-center gap-2 font-mono text-xs">
                 <button
                   onClick={() => setStreamSource(streamSource === 'video' ? 'youtube' : 'video')}
                   className="px-2 py-0.5 rounded bg-black/60 border border-white/20 hover:bg-slate-800 text-slate-200 cursor-pointer"
                 >
-                  {streamSource === 'video' ? '🎥 HD Video' : '▶️ YouTube'}
+                  {streamSource === 'video' ? 'HD Video' : 'YouTube'}
                 </button>
                 <span className="text-slate-300">1080p HD</span>
               </div>
@@ -196,8 +195,8 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
 
           {/* 4 Relay Platform Buttons (Spacious 2x2 grid on standard desktop, 4-col only on 2xl) */}
           <div className="w-full flex flex-col gap-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              {language === 'mr' ? 'थेट प्रसारण स्त्रोत निवडा' : 'Select Unified Relay Stream'}
+            <span className="text-xs font-semibold text-slate-600">
+              {language === 'mr' ? 'थेट प्रसारण स्त्रोत निवडा' : 'Select unified relay stream'}
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-2.5">
@@ -208,14 +207,14 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                   <button
                     key={chan.id}
                     onClick={() => setActiveChannel(chan.id as 'youtube' | 'facebook' | 'instagram' | 'tv')}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-xs transition-all shadow-2xs cursor-pointer ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs shadow-xs hover:border-slate-300 hover:shadow-sm active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer ${
                       isSelected
                         ? 'border-gov-blue bg-blue-50/80 font-bold'
-                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                        : 'border-slate-200/80 bg-white hover:bg-slate-50/80'
                     }`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <div className={`p-1.5 rounded text-white shrink-0 ${chan.color.split(' ')[0]}`}>
+                      <div className={`shrink-0 text-slate-700`}>
                         {chan.iconRender()}
                       </div>
                       <div className="text-left min-w-0">
@@ -225,7 +224,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                       </div>
                     </div>
 
-                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${
+                    <span className={`text-xs font-mono px-1.5 py-0.5 rounded border shrink-0 ${
                       isSelected
                         ? 'bg-rose-50 text-rose-700 border-rose-200 font-bold'
                         : 'bg-slate-100 text-slate-500 border-slate-200'
@@ -243,7 +242,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
         <LiveAudioTranscriptionPanel />
 
         {/* Footer */}
-        <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+        <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
           <span>
             {language === 'mr'
               ? 'दृकश्राव्य कक्ष • माहिती व जनसंपर्क महासंचालनालय थेट प्रसारण'

@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/shared/Skeleton';
 
 export const LeaderboardSkeleton: React.FC = () => {
   return (
-    <div className="bg-white border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden">
+    <div className="bg-white border border-slate-200/80 rounded-2xl flex flex-col shadow-xs overflow-hidden">
       {/* Header and Sub-tabs */}
       <div className="px-4 py-3 border-b border-slate-200 bg-white">
         <div className="flex items-center justify-between mb-2">

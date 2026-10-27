@@ -56,7 +56,7 @@ export const CommandCenterNavHeader: React.FC = React.memo(() => {
   ];
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 mb-4 shadow-2xs space-y-3.5 select-none">
+    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 mb-4 shadow-xs hover:shadow-sm transition-all duration-150 space-y-3.5 select-none">
       {/* Top Row: Squircle Identity + Operations Badges + Right Side Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
         {/* Left Identity Container */}
@@ -107,7 +107,7 @@ export const CommandCenterNavHeader: React.FC = React.memo(() => {
           <button
             type="button"
             onClick={handleExport}
-            className="h-8 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+            className="h-8 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium flex items-center gap-1.5 transition-all duration-100 ease-out cursor-pointer shadow-xs border border-slate-800/80 active:scale-[0.98]"
             title={language === 'mr' ? 'माहिती अहवाल निर्यात करा' : 'Export Telemetry Report'}
           >
             <MaterialIcon name="download" size="xs" className="text-white" />
@@ -125,7 +125,7 @@ export const CommandCenterNavHeader: React.FC = React.memo(() => {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`p-3 rounded-xl border text-left transition-all flex items-start gap-3 cursor-pointer ${
+              className={`p-3 rounded-xl border text-left transition-all duration-100 ease-out active:scale-[0.98] flex items-start gap-3 cursor-pointer ${
                 isActive
                   ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                   : 'bg-slate-50/70 hover:bg-slate-100/80 text-slate-800 border-slate-200/80'

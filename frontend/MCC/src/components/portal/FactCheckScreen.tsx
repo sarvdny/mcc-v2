@@ -464,6 +464,16 @@ export const FactCheckScreen: React.FC = () => {
                   </span>
                 </div>
 
+                {/* Validation Basis: "False news detected from <source> on <date>" (Item 8b) */}
+                <div className="bg-rose-50 border border-rose-200/70 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-rose-900 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse shrink-0" />
+                  <span>
+                    {language === 'mr'
+                      ? `${item.channels.join(', ')} वरून ${item.date} रोजी खोटी बातमी आढळली`
+                      : `False news detected from ${item.channels.join(', ')} on ${item.date}`}
+                  </span>
+                </div>
+
                 {/* Title */}
                 <h3 className="text-sm font-black text-slate-900 leading-snug">
                   {language === 'mr' ? item.titleMr : item.title}

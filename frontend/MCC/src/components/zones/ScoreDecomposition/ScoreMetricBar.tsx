@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
 
 interface ScoreMetricBarProps {
   icon: MaterialIconName;
@@ -11,6 +13,7 @@ interface ScoreMetricBarProps {
   maxScore?: number;
   valueLabel: string;
   gapLabel: string;
+  metricKey?: string;
 }
 
 export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
@@ -21,6 +24,7 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
   maxScore = 25,
   valueLabel,
   gapLabel,
+  metricKey,
 }) => {
   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
 
@@ -38,23 +42,32 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
       <div className="flex items-center justify-between text-xs flex-wrap gap-1">
         <div className="flex items-center gap-2">
           <MaterialIcon name={icon} size="sm" className="text-slate-500" />
-          <div>
+          <div className="flex items-center">
             <span className="font-bold text-slate-800">{title}</span>
-            <span className="text-[11px] text-slate-400 ml-2 hidden sm:inline">{subtitle}</span>
+            {metricKey && <TermInfo termKey={metricKey} size="xs" />}
+            <span className="text-xs text-slate-600 ml-2 hidden sm:inline">{subtitle}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="font-mono text-gov-primary font-bold">
-            {score} <span className="text-slate-400 font-normal">/ {maxScore}</span>
-          </span>
+          {metricKey ? (
+            <MetricTip metricKey={metricKey} value={score}>
+              <span className="font-mono text-gov-primary font-bold hover:underline cursor-help">
+                {score} <span className="text-slate-600 font-normal">/ {maxScore}</span>
+              </span>
+            </MetricTip>
+          ) : (
+            <span className="font-mono text-gov-primary font-bold">
+              {score} <span className="text-slate-600 font-normal">/ {maxScore}</span>
+            </span>
+          )}
           <span className="font-mono text-slate-600 w-24 text-right font-medium">
             {valueLabel}
           </span>
           <span
-            className={`text-[11px] font-mono w-24 text-right ${
+            className={`text-xs font-mono w-24 text-right ${
               score >= maxScore
-                ? 'text-slate-400'
+                ? 'text-slate-600'
                 : 'text-amber-600 font-medium'
             }`}
           >

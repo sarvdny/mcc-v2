@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/shared/Skeleton';
 
 export const GISMapSkeleton: React.FC = () => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2">
         <div className="space-y-1">

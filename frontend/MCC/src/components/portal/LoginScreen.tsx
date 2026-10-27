@@ -125,7 +125,7 @@ const I18N: Record<Language, I18nContent> = {
     accessibilityNotice: 'Accessibility Options',
     languageToggleText: 'मराठी',
     languageToggleLabel: 'Switch interface language to Marathi',
-    portalKicker: 'GOVERNMENT OF MAHARASHTRA • DGIPR',
+    portalKicker: 'Government of Maharashtra • DGIPR',
     portalTitle: 'Maha-Command Center',
     portalDescription:
       'Unified state operations gateway for real-time crisis monitoring, inter-district coordination, and official communications.',
@@ -134,11 +134,11 @@ const I18N: Record<Language, I18nContent> = {
       'Authorized personnel only. All authentication attempts, IP addresses, and session telemetry are logged under CERT-In and IT Act, 2000 directives.',
     tabCredentials: 'Officer ID / PIN',
     tabSso: 'JanParichay SSO',
-    officerIdLabel: 'OFFICER ID OR OFFICIAL GOV EMAIL',
+    officerIdLabel: 'Officer ID or Official Gov Email',
     officerIdPlaceholder: 'e.g. officer@maharashtra.gov.in or director_konkan',
-    pinLabel: 'SECURITY PIN OR PASSWORD',
+    pinLabel: 'Security PIN or Password',
     pinPlaceholder: '••••••••',
-    captchaLabel: 'SECURITY VERIFICATION (CAPTCHA)',
+    captchaLabel: 'Security Verification (CAPTCHA)',
     captchaPlaceholder: 'Enter verification code',
     forgotPin: 'Forgot PIN? / Support',
     submitButton: 'Authenticate and continue',
@@ -557,7 +557,7 @@ export const LoginScreen: React.FC = () => {
           </div>
 
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+            <span className="text-xs font-medium px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800">
               Security Step 2 of 2
             </span>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-2">
@@ -605,7 +605,7 @@ export const LoginScreen: React.FC = () => {
             </button>
           </div>
 
-          <span className="text-[10px] text-slate-400 italic">
+          <span className="text-xs text-slate-500 italic">
             Zero biometric templates stored on server. Handled via device Secure Enclave.
           </span>
         </div>
@@ -722,7 +722,7 @@ export const LoginScreen: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 my-auto">
         <div
           id="auth-card"
-          className="w-full max-w-4xl bg-white border border-slate-200/90 rounded-2xl shadow-[0_8px_30px_rgb(15,23,42,0.06)] overflow-hidden grid grid-cols-1 md:grid-cols-12 relative"
+          className="w-full max-w-4xl bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-12 relative"
         >
           {/* Subtle Progress Bar during Multi-Step Authentication */}
           {isSubmitting && (
@@ -757,7 +757,7 @@ export const LoginScreen: React.FC = () => {
               </div>
 
               {/* Department Kicker */}
-              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-sans">
+              <div className="text-xs font-semibold text-slate-600 mb-1 font-sans">
                 {t.portalKicker}
               </div>
 
@@ -778,7 +778,7 @@ export const LoginScreen: React.FC = () => {
             {/* Bottom Group: Redesigned Restricted State Enclave Notice */}
             <div className="border-t border-slate-200/80 pt-5 mt-8">
               <div className="border-l-2 border-slate-800 pl-3.5 py-0.5">
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                <div className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
                   <MaterialIcon name="shield" size="xs" className="text-slate-700" />
                   <span>{t.enclaveNoticeTitle}</span>
                 </div>
@@ -875,7 +875,7 @@ export const LoginScreen: React.FC = () => {
                     <div className="space-y-1.5">
                       <label
                         htmlFor="officer-id-input"
-                        className="block text-xs font-semibold uppercase tracking-wider text-slate-800"
+                        className="block text-xs font-semibold text-slate-800"
                       >
                         {t.officerIdLabel}
                       </label>
@@ -902,7 +902,7 @@ export const LoginScreen: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <label
                           htmlFor="security-pin-input"
-                          className="block text-xs font-semibold uppercase tracking-wider text-slate-800"
+                          className="block text-xs font-semibold text-slate-800"
                         >
                           {t.pinLabel}
                         </label>
@@ -947,7 +947,7 @@ export const LoginScreen: React.FC = () => {
                     <div className="space-y-2">
                       <label
                         htmlFor="captcha-input"
-                        className="block text-[11px] font-semibold uppercase tracking-wider text-slate-700"
+                        className="block text-xs font-semibold text-slate-800"
                       >
                         {t.captchaLabel}
                       </label>
@@ -1010,7 +1010,7 @@ export const LoginScreen: React.FC = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-11 rounded-lg bg-[#D97706] hover:bg-[#B45309] active:scale-[0.99] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90 disabled:cursor-wait focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D97706]"
+                      className="w-full h-11 rounded-lg bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90 disabled:cursor-wait focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2.5">
@@ -1044,7 +1044,7 @@ export const LoginScreen: React.FC = () => {
                           <MaterialIcon name="verified_user" size="xs" className="text-[#D97706]" />
                           <span>{t.ssoHeading}</span>
                         </div>
-                        <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold flex items-center gap-1">
+                        <span className="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                           <span>NIC MeriPehchaan</span>
                         </span>
@@ -1053,7 +1053,7 @@ export const LoginScreen: React.FC = () => {
                         {t.ssoDescription}
                       </p>
 
-                      <div className="pt-2 border-t border-slate-200/80 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+                      <div className="pt-2 border-t border-slate-200/80 grid grid-cols-2 gap-2 text-xs text-slate-600">
                         <div className="flex items-center gap-1.5 font-medium">
                           <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
                           <span>ePramaan Level 3 Auth</span>
@@ -1075,7 +1075,7 @@ export const LoginScreen: React.FC = () => {
 
                     <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-start gap-2">
                       <MaterialIcon name="notifications" size="xs" className="text-amber-700 shrink-0 mt-0.5" />
-                      <p className="leading-relaxed text-[11px]">
+                      <p className="leading-relaxed text-xs">
                         {currentLang === 'mr'
                           ? 'तुम्ही थेट राष्ट्रीय जनपरिचय / मेरी पहचान गेटवेवर सुरक्षितपणे पुनर्निर्देशित व्हाल. यशस्वी प्रमाणीकरणानंतर तुमचे महा-कमांड सत्र आपोआप सुरू होईल.'
                           : 'You will be securely redirected to the National JanParichay / MeriPehchaan single sign-on gateway. Upon identity verification, your Maha-Command Center command session will initialize automatically.'}
@@ -1089,7 +1089,7 @@ export const LoginScreen: React.FC = () => {
                       type="button"
                       onClick={handleJanParichaySso}
                       disabled={isSubmitting}
-                      className="w-full h-11 rounded-lg bg-[#D97706] hover:bg-[#B45309] active:scale-[0.99] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D97706] disabled:opacity-90 disabled:cursor-wait"
+                      className="w-full h-11 rounded-lg bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-90 disabled:cursor-wait"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2.5">
@@ -1120,7 +1120,7 @@ export const LoginScreen: React.FC = () => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-500 text-center md:text-left">
           <div className="space-y-0.5">
             <div>{t.hostedBy}</div>
-            <div className="text-[11px] text-slate-400">{t.copyright}</div>
+            <div className="text-xs text-slate-600">{t.copyright}</div>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-medium">
@@ -1232,12 +1232,12 @@ export const LoginScreen: React.FC = () => {
       {isDevModeAvailable && isDevDrawerOpen && (
         <aside
           aria-label="Development Testing Personas"
-          className="fixed bottom-4 right-4 z-50 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl p-4 space-y-3"
+          className="fixed bottom-4 right-4 z-50 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-lg p-4 space-y-3"
         >
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <div>
               <div className="text-xs font-bold text-slate-900">Internal Test Personas</div>
-              <div className="text-[10px] text-slate-500">
+              <div className="text-xs text-slate-500">
                 Development shortcut (hidden in public view)
               </div>
             </div>
@@ -1260,18 +1260,18 @@ export const LoginScreen: React.FC = () => {
                   idx === 4 ? 'col-span-2' : ''
                 } bg-slate-50 border-slate-200 hover:bg-white hover:border-slate-800 text-slate-900`}
               >
-                <div className="text-[9px] font-mono text-[#D97706] font-bold uppercase">
+                <div className="text-xs text-amber-700 font-semibold">
                   {persona.badge}
                 </div>
                 <div className="text-xs font-bold mt-1 truncate">{persona.title}</div>
-                <div className="text-[10px] text-slate-600 truncate">{persona.officer}</div>
-                <div className="text-[9px] text-slate-400 font-mono truncate">{persona.email}</div>
+                <div className="text-xs text-slate-600 truncate">{persona.officer}</div>
+                <div className="text-xs text-slate-500 font-mono truncate">{persona.email}</div>
               </button>
             ))}
           </div>
 
-          <div className="text-[10px] text-center text-slate-400">
-            Press <kbd className="px-1 py-0.5 bg-slate-100 border rounded text-[9px]">Ctrl+Shift+D</kbd> to toggle
+          <div className="text-xs text-center text-slate-500">
+            Press <kbd className="px-1 py-0.5 bg-slate-100 border rounded text-xs">Ctrl+Shift+D</kbd> to toggle
           </div>
         </aside>
       )}

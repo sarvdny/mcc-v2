@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import { DEPARTMENTS_DATA } from '@/data/dashboardData';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
@@ -21,6 +22,18 @@ interface PressReleaseItem {
   downloads: number;
   district?: string;
   tatMinutes?: number;
+  reason?: string;
+  reasonMr?: string;
+  reviewDetails?: {
+    reviewer: string;
+    reviewerMr: string;
+    pendingStep: string;
+    pendingStepMr: string;
+    submittedAt: string;
+    submittedAtMr: string;
+    nextStep: string;
+    nextStepMr: string;
+  };
 }
 
 export const PressReleasesScreen: React.FC = () => {
@@ -37,12 +50,37 @@ export const PressReleasesScreen: React.FC = () => {
   const [draftSubmitted, setDraftSubmitted] = useState(false);
 
   const initialReleases: PressReleaseItem[] = DEPARTMENTS_DATA.flatMap((d) =>
-    d.pressReleases.map((pr) => ({
-      ...pr,
-      department: d.name,
-      district: pr.district || 'State HQ',
-      tatMinutes: pr.tatMinutes || 30,
-    }))
+    d.pressReleases.map((pr, index) => {
+      const isUnderReview = pr.status === 'Under Review';
+      return {
+        ...pr,
+        department: d.name,
+        district: pr.district || 'State HQ',
+        tatMinutes: pr.tatMinutes || 30,
+        reason: isUnderReview
+          ? (index % 2 === 0
+              ? 'Collector sign-off and administrative budget verification pending'
+              : 'Statistical audit clearance pending from Joint Secretary (Desk 4)')
+          : undefined,
+        reasonMr: isUnderReview
+          ? (index % 2 === 0
+              ? 'जिल्हाधिकारी स्वाक्षरी व प्रशासकीय निधी तरतूद पडताळणी प्रलंबित'
+              : 'सहसचिव (कार्यासन ४) यांच्याकडून सांख्यिकी माहिती पडताळणी प्रलंबित')
+          : undefined,
+        reviewDetails: isUnderReview
+          ? {
+              reviewer: index % 2 === 0 ? 'District Collector, Palghar / Desk 2' : 'Directorate Scrutiny Cell, Mumbai',
+              reviewerMr: index % 2 === 0 ? 'जिल्हाधिकारी, पालघर / कार्यासन २' : 'माहिती संचलनालय छाननी कक्ष, मुंबई',
+              pendingStep: index % 2 === 0 ? 'Collector Official Digital Sign-off' : 'Departmental Scheme Clearance',
+              pendingStepMr: index % 2 === 0 ? 'जिल्हाधिकारी डिजिटल स्वाक्षरी' : 'विभागीय योजना मंजुरी',
+              submittedAt: 'Today, 11:20 IST',
+              submittedAtMr: 'आज, ११:२० IST',
+              nextStep: 'Release order issuance & dispatch to 18 regional daily newspapers & PIB',
+              nextStepMr: 'प्रसिद्धी आदेश जारी करून १८ प्रादेशिक वर्तमानपत्रे व पीआयबीकडे प्रसारण',
+            }
+          : undefined,
+      };
+    })
   );
 
   const [releasesList, setReleasesList] = useState<PressReleaseItem[]>(initialReleases);
@@ -89,6 +127,18 @@ export const PressReleasesScreen: React.FC = () => {
       date: language === 'mr' ? 'आज, १४:४०' : 'Today, 14:40 IST',
       status: 'Under Review',
       downloads: 0,
+      reason: 'Draft submitted by DIO desk; awaiting Department Secretary clearance and Collector sign-off',
+      reasonMr: 'जिल्हा माहिती कक्षाकडून मसुदा सादर; विभाग सचिव मंजुरी व जिल्हाधिकारी स्वाक्षरी प्रलंबित',
+      reviewDetails: {
+        reviewer: 'Department Review Committee / State Scrutiny Desk',
+        reviewerMr: 'विभाग पुनरावलोकन समिती / राज्य छाननी कक्ष',
+        pendingStep: 'Initial Scrutiny & Collector Digital Sign-off',
+        pendingStepMr: 'प्राथमिक छाननी व जिल्हाधिकारी डिजिटल स्वाक्षरी',
+        submittedAt: 'Today, 14:40 IST',
+        submittedAtMr: 'आज, १४:४० IST',
+        nextStep: 'Official publication to DGPR media wire & regional dailies',
+        nextStepMr: 'डीजीपीआर मीडिया वायर व प्रादेशिक वर्तमानपत्रांमध्ये अधिकृत प्रकाशन',
+      },
     };
 
     setReleasesList([newRelease, ...releasesList]);
@@ -253,7 +303,7 @@ export const PressReleasesScreen: React.FC = () => {
                         </div>
                       </td>
                       <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center justify-start gap-1.5 text-xs font-semibold whitespace-nowrap text-slate-700">
+                        <div className="inline-flex items-center justify-start gap-1.5 text-xs font-semibold whitespace-nowrap text-slate-700">
                           <span
                             className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                               pr.status === 'Published'
@@ -274,7 +324,100 @@ export const PressReleasesScreen: React.FC = () => {
                           >
                             {getLocalizedStatus(pr.status, language)}
                           </span>
-                        </span>
+
+                          {/* Info Icon & Detailed Reason Tooltip for Under Review (Item 8c) */}
+                          {pr.status === 'Under Review' && (
+                            <Tooltip.Provider delayDuration={150}>
+                              <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                  <button
+                                    type="button"
+                                    aria-label={
+                                      language === 'mr'
+                                        ? 'पुनरावलोकन स्थितीचे कारण व सविस्तर तपशील'
+                                        : 'Under review reason and pending approval details'
+                                    }
+                                    className="p-0.5 rounded text-amber-600 hover:text-amber-800 hover:bg-amber-100 transition-colors cursor-help focus:outline-none focus:ring-1 focus:ring-amber-500 inline-flex items-center justify-center ml-0.5"
+                                  >
+                                    <MaterialIcon name="info" size="xs" />
+                                  </button>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content
+                                    side="top"
+                                    align="start"
+                                    sideOffset={6}
+                                    className="z-[9999] max-w-[340px] sm:max-w-[380px] bg-slate-900 text-white rounded-xl p-3.5 text-xs shadow-2xl border border-slate-700/80 animate-in fade-in-0 zoom-in-95 leading-relaxed select-text"
+                                  >
+                                    <div className="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-2">
+                                      <span className="font-bold text-amber-300">
+                                        {language === 'mr' ? 'पुनरावलोकन स्थिती (Under Review)' : 'Under Review Details'}
+                                      </span>
+                                      <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1 rounded">
+                                        {pr.id}
+                                      </span>
+                                    </div>
+
+                                    <div className="space-y-2 text-[11px]">
+                                      {/* Reason */}
+                                      <div>
+                                        <strong className="text-slate-400 block text-[10px] uppercase tracking-wider">
+                                          {language === 'mr' ? 'प्रलंबित असण्याचे कारण:' : 'Why in this state:'}
+                                        </strong>
+                                        <p className="text-slate-200 mt-0.5">
+                                          {language === 'mr' ? (pr.reasonMr || pr.reason) : pr.reason}
+                                        </p>
+                                      </div>
+
+                                      {/* Reviewer & Pending Step */}
+                                      {pr.reviewDetails && (
+                                        <>
+                                          <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+                                            <div>
+                                              <span className="text-slate-400 text-[10px] block">
+                                                {language === 'mr' ? 'तपासणी अधिकारी:' : 'Who is reviewing:'}
+                                              </span>
+                                              <strong className="text-slate-200">
+                                                {language === 'mr' ? pr.reviewDetails.reviewerMr : pr.reviewDetails.reviewer}
+                                              </strong>
+                                            </div>
+                                            <div>
+                                              <span className="text-slate-400 text-[10px] block">
+                                                {language === 'mr' ? 'सादर केल्याची वेळ:' : 'Submitted At:'}
+                                              </span>
+                                              <strong className="text-slate-200 font-mono">
+                                                {language === 'mr' ? pr.reviewDetails.submittedAtMr : pr.reviewDetails.submittedAt}
+                                              </strong>
+                                            </div>
+                                          </div>
+
+                                          <div className="pt-1 border-t border-slate-800">
+                                            <span className="text-slate-400 text-[10px] block">
+                                              {language === 'mr' ? 'प्रलंबित मंजुरी पायरी:' : 'Pending Approval Step:'}
+                                            </span>
+                                            <strong className="text-amber-200">
+                                              {language === 'mr' ? pr.reviewDetails.pendingStepMr : pr.reviewDetails.pendingStep}
+                                            </strong>
+                                          </div>
+
+                                          <div className="pt-1 border-t border-slate-800">
+                                            <span className="text-slate-400 text-[10px] block">
+                                              {language === 'mr' ? 'पुढील प्रक्रिया (What happens next):' : 'What happens next:'}
+                                            </span>
+                                            <p className="text-emerald-300">
+                                              {language === 'mr' ? pr.reviewDetails.nextStepMr : pr.reviewDetails.nextStep}
+                                            </p>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                    <Tooltip.Arrow className="fill-slate-900" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            </Tooltip.Provider>
+                          )}
+                        </div>
                       </td>
                       <td className="py-2.5 px-3 text-right font-mono font-medium">{pr.downloads}</td>
                       <td className="py-2.5 px-3 text-center">

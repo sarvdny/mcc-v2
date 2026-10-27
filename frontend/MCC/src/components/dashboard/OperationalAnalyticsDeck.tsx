@@ -18,7 +18,7 @@ export const OperationalAnalyticsDeck: React.FC = () => {
   const days = ['Oct 12', 'Oct 13', 'Oct 14', 'Oct 15', 'Oct 16', 'Oct 17', 'Oct 18'];
 
   return (
-    <div className="bg-[#0B111D] border border-white/10 rounded-xl overflow-hidden shadow-xl flex flex-col h-full">
+    <div className="bg-[#0B111D] border border-white/10 rounded-2xl overflow-hidden shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-white/10 bg-[#070B14]/80 flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">

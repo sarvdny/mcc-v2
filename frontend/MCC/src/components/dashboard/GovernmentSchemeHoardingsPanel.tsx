@@ -14,6 +14,10 @@ import {
 import { DIPR_DIVISIONS_CONFIG } from '@/data/diprDivisionsConfig';
 import { getHoardings } from '@/lib/backendClient';
 import type { SchemeHoardingData } from '@/types/dashboard';
+import { useDashboardStore } from '@/stores/dashboardStore';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 // Build lookup mapping from district_code (e.g. MH-12) to Geo DistrictId (e.g. pune)
 const DISTRICT_CODE_TO_GEO_ID: Record<string, string> = {};
@@ -27,6 +31,7 @@ DIPR_DIVISIONS_CONFIG.forEach((div) => {
 });
 
 export const GovernmentSchemeHoardingsPanel: React.FC = () => {
+  const { language } = useDashboardStore();
   const [hoardings, setHoardings] = useState<SchemeHoardingData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,18 +42,33 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
   const [selectedHoardingId, setSelectedHoardingId] = useState<string | null>(null);
   const [hoveredDistrictId, setHoveredDistrictId] = useState<string | null>(null);
 
+  const [lastFetchedAt, setLastFetchedAt] = useState<string>('2026-10-26T02:00:00.000Z');
+  const [scheduleText, setScheduleText] = useState<string>('Nightly at 02:00 IST');
+  const [isStale, setIsStale] = useState<boolean>(false);
+
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
       setLoading(true);
       setError(null);
       try {
-        const res = await getHoardings();
-        if (isMounted) {
-          if (res && res.hoardings) {
-            setHoardings(res.hoardings);
-          } else {
-            setHoardings([]);
+        const apiRes = await fetch('/api/v1/hoardings');
+        if (apiRes.ok) {
+          const json = await apiRes.json();
+          if (isMounted) {
+            if (json && json.hoardings) {
+              setHoardings(json.hoardings);
+            }
+            if (json.lastFetchedAt) setLastFetchedAt(json.lastFetchedAt);
+            if (json.schedule) setScheduleText(json.schedule);
+            if (json.isStale !== undefined) setIsStale(json.isStale);
+          }
+        } else {
+          const res = await getHoardings();
+          if (isMounted) {
+            if (res && res.hoardings) {
+              setHoardings(res.hoardings);
+            }
           }
         }
       } catch (err: any) {
@@ -64,6 +84,23 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
       isMounted = false;
     };
   }, []);
+
+  const formattedSyncTime = useMemo(() => {
+    try {
+      const d = new Date(lastFetchedAt);
+      return new Intl.DateTimeFormat('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(d) + ' IST';
+    } catch {
+      return '26 Oct 2026, 02:00 IST';
+    }
+  }, [lastFetchedAt]);
 
   // Unique scheme list
   const uniqueSchemes = useMemo(() => {
@@ -145,33 +182,50 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
   }, [filteredHoardings]);
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4 sm:p-5 flex flex-col gap-4">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs hover:shadow-sm transition-all duration-150 p-4 sm:p-5 flex flex-col gap-4">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 flex items-center justify-center text-amber-700 dark:text-amber-400">
-            <MaterialIcon name="podcasts" className="text-xl" />
-          </div>
-          <div>
+      <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+        <MinimalCardHeader
+          title={
+            language === 'mr'
+              ? 'शासकीय योजना फलक व जनजागृती'
+              : 'Government Scheme Hoardings & Outdoor Visibility'
+          }
+          subtitle={
+            language === 'mr'
+              ? `३६ जिल्हे जीआयएस ट्रॅकर · शेवटचे अपडेट: ${formattedSyncTime} · दररोज रात्री ०२:०० वाजता अपडेट होते`
+              : `36 Districts GIS Tracker · Last fetched: ${formattedSyncTime} · Updates nightly at 02:00 IST`
+          }
+          badge={<SampleDataBadge />}
+          action={
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                Government Scheme Hoardings & Outdoor Visibility
-              </h3>
-              <SampleDataBadge />
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono bg-slate-100 text-slate-700 border border-slate-200">
+                <span className={`w-1.5 h-1.5 rounded-full ${isStale ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                <span>02:00 IST</span>
+              </span>
+              <MetricTip metricKey="hoardingsIllumination" value={hoardings.length} lastUpdated={formattedSyncTime}>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-400 cursor-help flex items-center gap-1">
+                  <span>{filteredHoardings.length} of {hoardings.length} Hoardings</span>
+                  <TermInfo termKey="hoardingsIllumination" size="xs" />
+                </span>
+              </MetricTip>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              शासकीय योजना फलक व जनजागृती संनियंत्रण (36 Districts GIS Tracker)
-            </p>
-          </div>
-        </div>
+          }
+          className="w-full"
+        />
+      </div>
 
-        {/* Counter badge */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-            {filteredHoardings.length} of {hoardings.length} Hoardings
+      {/* 36-Hour Stale Warning Banner */}
+      {isStale && (
+        <div className="flex items-center gap-2.5 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 text-xs font-medium">
+          <MaterialIcon name="warning" size="sm" className="text-amber-600 shrink-0" />
+          <span>
+            {language === 'mr'
+              ? 'माहिती जुनी असण्याची शक्यता आहे (Data may be stale): होर्डिंग्ज डेटा ३६ तासांपेक्षा जास्त कालावधीपूर्वी अद्यतनित झाला आहे. दररोज रात्री ०२:०० वाजता सिंक्रोनायझेशन होते.'
+              : 'Data may be stale: Hoardings dataset was last updated more than 36 hours ago. Scheduled nightly sync at 02:00 IST.'}
           </span>
         </div>
-      </div>
+      )}
 
       {/* Filter Toolbar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -186,7 +240,7 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
               setSelectedDistrictCode(e.target.value);
               setSelectedHoardingId(null);
             }}
-            className="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 shadow-xs hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all duration-100 ease-out cursor-pointer"
           >
             <option value="ALL">All 36 Districts (सर्व ३६ जिल्हे)</option>
             {DIPR_DIVISIONS_CONFIG.flatMap((div) =>
@@ -210,7 +264,7 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
               setSelectedScheme(e.target.value);
               setSelectedHoardingId(null);
             }}
-            className="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 shadow-xs hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all duration-100 ease-out cursor-pointer"
           >
             <option value="ALL">All Schemes (सर्व योजना)</option>
             {uniqueSchemes.map((s) => (
@@ -322,19 +376,6 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
                   d={DIVISION_BORDERS_PATH}
                   className="fill-none stroke-slate-400 dark:stroke-slate-600 stroke-[1.2] pointer-events-none"
                 />
-
-                {/* District Pin Labels (Small names) */}
-                {DISTRICT_GEOMETRY.map((district) => (
-                  <text
-                    key={`label-${district.id}`}
-                    x={district.pin.x}
-                    y={district.pin.y + 3}
-                    textAnchor="middle"
-                    className="text-[8px] font-semibold fill-slate-400 dark:fill-slate-500 pointer-events-none select-none"
-                  >
-                    {district.label}
-                  </text>
-                ))}
 
                 {/* Hoarding Markers */}
                 {hoardingsOnMap.map(({ hoarding, x, y }) => {

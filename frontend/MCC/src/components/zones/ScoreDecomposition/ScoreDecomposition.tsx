@@ -8,6 +8,10 @@ import { ScoreDecompositionSkeleton } from '@/components/skeletons/ScoreDecompos
 import { getDistrictName } from '@/lib/dataLocalization';
 import { getDistrictSentiment } from '@/lib/sentimentEngine';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
+import { calculateStatewideAggregates } from '@/calculations';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 export interface ScoreDecompositionProps {
   /** Optional prop to enable cross-panel highlighting when a district is selected from toolbar */
@@ -28,8 +32,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
   // panel describes the whole scope instead of borrowing one district's numbers.
   const statewide = useMemo(() => {
     if (districts.length === 0) return undefined;
-    const avg = (pick: (d: (typeof districts)[number]) => number) =>
-      Math.round(districts.reduce((acc, d) => acc + pick(d), 0) / districts.length);
+    const agg = calculateStatewideAggregates(districts);
 
     return {
       ...districts[0],
@@ -37,15 +40,15 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
       name: 'All Districts',
       nameMr: 'सर्व जिल्हे',
       rank: 0,
-      releases: districts.reduce((acc, d) => acc + d.releases, 0),
-      avgTAT: avg((d) => d.avgTAT ?? 40),
-      sentiment: avg((d) => d.sentiment),
-      crisisSLA: avg((d) => d.crisisSLA),
-      cpi: avg((d) => d.cpi),
-      volumeScore: avg((d) => d.volumeScore),
-      tatScore: avg((d) => d.tatScore ?? 20),
-      sentimentScore: avg((d) => d.sentimentScore),
-      crisisScore: avg((d) => d.crisisScore),
+      releases: agg.totalReleases,
+      avgTAT: agg.avgTAT,
+      sentiment: agg.avgSentiment,
+      crisisSLA: agg.avgCrisisSLA,
+      cpi: agg.avgCPI,
+      volumeScore: agg.volumeScore,
+      tatScore: agg.speedScore,
+      sentimentScore: agg.sentimentScore,
+      crisisScore: agg.crisisScore,
     };
   }, [districts]);
 
@@ -69,12 +72,12 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
       .join(' ');
 
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
-        <div className="p-5 border-b border-slate-200/80 bg-white">
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
-            {t.zone3.title} — {label}
-          </h3>
-          <p className="text-[11px] text-slate-500 font-medium">{t.zone3.subtitle}</p>
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-white">
+          <MinimalCardHeader
+            title={`${t.zone3.title} — ${label}`}
+            subtitle={t.zone3.subtitle}
+          />
         </div>
         <div className="p-8 flex flex-col items-center justify-center text-center gap-2">
           <MaterialIcon name="bar_chart" size="md" className="text-slate-300" />
@@ -94,34 +97,38 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
-            {t.zone3.title} —{' '}
-            {language === 'mr'
+      <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-white">
+        <MinimalCardHeader
+          title={`${t.zone3.title} — ${
+            language === 'mr'
               ? (selected.nameMr || getDistrictName(selected.name, 'mr'))
-              : selected.name}
-          </h3>
-          <p className="text-[11px] text-slate-500 font-medium">
-            {t.zone3.subtitle}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-          {selected.rank > 0 && (
-            <>
-              <span className="text-gov-primary font-bold">
-                {t.zone3.rankPrefix} #{selected.rank}
-              </span>
-              <span className="text-slate-300 select-none font-mono">|</span>
-            </>
-          )}
-          <span className="font-mono font-bold text-gov-primary">
-            {selected.cpi} <span className="font-sans font-medium text-slate-500">/ 100 {t.zone3.cpiPrefix}</span>
-          </span>
-        </div>
+              : selected.name
+          }`}
+          subtitle={t.zone3.subtitle}
+          action={
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+              {selected.rank > 0 && (
+                <>
+                  <span className="text-gov-primary font-bold">
+                    {t.zone3.rankPrefix} #{selected.rank}
+                  </span>
+                  <span className="text-slate-300 select-none font-mono">|</span>
+                </>
+              )}
+              <div className="flex items-center gap-1">
+                <MetricTip metricKey="cpi" value={selected.cpi}>
+                  <span className="font-mono font-bold text-gov-primary hover:text-amber-600 transition-colors cursor-help">
+                    {selected.cpi} <span className="font-sans font-medium text-slate-500">/ 100 {t.zone3.cpiPrefix}</span>
+                  </span>
+                </MetricTip>
+                <TermInfo termKey="cpi" size="xs" />
+              </div>
+            </div>
+          }
+          className="w-full"
+        />
       </div>
 
       {/* 3 Constituent Scores */}
@@ -135,9 +142,10 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
           maxScore={35}
           valueLabel={`${selected.releases} ${language === 'mr' ? 'पत्रके' : 'releases'}`}
           gapLabel={`${35 - selected.volumeScore} ${t.zone3.gapSuffix}`}
+          metricKey="volumeScore"
         />
 
-        {/* 2. Media Sentiment Score (Multi-Channel 4-Stream Composite, 35 pts) */}
+        {/* 2. Media Sentiment Index (Multi-Channel 4-Stream Composite, 25 pts) */}
 
         <div className="space-y-1.5 p-2 rounded-md hover:bg-slate-50 transition-colors">
           <ScoreMetricBar
@@ -148,11 +156,12 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
             maxScore={35}
             valueLabel={`${selected.sentiment}%`}
             gapLabel={`${35 - selected.sentimentScore} ${t.zone3.gapSuffix}`}
+            metricKey="sentimentIndex"
           />
 
           {/* 4-Channel Weighted Breakdown Badges */}
           <div className="mt-2 pt-2 border-t border-slate-100">
-            <div className="text-[10px] font-semibold text-slate-500 flex items-center gap-1 mb-1.5">
+            <div className="text-xs font-semibold text-slate-500 flex items-center gap-1 mb-1.5">
               <MaterialIcon name="bar_chart" size="xs" className="text-slate-400" />
               <span>
                 {language === 'mr' ? '४-प्रवाह घटक:' : '4-Channel Mix:'}
@@ -160,70 +169,71 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
             </div>
             <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50/80 rounded-lg border border-slate-100">
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-blue-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-blue-500 text-xs"
                 title="Print Media OCR (35% weight in composite tone score)"
               >
                 <span className="text-slate-700 font-medium truncate">
                   {language === 'mr' ? 'प्रिंट ओसीआर' : 'Print OCR'}
                 </span>
-                <div className="flex items-center gap-1 shrink-0 font-mono text-[11px]">
+                <div className="flex items-center gap-1 shrink-0 font-mono text-xs">
                   <strong className="text-slate-900">{sentimentBreakdown.printOcr}%</strong>
-                  <span className="text-slate-400 text-[10px]">(35%)</span>
+                  <span className="text-slate-400 text-xs">(35%)</span>
                 </div>
               </div>
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-purple-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-purple-500 text-xs"
                 title="Broadcast TV Telemetry - DD Sahyadri & Regional News (25% weight)"
               >
                 <span className="text-slate-700 font-medium truncate">
                   {language === 'mr' ? 'टीव्ही प्रसारण' : 'Broadcast TV'}
                 </span>
-                <div className="flex items-center gap-1 shrink-0 font-mono text-[11px]">
+                <div className="flex items-center gap-1 shrink-0 font-mono text-xs">
                   <strong className="text-slate-900">{sentimentBreakdown.broadcastTv}%</strong>
-                  <span className="text-slate-400 text-[10px]">(25%)</span>
+                  <span className="text-slate-400 text-xs">(25%)</span>
                 </div>
               </div>
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-emerald-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-emerald-500 text-xs"
                 title="Social Listening - X/Twitter, FB, Insta, YouTube (25% weight)"
               >
                 <span className="text-slate-700 font-medium truncate">
                   {language === 'mr' ? 'सोशल ऐकणे' : 'Social'}
                 </span>
-                <div className="flex items-center gap-1 shrink-0 font-mono text-[11px]">
+                <div className="flex items-center gap-1 shrink-0 font-mono text-xs">
                   <strong className="text-slate-900">{sentimentBreakdown.socialListening}%</strong>
-                  <span className="text-slate-400 text-[10px]">(25%)</span>
+                  <span className="text-slate-400 text-xs">(25%)</span>
                 </div>
               </div>
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-amber-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-amber-500 text-xs"
                 title="Citizen/User Comments & Public Feedback (15% weight)"
               >
                 <span className="text-slate-700 font-medium truncate">
                   {language === 'mr' ? 'नागरिक टिप्पण्या' : 'Comments'}
                 </span>
-                <div className="flex items-center gap-1 shrink-0 font-mono text-[11px]">
+                <div className="flex items-center gap-1 shrink-0 font-mono text-xs">
                   <strong className="text-slate-900">{sentimentBreakdown.userComments}%</strong>
-                  <span className="text-slate-400 text-[10px]">(15%)</span>
+                  <span className="text-slate-400 text-xs">(15%)</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 3. Crisis SLA */}
+        {/* 3. Crisis SLA Resolution Rate */}
         <ScoreMetricBar
           icon="warning"
           title={t.zone3.crisisTitle}
           subtitle={t.zone3.crisisSub}
           score={selected.crisisScore}
-          maxScore={30}
-          valueLabel={`${selected.crisisSLA}% SLA`}
-          gapLabel={`${30 - selected.crisisScore} ${t.zone3.gapSuffix}`}
+          maxScore={15}
+          valueLabel={`${selected.crisisSLA}%`}
+          gapLabel={`${15 - selected.crisisScore} ${t.zone3.gapSuffix}`}
+          metricKey="crisisSlaResolutionRate"
         />
       </div>
 
-      <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex justify-between items-center">
+      <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center">
         <span>{t.zone3.footerLeft}</span>
         <span className="font-semibold text-gov-primary">{t.zone3.footerRight}</span>
       </div>

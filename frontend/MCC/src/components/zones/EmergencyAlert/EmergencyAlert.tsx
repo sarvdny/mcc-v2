@@ -19,6 +19,7 @@ import {
 import { PrimaryIncidentCard } from './PrimaryIncidentCard';
 import { IncidentList } from './IncidentList';
 import { EmergencyAlertSkeleton } from '@/components/skeletons/EmergencyAlertSkeleton';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 export interface EmergencyAlertProps {
   /** Optional prop to enable cross-panel highlighting when a district is selected */
@@ -74,25 +75,25 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
   }
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col">
+    <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs hover:shadow-sm transition-all duration-150 border-t-2 border-t-rose-600 flex flex-col overflow-hidden">
       {/* Sleek Dark-Slate Institutional Command Bar (Single Axis) */}
       <div className="bg-slate-900 px-4 py-3 rounded-t-[10px] flex items-center justify-between gap-3 select-none">
-        {/* Left Side: Solid ShieldExclamationIcon, Title (no wrap, text-xs on Dashboard), Subtitle on /crisis */}
-        <div className="flex items-center gap-2 min-w-0">
-          <ShieldExclamationIcon className="w-4 h-4 text-rose-500 shrink-0" />
-          <h3
-            className={`font-semibold text-white whitespace-nowrap ${
-              isCrisisRoute ? 'text-xs sm:text-sm' : 'text-xs'
-            }`}
-          >
-            {t.zone5.title}
-          </h3>
-          {isCrisisRoute && (
-            <span className="hidden 2xl:inline text-xs text-slate-400 whitespace-nowrap">
-              {t.zone5.subtitle}
-            </span>
-          )}
-        </div>
+        {/* Left Side: Solid ShieldExclamationIcon, Title */}
+        <MinimalCardHeader
+          title={
+            <div className="flex items-center gap-2">
+              <ShieldExclamationIcon className="w-4 h-4 text-rose-500 shrink-0" />
+              <span className={`font-semibold text-white whitespace-nowrap ${
+                isCrisisRoute ? 'text-xs sm:text-sm' : 'text-xs'
+              }`}>
+                {t.zone5.title}
+              </span>
+            </div>
+          }
+          subtitle={t.zone5.subtitle}
+          titleClassName="text-white"
+          className="text-white"
+        />
 
         {/* Right Side: Unboxed Pulsing Status Dot + Count + Divider + Tactile Toggle Button */}
         <div className="flex items-center gap-2 shrink-0 ml-auto">
@@ -120,7 +121,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
                     ? (language === 'mr' ? 'विस्तृत करा' : 'Expand Crisis Monitor')
                     : (language === 'mr' ? 'संक्षिप्त करा' : 'Collapse Crisis Monitor')
                 }
-                className="h-6 px-2 2xl:px-3 flex items-center justify-center gap-2 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white transition-all cursor-pointer shrink-0"
+                className="h-7 px-2.5 2xl:px-3 flex items-center justify-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/80 shadow-xs active:scale-[0.97] text-slate-200 hover:text-white transition-all duration-100 ease-out cursor-pointer shrink-0"
               >
                 <span className="hidden 2xl:inline text-[11px] font-medium">
                   {isCollapsed

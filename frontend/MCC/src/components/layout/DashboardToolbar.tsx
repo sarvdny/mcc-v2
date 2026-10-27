@@ -35,8 +35,8 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
   const scopeBadgeText = isDistrictScoped
     ? (language === 'mr' ? `${localizedDistrictName} जिल्हा मंजुरी` : `${currentUser?.district || 'Palghar'} District Clearance`)
     : isDivisionScoped
-    ? (language === 'mr' ? 'विभागीय मंजुरी' : 'Divisional Clearance')
-    : (language === 'mr' ? 'राज्यस्तरीय मंजुरी' : 'Statewide Clearance');
+    ? (language === 'mr' ? 'विभागीय मंजुरी' : 'Divisional clearance')
+    : (language === 'mr' ? 'राज्यस्तरीय मंजुरी' : 'Statewide clearance');
 
   const handleExport = () => {
     setToast({
@@ -65,8 +65,6 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
         label: language === 'mr' ? d.nameMr || getDistrictName(d.name, 'mr') : d.name,
       }));
 
-    // A selection can come from another panel (e.g. the GIS map, which covers all 36
-    // districts). Keep it representable so the dropdown never resets to "All Districts".
     if (
       selectedDistrictId &&
       selectedDistrictId !== 'all' &&
@@ -83,16 +81,16 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
   }, [districts, language, selectedDistrictId]);
 
   return (
-    <div className="shrink-0 bg-white border-b border-slate-200/80 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 select-none z-10">
+    <div className="shrink-0 backdrop-blur-md bg-white/90 border-b border-slate-200/80 px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 select-none z-10 sticky top-0">
       {/* Left: Operations Title & Clearance Status */}
       <div className="flex items-center gap-2.5">
-        <h2 className="text-lg font-bold text-slate-900 tracking-tight leading-none">
+        <h1 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-none">
           {language === 'mr' ? 'राज्य संनियंत्रण दृश्यावलोकन' : 'State Operations Overview'}
-        </h2>
-        <span className="text-slate-300 select-none font-mono">|</span>
-        <div className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider leading-none">
+        </h1>
+        <span className="text-slate-300 select-none font-normal" aria-hidden="true">|</span>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" aria-hidden="true" />
+          <span className="leading-none">
             {scopeBadgeText}
           </span>
         </div>
@@ -102,8 +100,8 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
       <div className="flex items-center gap-2.5 flex-wrap">
         {/* 1. District Scope Filter with cross-panel highlighting */}
         {isDistrictScoped ? (
-          <div className="h-9 px-3 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium text-slate-700 shadow-2xs flex items-center gap-1.5">
-            <LockClosedIcon className="w-4 h-4 text-slate-500 shrink-0" />
+          <div className="h-9 px-3 rounded-xl border border-slate-200/80 bg-slate-50 text-xs font-medium text-slate-700 flex items-center gap-1.5 shadow-xs">
+            <LockClosedIcon className="w-4 h-4 text-slate-500 shrink-0" aria-hidden="true" />
             <span>{localizedDistrictName} {language === 'mr' ? '(बंदिस्त)' : '(Locked)'}</span>
           </div>
         ) : (
@@ -112,13 +110,11 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
               value={currentDistrictValue}
               onChange={(e) => {
                 const val = e.target.value;
-                // Clear the text search so the table shows every district with the
-                // selected one highlighted, rather than collapsing to a single row.
                 setSearchDistrict('');
-                // Cross-panel highlight: notify other components of district change
                 highlightDistrict(val || 'all');
               }}
-              className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
+              aria-label={language === 'mr' ? 'जिल्हा निवडा' : 'Select district'}
+              className="h-9 pl-3 pr-8 rounded-xl border border-slate-200/80 bg-white/95 text-xs font-medium text-slate-700 shadow-xs hover:border-slate-300 hover:shadow-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-gov-accent focus-visible:border-transparent cursor-pointer appearance-none transition-all duration-100 ease-out"
             >
               <option value="">{language === 'mr' ? 'सर्व जिल्हे' : 'All Districts'}</option>
               {districtOptions.map((d) => (
@@ -129,6 +125,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
             </select>
             <ChevronDownIcon
               className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 shrink-0"
+              aria-hidden="true"
             />
           </div>
         )}
@@ -138,7 +135,8 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
+            aria-label={language === 'mr' ? 'कालावधी निवडा' : 'Select time range'}
+            className="h-9 pl-3 pr-8 rounded-xl border border-slate-200/80 bg-white/95 text-xs font-medium text-slate-700 shadow-xs hover:border-slate-300 hover:shadow-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-gov-accent focus-visible:border-transparent cursor-pointer appearance-none transition-all duration-100 ease-out"
           >
             <option value="Last 7 days">{language === 'mr' ? 'मागील ७ दिवस' : 'Last 7 Days'}</option>
             <option value="Last 30 days">{language === 'mr' ? 'मागील ३० दिवस' : 'Last 30 Days'}</option>
@@ -146,6 +144,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
           </select>
           <ChevronDownIcon
             className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 shrink-0"
+            aria-hidden="true"
           />
         </div>
 
@@ -153,10 +152,10 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
         <button
           type="button"
           onClick={handleExport}
-          className="h-9 px-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+          className="h-9 px-3.5 rounded-xl bg-gov-primary hover:bg-slate-800 border border-slate-800/80 shadow-xs hover:shadow-sm focus-visible:ring-2 focus-visible:ring-gov-accent focus-visible:outline-hidden text-white text-xs font-medium flex items-center gap-1.5 transition-all duration-100 ease-out cursor-pointer active:scale-[0.98]"
           title={language === 'mr' ? 'माहिती अहवाल निर्यात करा' : 'Export Telemetry Report'}
         >
-          <ArrowDownTrayIcon className="w-4 h-4 text-white shrink-0" />
+          <ArrowDownTrayIcon className="w-4 h-4 text-white shrink-0" aria-hidden="true" />
           <span>{language === 'mr' ? 'अहवाल निर्यात' : 'Export Telemetry Report'}</span>
         </button>
       </div>

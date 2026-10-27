@@ -16,6 +16,7 @@ import {
   DocumentTextIcon,
   ClockIcon,
 } from '@heroicons/react/20/solid';
+import { OutboundLink } from '@/components/shared/OutboundLink';
 import {
   getDistrictName,
   getLocalizedChannel,
@@ -74,16 +75,14 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
         {incident.sources.map((src, idx) => (
           <React.Fragment key={src.name}>
             {idx > 0 && <span className="text-slate-300 select-none">·</span>}
-            <a
+            <OutboundLink
               href={src.url}
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-xs font-medium text-slate-700 hover:text-rose-600 inline-flex items-center gap-0.5 transition-colors whitespace-nowrap"
               title={`${src.name} coverage`}
+              showDomainBadge={false}
             >
               <span>{language === 'mr' ? (src.nameMr || src.name) : src.name}</span>
-              <ArrowUpRightIcon className={`${iconSize} shrink-0`} />
-            </a>
+            </OutboundLink>
           </React.Fragment>
         ))}
       </div>
@@ -205,6 +204,40 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
 
             {/* Inline Coverage Citations */}
             {renderCoverageSources('w-3.5 h-3.5')}
+
+            {/* Validation Basis & Fact-Check Evidence Banner (Item 8b) */}
+            <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200/80 text-xs space-y-1 my-1">
+              <div className="flex items-center justify-between flex-wrap gap-1">
+                <span className="font-semibold text-rose-950 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-600 inline-block animate-ping shrink-0" />
+                  <span>
+                    {language === 'mr'
+                      ? `${incident.source || 'सोशल मीडिया'} वरून ${incident.detectedDate || '२६ ऑक्टो २०२६'} रोजी खोटी बातमी आढळली`
+                      : `False news detected from ${incident.source || 'Social Media'} on ${incident.detectedDate || '26 Oct 2026'}`}
+                  </span>
+                </span>
+                <span className="px-1.5 py-0.5 rounded bg-rose-700 text-white font-mono font-bold text-[10px]">
+                  {language === 'mr' ? (incident.verdictMr || 'बनावट व असत्य') : (incident.verdict || 'FABRICATED')}
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-700 flex flex-col gap-0.5">
+                <div>
+                  <strong className="text-slate-900">{language === 'mr' ? 'तपासलेला स्त्रोत व हँडल: ' : 'Detected Channel/Handle: '}</strong>
+                  <span className="font-mono text-slate-800">{incident.url || incident.source || 'Telegram / WhatsApp Viral Group'}</span>
+                  {incident.detectedTime && (
+                    <span className="font-mono text-slate-500 ml-1.5">({incident.detectedTime})</span>
+                  )}
+                </div>
+                <div>
+                  <strong className="text-emerald-800">{language === 'mr' ? 'अधिकृत खंडन पुरावा: ' : 'Official Refutation Evidence: '}</strong>
+                  <span className="text-slate-800">
+                    {language === 'mr'
+                      ? (incident.officialEvidenceMr || 'आरोग्य संचलनालय अधिकृत प्रसिद्धीपत्रक क्र. ४४/२०२६ व जिल्हा शल्यचिकित्सक तपासणी अहवालानुसार औषध साठा १००% उपलब्ध.')
+                      : (incident.officialEvidence || 'Directorate of Health Services Bulletin #44/2026 & Civil Surgeon Ground Inspection Report confirming 100% adequate stock.')}
+                  </span>
+                </div>
+              </div>
+            </div>
 
             {/* Primary Source & Verified Status */}
             <div className="text-[11px] text-slate-500 flex items-center gap-2 flex-wrap pt-0.5">
@@ -342,6 +375,37 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
           {/* 3. Inline Coverage Citations (Coverage: X / Twitter ↗ · Lokmat ↗ · Sakal ↗) */}
           {renderCoverageSources('w-3 h-3')}
 
+          {/* Validation Basis & Fact-Check Evidence Banner (Item 8b) */}
+          <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-xs space-y-1">
+            <div className="flex items-center justify-between flex-wrap gap-1">
+              <span className="font-semibold text-rose-950 text-[11px] flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 inline-block animate-ping shrink-0" />
+                <span>
+                  {language === 'mr'
+                    ? `${incident.source || 'सोशल मीडिया'} वरून ${incident.detectedDate || '२६ ऑक्टो २०२६'} रोजी खोटी बातमी आढळली`
+                    : `False news detected from ${incident.source || 'Social Media'} on ${incident.detectedDate || '26 Oct 2026'}`}
+                </span>
+              </span>
+              <span className="px-1 py-0.2 rounded bg-rose-700 text-white font-mono font-bold text-[9px]">
+                {language === 'mr' ? (incident.verdictMr || 'बनावट व असत्य') : (incident.verdict || 'FABRICATED')}
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-700 flex flex-col gap-0.5">
+              <div>
+                <strong className="text-slate-900">{language === 'mr' ? 'तपासलेला स्त्रोत: ' : 'Detected Source: '}</strong>
+                <span className="font-mono text-slate-800">{incident.url || incident.source || 'Social Channel'}</span>
+              </div>
+              <div>
+                <strong className="text-emerald-800">{language === 'mr' ? 'अधिकृत पुरावा: ' : 'Refutation Evidence: '}</strong>
+                <span className="text-slate-800">
+                  {language === 'mr'
+                    ? (incident.officialEvidenceMr || 'सार्वजनिक आरोग्य प्रयोगशाळा तपासणी अहवालानुसार औषध साठा सुरक्षित व पुरेसा.')
+                    : (incident.officialEvidence || 'Civil Surgeon inspection report confirming stock availability.')}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* 4. Primary Source + Status */}
           <div className="text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
             <span>
@@ -360,7 +424,7 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
             <div className="flex items-center gap-1 shrink-0">
               <Link
                 href="/system-monitoring"
-                className="h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded transition-colors whitespace-nowrap shrink-0"
+                className="h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200/80 shadow-xs hover:border-slate-300 rounded-xl active:scale-[0.98] transition-all duration-100 ease-out whitespace-nowrap shrink-0"
                 title={language === 'mr' ? 'थेट प्रणाली निरीक्षण उघडा' : 'Open System Monitoring module'}
               >
                 <ServerStackIcon className="w-3.5 h-3.5 text-gov-primary shrink-0" />
@@ -374,7 +438,7 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                   setShowTimeline(false);
                 }}
                 aria-expanded={showEvidence}
-                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 border rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1.5 border rounded-xl shadow-xs active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer whitespace-nowrap shrink-0 ${
                   showEvidence
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
@@ -391,7 +455,7 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                   setShowEvidence(false);
                 }}
                 aria-expanded={showTimeline}
-                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 border rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 border rounded-xl shadow-xs active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer whitespace-nowrap shrink-0 ${
                   showTimeline
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
@@ -407,7 +471,7 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                 type="button"
                 onClick={handleAuthorizeClick}
                 disabled={incident.authorized || isSubmitting}
-                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 rounded transition-colors shadow-2xs cursor-pointer shrink-0 whitespace-nowrap ${
+                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 rounded-xl shadow-xs active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer shrink-0 whitespace-nowrap ${
                   incident.authorized
                     ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-not-allowed'
                     : 'bg-rose-700 hover:bg-rose-800 text-white'

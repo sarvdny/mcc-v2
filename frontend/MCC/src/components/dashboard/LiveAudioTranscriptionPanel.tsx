@@ -117,7 +117,7 @@ export const LiveAudioTranscriptionPanel: React.FC = () => {
           <span className="font-bold text-slate-200">
             {language === 'mr' ? 'थेट ध्वनी-ते-मजकूर प्रसारण प्रवाह' : 'Live Audio-to-Text Broadcast Transcript'}
           </span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
+          <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">
             Gemini 2.0 / Multilingual Indic
           </span>
         </div>
@@ -126,7 +126,7 @@ export const LiveAudioTranscriptionPanel: React.FC = () => {
         <button
           type="button"
           onClick={() => setIsAutoScrollPaused((prev) => !prev)}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold transition border ${
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition border ${
             isAutoScrollPaused
               ? 'bg-amber-950/80 text-amber-300 border-amber-700/80'
               : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
@@ -152,13 +152,13 @@ export const LiveAudioTranscriptionPanel: React.FC = () => {
             className="flex items-start gap-2.5 p-2 rounded-lg bg-slate-950/40 hover:bg-slate-950/70 border border-slate-800/60 transition group"
           >
             {/* Timestamp Offset */}
-            <span className="font-mono text-[10px] text-amber-400/90 font-semibold shrink-0 pt-0.5">
+            <span className="font-mono text-xs text-amber-400 font-semibold shrink-0 pt-0.5">
               [{formatOffset(seg.start_time)}]
             </span>
 
             {/* Language Tag */}
             <span
-              className={`text-[9px] font-black uppercase px-1 py-0.2 rounded shrink-0 border mt-0.5 ${
+              className={`text-xs font-bold uppercase px-1 py-0.2 rounded shrink-0 border mt-0.5 ${
                 seg.language === 'mr'
                   ? 'bg-amber-950/60 text-amber-400 border-amber-800/60'
                   : 'bg-blue-950/60 text-blue-400 border-blue-800/60'
@@ -176,7 +176,7 @@ export const LiveAudioTranscriptionPanel: React.FC = () => {
       </div>
 
       {/* Footer Disclaimer Bar */}
-      <div className="p-2 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-400 px-3">
+      <div className="p-2 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 px-3">
         <div className="flex items-center gap-1.5">
           <MaterialIcon name="warning" className="text-amber-500 text-xs shrink-0" />
           <span className="italic">Machine transcript, may contain errors.</span>

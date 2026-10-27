@@ -31,32 +31,41 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
         top: 4,
         right: 10,
         itemGap: 14,
-        textStyle: { fontSize: 10, color: '#475569' },
+        textStyle: { fontSize: 12, color: '#334155' },
         itemWidth: 10,
         itemHeight: 10,
         data: [
-          language === 'mr' ? 'प्रसिद्धी प्रमाण (३५)' : 'Volume (35)',
-          language === 'mr' ? 'माध्यम सूर (३५)' : 'Sentiment (35)',
-          language === 'mr' ? 'आपत्ती SLA (३०)' : 'Crisis SLA (30)',
+          language === 'mr' ? 'प्रसिद्धी प्रमाण (३५)' : 'Volume (35 pts)',
+          language === 'mr' ? 'लोकभावना निर्देशांक (२५)' : 'Sentiment Index (25 pts)',
+          language === 'mr' ? 'आपत्कालीन एसएलए निवारण दर (१५)' : 'Crisis SLA Resolution Rate (15 pts)',
         ],
       },
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
-        formatter: (params: Array<{ seriesName: string; value: number; name: string }>) => {
+        backgroundColor: 'rgba(15, 23, 42, 0.94)',
+        borderColor: 'rgba(255, 255, 255, 0.12)',
+        borderWidth: 1,
+        padding: [8, 12],
+        textStyle: { color: '#f8fafc', fontSize: 12 },
+        extraCssText: 'backdrop-filter: blur(12px); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);',
+        formatter: (params: Array<{ seriesName: string; value: number; name: string; color: string }>) => {
           const districtName = params[0]?.name || '';
           const currentDistrict = top5.find((d) => (language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name) === districtName);
           const totalCpi = currentDistrict ? currentDistrict.cpi : params.reduce((acc, p) => acc + (p.value || 0), 0).toFixed(1);
 
-          let html = `<div style="font-size:11px; padding:4px 6px; min-width:180px;">
-            <div style="font-weight:bold; color:#1B2A4A; border-bottom:1px solid #E2E8F0; padding-bottom:3px; margin-bottom:4px; display:flex; justify-content:space-between;">
+          let html = `<div style="font-size:12px; min-width:190px;">
+            <div style="font-weight:700; color:#FFFFFF; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:5px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
               <span>${districtName}</span>
-              <span style="color:#D97706;">${totalCpi} / 100 CPI</span>
+              <span style="color:#F59E0B; font-family:monospace; font-weight:700;">${totalCpi} / 100 CPI</span>
             </div>`;
           params.forEach((p) => {
-            html += `<div style="display:flex; justify-content:space-between; gap:12px; margin-top:2px;">
-              <span style="color:#64748B;">${p.seriesName}:</span>
-              <strong style="font-family:monospace; color:#0F172A;">${p.value}</strong>
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:3px;">
+              <span style="color:#94A3B8; display:flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; border-radius:50%; background-color:${p.color}; display:inline-block;"></span>
+                ${p.seriesName}
+              </span>
+              <strong style="font-family:monospace; color:#FFFFFF;">${p.value}</strong>
             </div>`;
           });
           html += '</div>';
@@ -66,39 +75,39 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
       xAxis: {
         type: 'category',
         data: categories,
-        axisLine: { lineStyle: { color: '#CBD5E1' } },
-        axisLabel: { color: '#1B2A4A', fontSize: 11, fontWeight: 500 },
+        axisLine: { lineStyle: { color: '#E2E8F0' } },
+        axisLabel: { color: '#0F172A', fontSize: 12, fontWeight: 600, fontFamily: 'Plus Jakarta Sans, sans-serif' },
         axisTick: { show: false },
       },
       yAxis: {
         type: 'value',
         max: 100,
-        splitLine: { lineStyle: { color: '#E2E8F0', type: 'dashed' } },
-        axisLabel: { color: '#64748B', fontSize: 10 },
+        splitLine: { lineStyle: { color: '#F1F5F9', type: 'dashed' } },
+        axisLabel: { color: '#64748B', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' },
       },
       series: [
         {
-          name: language === 'mr' ? 'प्रसिद्धी प्रमाण (३५)' : 'Volume (35)',
+          name: language === 'mr' ? 'प्रसिद्धी प्रमाण (३५)' : 'Volume (35 pts)',
           type: 'bar',
           stack: 'cpi',
           barWidth: '36%',
           data: top5.map((d) => d.volumeScore),
-          itemStyle: { color: '#1E3A8A' },
+          itemStyle: { color: '#1B2A4A' },
         },
         {
-          name: language === 'mr' ? 'माध्यम सूर (३५)' : 'Sentiment (35)',
+          name: language === 'mr' ? 'लोकभावना निर्देशांक (२५)' : 'Sentiment Index (25 pts)',
           type: 'bar',
           stack: 'cpi',
           data: top5.map((d) => d.sentimentScore),
           itemStyle: { color: '#D97706' },
         },
         {
-          name: language === 'mr' ? 'आपत्ती SLA (३०)' : 'Crisis SLA (30)',
+          name: language === 'mr' ? 'आपत्कालीन एसएलए निवारण दर (१५)' : 'Crisis SLA Resolution Rate (15 pts)',
           type: 'bar',
           stack: 'cpi',
           borderRadius: [4, 4, 0, 0],
           data: top5.map((d) => d.crisisScore),
-          itemStyle: { color: '#6366F1' },
+          itemStyle: { color: '#059669' },
         },
       ],
     };

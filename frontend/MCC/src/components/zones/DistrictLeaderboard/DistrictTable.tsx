@@ -13,6 +13,8 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/20/solid';
 import { getDistrictName, getDivisionName } from '@/lib/dataLocalization';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
 
 interface DistrictTableProps {
   districts: DistrictData[];
@@ -110,7 +112,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
 
   return (
     <div className="flex-1 flex flex-col justify-between gap-3 w-full">
-      <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/90 rounded-lg shadow-2xs bg-white w-full">
+      <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/80 rounded-xl shadow-xs bg-white w-full">
         <table className="w-full text-left text-xs min-w-[500px]">
           <thead className="bg-gov-primary text-white font-semibold border-b border-gov-primary-dark select-none">
             <tr>
@@ -153,12 +155,12 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 className="py-3 px-3 text-right cursor-pointer hover:bg-gov-primary-light focus-visible:bg-gov-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-colors group"
                 title="Sort by Releases"
               >
-                <div className="flex items-center justify-end gap-0.5">
+                <div className="flex items-center justify-end gap-1">
                   <span>{t.zone2.releasesCol}</span>
+                  <TermInfo termKey="volumeScore" size="xs" />
                   {renderSortIcon('releases')}
                 </div>
               </th>
-
 
               {/* Sentiment */}
               <th
@@ -167,25 +169,27 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 tabIndex={0}
                 aria-sort={getAriaSort('sentiment')}
                 className="py-3 px-3 text-right cursor-pointer hover:bg-gov-primary-light focus-visible:bg-gov-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-colors group"
-                title="Sort by Sentiment"
+                title="Sort by Sentiment Index"
               >
-                <div className="flex items-center justify-end gap-0.5">
+                <div className="flex items-center justify-end gap-1">
                   <span>{t.zone2.sentimentCol}</span>
+                  <TermInfo termKey="sentimentIndex" size="xs" />
                   {renderSortIcon('sentiment')}
                 </div>
               </th>
 
-              {/* Crisis SLA */}
+              {/* Crisis SLA Resolution Rate */}
               <th
                 onClick={() => handleSort('crisisSLA')}
                 onKeyDown={(e) => handleHeaderKeyDown(e, 'crisisSLA')}
                 tabIndex={0}
                 aria-sort={getAriaSort('crisisSLA')}
                 className="py-3 px-3 text-right cursor-pointer hover:bg-gov-primary-light focus-visible:bg-gov-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-colors group"
-                title="Sort by Crisis SLA"
+                title="Sort by Crisis SLA Resolution Rate"
               >
-                <div className="flex items-center justify-end gap-0.5">
+                <div className="flex items-center justify-end gap-1">
                   <span>{t.zone2.crisisCol}</span>
+                  <TermInfo termKey="crisisSlaResolutionRate" size="xs" />
                   {renderSortIcon('crisisSLA')}
                 </div>
               </th>
@@ -199,8 +203,9 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 className="py-3 px-3 text-right font-bold cursor-pointer hover:bg-gov-primary-light focus-visible:bg-gov-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-colors group"
                 title="Sort by CPI Composite Performance Index"
               >
-                <div className="flex items-center justify-end gap-0.5">
+                <div className="flex items-center justify-end gap-1">
                   <span>{t.zone2.cpiCol}</span>
+                  <TermInfo termKey="cpi" size="xs" />
                   {renderSortIcon('cpi')}
                 </div>
               </th>
@@ -240,7 +245,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                   className={`cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov-accent ${
                     isSelected
                       ? 'bg-amber-500/10 border-l-2 border-l-gov-accent font-medium'
-                      : 'hover:bg-slate-50'
+                      : 'hover:bg-slate-50/90 active:bg-amber-500/20 active:brightness-95 transition-colors duration-100'
                   }`}
                 >
                   <td className="py-3 px-2 font-mono text-center text-slate-500 font-semibold">
@@ -251,53 +256,62 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span>{language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name}</span>
                         {isUserDistrictScoped && d.name.toLowerCase() === assignedDistrictName && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-sans font-bold text-amber-700 whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1 text-xs font-sans font-bold text-amber-700 whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                             <span>{language === 'mr' ? 'आपला' : 'Your District'}</span>
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] font-normal text-slate-500">
+                      <span className="text-xs font-normal text-slate-500">
                         {language === 'mr' ? getDivisionName(d.division, 'mr') : d.division}
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 px-3 text-right font-mono font-medium">{d.releases}</td>
-                  <td className="py-3 px-3 text-right font-mono">
-
-                    <span
-                      className={`inline-flex items-center justify-end gap-1.5 cursor-help ${
-                        d.sentiment >= 70
-                          ? 'text-emerald-600 font-semibold'
-                          : d.sentiment >= 60
-                          ? 'text-amber-600 font-semibold'
-                          : 'text-slate-700 font-medium'
-                      }`}
-                      title={
-                        d.sentimentChannels
-                          ? `Print OCR: ${d.sentimentChannels.printOcr}% · TV: ${d.sentimentChannels.broadcastTv}% · Social: ${d.sentimentChannels.socialListening}% · Comments: ${d.sentimentChannels.userComments}%`
-                          : `Composite Sentiment: ${d.sentiment}%`
-                      }
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                          d.sentiment >= 70
-                            ? 'bg-emerald-500'
-                            : d.sentiment >= 60
-                            ? 'bg-amber-500'
-                            : 'bg-slate-400'
-                        }`}
-                      />
-                      <span>{d.sentiment}%</span>
-                    </span>
+                  <td className="py-3 px-3 text-right font-mono font-medium">
+                    <MetricTip metricKey="volumeScore" value={d.releases}>
+                      <span className="hover:text-gov-primary transition-colors cursor-help">{d.releases}</span>
+                    </MetricTip>
                   </td>
                   <td className="py-3 px-3 text-right font-mono">
-                    <span className={d.crisisSLA >= 85 ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'}>
-                      {d.crisisSLA}%
-                    </span>
+                    <MetricTip metricKey="sentimentIndex" value={`${d.sentiment}%`}>
+                      <span
+                        className={`inline-flex items-center justify-end gap-1.5 cursor-help ${
+                          d.sentiment >= 70
+                            ? 'text-emerald-600 font-semibold'
+                            : d.sentiment >= 60
+                            ? 'text-amber-600 font-semibold'
+                            : 'text-slate-700 font-medium'
+                        }`}
+                        title={
+                          d.sentimentChannels
+                            ? `Print OCR: ${d.sentimentChannels.printOcr}% · TV: ${d.sentimentChannels.broadcastTv}% · Social: ${d.sentimentChannels.socialListening}% · Comments: ${d.sentimentChannels.userComments}%`
+                            : `Sentiment Index: ${d.sentiment}%`
+                        }
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                            d.sentiment >= 70
+                              ? 'bg-emerald-500'
+                              : d.sentiment >= 60
+                              ? 'bg-amber-500'
+                              : 'bg-slate-400'
+                          }`}
+                        />
+                        <span>{d.sentiment}%</span>
+                      </span>
+                    </MetricTip>
+                  </td>
+                  <td className="py-3 px-3 text-right font-mono">
+                    <MetricTip metricKey="crisisSlaResolutionRate" value={`${d.crisisSLA}%`}>
+                      <span className={`${d.crisisSLA >= 85 ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'} cursor-help`}>
+                        {d.crisisSLA}%
+                      </span>
+                    </MetricTip>
                   </td>
                   <td className={`py-3 px-3 text-right font-mono text-xs sm:text-sm ${cpiColorClass}`}>
-                    {d.cpi}
+                    <MetricTip metricKey="cpi" value={d.cpi}>
+                      <span className="cursor-help hover:underline">{d.cpi}</span>
+                    </MetricTip>
                   </td>
                   <td className="py-3 px-3 text-center">
                     <button
@@ -306,7 +320,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         onSelectDistrict(d.id);
                       }}
                       aria-label={language === 'mr' ? `${d.nameMr || getDistrictName(d.name, 'mr')} कामगिरी विश्लेषण` : `Inspect ${d.name} performance metrics`}
-                      className={`inline-flex items-center justify-center gap-1 px-2.5 py-1 text-[10px] rounded transition-colors cursor-pointer ${
+                      className={`inline-flex items-center justify-center gap-1 px-2.5 py-1 text-xs rounded transition-colors cursor-pointer ${
                         isSelected
                           ? 'text-amber-700 bg-amber-500/10 border-l-2 border-amber-500 font-semibold rounded-l-none'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
@@ -338,7 +352,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
             )}
           </span>
           <span className="text-slate-300">•</span>
-          <div className="flex items-center gap-1 text-[11px]">
+          <div className="flex items-center gap-1 text-xs">
             <span>{language === 'mr' ? 'पृष्ठ आकार:' : 'Page size:'}</span>
             <select
               value={pageSize}
@@ -346,7 +360,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 setPageSize(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="px-1.5 py-0.5 border border-slate-300 rounded text-slate-800 bg-white focus:outline-none cursor-pointer"
+              className="px-2 py-1 border border-slate-200/80 rounded-xl text-slate-800 bg-white/95 shadow-xs hover:border-slate-300 focus:outline-none cursor-pointer transition-all duration-100 ease-out"
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
@@ -361,7 +375,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={safePage === 1}
               aria-disabled={safePage === 1}
-              className="p-1 border border-slate-300 rounded text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              className="p-1.5 border border-slate-200/80 rounded-xl text-slate-600 shadow-xs hover:bg-slate-100 active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all duration-100 ease-out"
               title={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
               aria-label={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
             >
@@ -374,7 +388,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={safePage === totalPages}
               aria-disabled={safePage === totalPages}
-              className="p-1 border border-slate-300 rounded text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              className="p-1.5 border border-slate-200/80 rounded-xl text-slate-600 shadow-xs hover:bg-slate-100 active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all duration-100 ease-out"
               title={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
               aria-label={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
             >

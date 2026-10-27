@@ -133,7 +133,7 @@ export const RawIngestionView: React.FC = () => {
           </div>
           <button
             type="button"
-            className="px-3 py-1.5 rounded bg-gov-primary text-white hover:bg-gov-primary-dark text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-gov-primary text-white hover:bg-gov-primary-dark text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.98] transition-all duration-100 ease-out"
           >
             <MaterialIcon name="add" size="xs" />
             <span>Connect New Ingestion Source</span>
@@ -280,7 +280,7 @@ export const RawIngestionView: React.FC = () => {
                     type="button"
                     onClick={() => handleManualRetry(fail.id)}
                     disabled={isRetried}
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-colors shadow-2xs ${
+                    className={`px-3 py-1 rounded-xl text-xs font-semibold cursor-pointer shadow-xs active:scale-[0.98] transition-all duration-100 ease-out ${
                       isRetried
                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-default'
                         : 'bg-gov-primary hover:bg-gov-primary-dark text-white'

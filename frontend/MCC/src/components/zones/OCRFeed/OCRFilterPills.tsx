@@ -20,7 +20,7 @@ export const OCRFilterPills: React.FC<OCRFilterPillsProps> = ({
 
   const getFilterStyles = (filter: string, isActive: boolean) => {
     if (!isActive) {
-      return 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-900';
+      return 'bg-white border border-slate-200/80 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-xs hover:border-slate-300';
     }
 
     switch (filter) {
@@ -58,7 +58,7 @@ export const OCRFilterPills: React.FC<OCRFilterPillsProps> = ({
           <button
             key={filter}
             onClick={() => onFilterChange(filter)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${getFilterStyles(
+            className={`px-3 py-1 rounded-xl text-xs font-semibold shadow-xs active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer ${getFilterStyles(
               filter,
               isActive
             )}`}

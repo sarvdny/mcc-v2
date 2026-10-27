@@ -19,33 +19,46 @@ export const LeaderboardTabs: React.FC<LeaderboardTabsProps> = ({
   const t = useTranslation(language);
 
   return (
-    <div className="flex gap-4 text-xs border-b border-slate-200 -mb-3 pb-2 pt-1 overflow-x-auto">
+    <div
+      role="tablist"
+      aria-label="Leaderboard category tabs"
+      className="flex items-center gap-1 bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/80 shadow-xs overflow-x-auto text-xs w-fit"
+    >
       <button
+        type="button"
+        role="tab"
+        aria-selected={activeTab === 'cpi'}
         onClick={() => onTabChange('cpi')}
-        className={`font-semibold pb-1.5 transition-colors whitespace-nowrap ${
+        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap ${
           activeTab === 'cpi'
-            ? 'text-gov-primary border-b-2 border-gov-accent'
-            : 'text-slate-500 hover:text-gov-primary'
+            ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
         }`}
       >
         {t.zone2.cpiTab}
       </button>
       <button
+        type="button"
+        role="tab"
+        aria-selected={activeTab === 'event'}
         onClick={() => onTabChange('event')}
-        className={`font-semibold pb-1.5 transition-colors whitespace-nowrap ${
+        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap ${
           activeTab === 'event'
-            ? 'text-gov-primary border-b-2 border-gov-accent'
-            : 'text-slate-500 hover:text-gov-primary'
+            ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
         }`}
       >
         {t.zone2.eventTab}
       </button>
       <button
+        type="button"
+        role="tab"
+        aria-selected={activeTab === 'specific'}
         onClick={() => onTabChange('specific')}
-        className={`font-semibold pb-1.5 transition-colors whitespace-nowrap ${
+        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap ${
           activeTab === 'specific'
-            ? 'text-gov-primary border-b-2 border-gov-accent'
-            : 'text-slate-500 hover:text-gov-primary'
+            ? 'bg-white text-slate-900 shadow-xs border border-slate-200/60'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
         }`}
       >
         {t.zone2.newsTab}

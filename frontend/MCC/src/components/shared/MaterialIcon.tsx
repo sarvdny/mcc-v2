@@ -185,7 +185,16 @@ export type MaterialIconName =
   | 'grid_view'
   | 'lightbulb'
   | 'library_books'
-  | 'gavel';
+  | 'gavel'
+  | 'support_agent'
+  | 'info'
+  | 'chat'
+  | 'public'
+  | 'bolt'
+  | 'rss_feed'
+  | 'cancel'
+  | 'search_off'
+  | 'help_outline';
 
 const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>> = {
   add: PlusIcon,
@@ -296,6 +305,15 @@ const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>>
   gov_emblem: ShieldCheckIcon,
   seal: ShieldCheckIcon,
   sentiment_satisfied: FaceSmileIcon,
+  support_agent: UserGroupIcon,
+  info: InformationCircleIcon,
+  chat: ChatBubbleLeftEllipsisIcon,
+  public: GlobeAltIcon,
+  bolt: SparklesIcon,
+  rss_feed: SignalIcon,
+  cancel: XMarkIcon,
+  search_off: MagnifyingGlassIcon,
+  help_outline: InformationCircleIcon,
 };
 
 const sizeClasses: Record<string, string> = {

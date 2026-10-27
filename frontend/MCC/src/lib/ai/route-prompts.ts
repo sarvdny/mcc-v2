@@ -23,17 +23,17 @@ export const ROUTE_PROMPT_POOL: Record<string, RoutePrompt[]> = {
     {
       label: 'CPI Formula',
       query: 'What is the Communication Performance Index (CPI) formula?',
-      localAnswer: 'The Communication Performance Index (CPI) is calculated out of 100 points:\nCPI = Volume Score (25) + TAT Dispatch Score (25) + Sentiment Score (25) + Crisis SLA Score (25). It benchmarks public relations efficiency across all 36 Maharashtra districts.'
+      localAnswer: 'The Communication Performance Index (CPI) is calculated out of 100 points:\nCPI = Volume Score (25) + TAT Dispatch Score (25) + Sentiment Index (25) + Crisis SLA Resolution Rate (25). It benchmarks public relations efficiency across all 36 Maharashtra districts.'
     },
     {
       label: 'Rank #1 District',
       query: 'Which district currently holds the Rank #1 benchmark?',
-      localAnswer: 'Thane District (Konkan Division) currently ranks #1 in the benchmark with a composite CPI score of 92.4, driven by a 28-minute turnaround time (TAT) and 98% crisis SLA compliance.'
+      localAnswer: 'Thane District (Konkan Division) currently ranks #1 in the benchmark with a composite CPI score of 92.4, driven by a 28-minute turnaround time (TAT) and 98% Crisis SLA Resolution Rate.'
     },
     {
       label: '4 CPI Pillars',
       query: 'Explain the 4 pillars evaluated in district scores.',
-      localAnswer: 'The 4 pillars evaluated equally at 25 points each are:\n1. Volume (clippings & briefings processed)\n2. TAT Dispatch (speed to press issuance, target <= 45m)\n3. Sentiment (% favorable coverage across print, TV & digital)\n4. Crisis SLA (% viral rumors refuted within 90 minutes).'
+      localAnswer: 'The 4 pillars evaluated equally at 25 points each are:\n1. Volume (clippings & briefings processed)\n2. TAT Dispatch (speed to press issuance, target <= 45m)\n3. Sentiment Index (% favorable coverage across print, TV & digital)\n4. Crisis SLA Resolution Rate (% viral rumors refuted within 90 minutes).'
     },
     {
       label: 'Live AV Relays',
@@ -65,17 +65,17 @@ export const ROUTE_PROMPT_POOL: Record<string, RoutePrompt[]> = {
     {
       label: 'CPI Formula',
       query: 'What is the Communication Performance Index (CPI) formula?',
-      localAnswer: 'The Communication Performance Index (CPI) is calculated out of 100 points:\nCPI = Volume Score (25) + TAT Dispatch Score (25) + Sentiment Score (25) + Crisis SLA Score (25). It benchmarks public relations efficiency across all 36 Maharashtra districts.'
+      localAnswer: 'The Communication Performance Index (CPI) is calculated out of 100 points:\nCPI = Volume Score (25) + TAT Dispatch Score (25) + Sentiment Index (25) + Crisis SLA Resolution Rate (25). It benchmarks public relations efficiency across all 36 Maharashtra districts.'
     },
     {
       label: 'Rank #1 District',
       query: 'Which district currently holds the Rank #1 benchmark?',
-      localAnswer: 'Thane District (Konkan Division) currently ranks #1 in the benchmark with a composite CPI score of 92.4, driven by a 28-minute turnaround time (TAT) and 98% crisis SLA compliance.'
+      localAnswer: 'Thane District (Konkan Division) currently ranks #1 in the benchmark with a composite CPI score of 92.4, driven by a 28-minute turnaround time (TAT) and 98% Crisis SLA Resolution Rate.'
     },
     {
       label: '4 CPI Pillars',
       query: 'Explain the 4 pillars evaluated in district scores.',
-      localAnswer: 'The 4 pillars evaluated equally at 25 points each are:\n1. Volume (clippings & briefings processed)\n2. TAT Dispatch (speed to press issuance, target <= 45m)\n3. Sentiment (% favorable coverage across print, TV & digital)\n4. Crisis SLA (% viral rumors refuted within 90 minutes).'
+      localAnswer: 'The 4 pillars evaluated equally at 25 points each are:\n1. Volume (clippings & briefings processed)\n2. TAT Dispatch (speed to press issuance, target <= 45m)\n3. Sentiment Index (% favorable coverage across print, TV & digital)\n4. Crisis SLA Resolution Rate (% viral rumors refuted within 90 minutes).'
     },
     {
       label: 'Live AV Relays',
@@ -597,7 +597,7 @@ export const ROUTE_PROMPT_POOL: Record<string, RoutePrompt[]> = {
     {
       label: 'CPI Formula',
       query: 'What is the Communication Performance Index (CPI)?',
-      localAnswer: 'CPI is an objective 100-point composite score: Volume (25) + TAT Dispatch (25) + Sentiment (25) + Crisis SLA (25), benchmarking all 36 districts across 6 revenue divisions.'
+      localAnswer: 'CPI is an objective 100-point composite score: Volume (25) + TAT Dispatch (25) + Sentiment Index (25) + Crisis SLA Resolution Rate (25), benchmarking all 36 districts across 6 revenue divisions.'
     },
     {
       label: 'Crisis 90-Min SLA',
@@ -629,7 +629,7 @@ export const LOCAL_KNOWLEDGE_BASE: LocalKnowledgeItem[] = [
   {
     keywords: ['cpi', 'formula', 'composite index', 'score calculation', 'scoring'],
     intent: 'CPI Calculation',
-    answer: 'The Communication Performance Index (CPI) is calculated out of 100 points:\n\nCPI = Volume Score (25) + TAT Dispatch Score (25) + Sentiment Score (25) + Crisis SLA Score (25).\n\nEach pillar evaluates public relations efficiency across all 36 Maharashtra districts.'
+    answer: 'The Communication Performance Index (CPI) is calculated out of 100 points:\n\nCPI = Volume Score (25) + TAT Dispatch Score (25) + Sentiment Index (25) + Crisis SLA Resolution Rate (25).\n\nEach pillar evaluates public relations efficiency across all 36 Maharashtra districts.'
   },
   {
     keywords: ['sla', '90-minute', '90 min', 'crisis deadline', 'timer', 'rebuttal window'],

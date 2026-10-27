@@ -67,6 +67,13 @@ export interface IncidentData {
   slaMinutes: number;
   district: string;
   authorized: boolean;
+  originatingItemId?: string;
+  detectedDate?: string;
+  detectedTime?: string;
+  verdict?: string;
+  verdictMr?: string;
+  officialEvidence?: string;
+  officialEvidenceMr?: string;
 }
 
 export interface OCRRecord {

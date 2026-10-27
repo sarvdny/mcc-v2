@@ -65,7 +65,7 @@ export const OCRFeed: React.FC = () => {
   ).length;
 
   return (
-    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden h-full">
+    <div className="bg-white border border-slate-200/80 rounded-2xl flex flex-col shadow-xs hover:shadow-sm transition-all duration-150 overflow-hidden h-full">
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
         <div>

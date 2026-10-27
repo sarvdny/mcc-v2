@@ -263,8 +263,8 @@ export function exportTelemetryReportPdf(options: TelemetryReportOptions = {}) {
         <th>${isMr ? 'विभाग' : 'Division'}</th>
         <th>${isMr ? 'एकूण गुण' : 'Composite Score'}</th>
         <th>${isMr ? 'माध्यम प्रसिद्धी' : 'Volume (35)'}</th>
-        <th>${isMr ? 'जनभावना' : 'Sentiment (35)'}</th>
-        <th>${isMr ? 'संकट निवारण' : 'Crisis SLA (30)'}</th>
+        <th>${isMr ? 'लोकभावना निर्देशांक (२५)' : 'Sentiment Index (25)'}</th>
+        <th>${isMr ? 'आपत्कालीन एसएलए निवारण दर (१५)' : 'Crisis SLA Resolution Rate (15)'}</th>
         <th>${isMr ? 'स्थिती' : 'Status'}</th>
       </tr>
     </thead>

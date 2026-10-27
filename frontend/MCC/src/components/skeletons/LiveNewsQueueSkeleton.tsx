@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/shared/Skeleton';
 
 export const LiveNewsQueueSkeleton: React.FC = () => {
   return (
-    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden flex flex-col">
       {/* Dark Command Bar */}
       <div className="bg-slate-900 px-3.5 py-2.5 rounded-t-[10px] flex items-center justify-between gap-2 select-none">
         <div className="flex items-center gap-2">

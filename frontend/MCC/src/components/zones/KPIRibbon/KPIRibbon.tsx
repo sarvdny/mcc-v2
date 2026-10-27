@@ -6,8 +6,8 @@ import { KPIRibbonSkeleton } from '@/components/skeletons/KPIRibbonSkeleton';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { getDistrictName } from '@/lib/dataLocalization';
-import { getDistrictSentiment } from '@/lib/sentimentEngine';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { calculateReactiveKPIs } from '@/calculations';
 
 export interface KPIRibbonProps {
   layout?: 'ribbon' | 'column';
@@ -22,6 +22,8 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
     districts,
     incidents,
     isLoadingData,
+    lastSentimentComputedAt,
+    lastTicketsComputedAt,
   } = useDashboardStore();
 
   const t = useTranslation(language);
@@ -40,119 +42,36 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
 
   // Memoized reactive metric calculation on any filter change (<16ms)
   const reactiveMetrics = useMemo(() => {
-    // 1. Time multiplier scaling
-    let periodMultiplier = 1;
-    let trendPeriodText = 'vs last week';
-    if (selectedPeriod === 'Last 30 days') {
-      periodMultiplier = 3.8;
-      trendPeriodText = 'vs last month';
-    } else if (selectedPeriod === 'Last 90 days') {
-      periodMultiplier = 11.2;
-      trendPeriodText = 'vs last quarter';
-    }
-
-    // 2. Total Releases Calculation
-    let releasesCount: number | string = 1482;
-    let releasesTarget = t.zone1.releasesTarget;
-    let releasesTrend = '12%';
-
-    if (currentDistrict) {
-      const base = currentDistrict.releases;
-      releasesCount = Math.round(base * periodMultiplier);
-      const targetBase = Math.round(300 * periodMultiplier);
-      releasesTarget = `${language === 'mr' ? 'उद्दिष्ट' : 'Target'}: ${targetBase} (${Math.min(100, Math.round((Number(releasesCount) / targetBase) * 100))}%)`;
-      releasesTrend = '+14%';
-    } else {
-      const sumBase = districts.reduce((acc, d) => acc + d.releases, 0) || 1482;
-      releasesCount = Math.round(sumBase * periodMultiplier);
-      // Derive the attainment from the same numbers shown on the card instead of a
-      // hardcoded percentage that drifts as the dataset changes.
-      const targetBase = Math.round(1500 * periodMultiplier);
-      const pct = Math.min(100, Math.round((Number(releasesCount) / targetBase) * 100));
-      releasesTarget = `${language === 'mr' ? 'उद्दिष्ट' : 'Target'}: ${targetBase.toLocaleString('en-IN')} (${pct}%)`;
-      releasesTrend = '+18%';
-    }
-
-    // 2. Multi-Channel Sentiment Calculation (Print OCR, Broadcast TV, Social Listening, User Comments)
-
-    const sentimentBreakdown = getDistrictSentiment(
-      currentDistrict ? currentDistrict.id : undefined,
-      selectedPeriod
-    );
-    const sentimentVal = `${sentimentBreakdown.composite}%`;
-    const sentimentTarget = sentimentBreakdown.composite >= 70
-      ? (language === 'mr' ? 'उद्दिष्ट ≥ ७०% (साध्य)' : 'Target ≥ 70% (Met)')
-      : (language === 'mr' ? 'उद्दिष्टापेक्षा जास्त (>६५%)' : 'Above Target (>65%)');
-    const sentimentTrend = '+6%';
-    const sentimentChannelsText = `Print ${sentimentBreakdown.printOcr}% · TV ${sentimentBreakdown.broadcastTv}% · Social ${sentimentBreakdown.socialListening}% · Comments ${sentimentBreakdown.userComments}%`;
-
-    // 3. Misinformation Tickets Calculation
-    let openTicketsCount = 3;
-    let misinfoTarget = '41 Resolved · 3 Open';
-    let misinfoTrend = '33%';
-
-    if (currentDistrict) {
-      const districtTickets = incidents.filter(
-        (inc) => inc.district.toLowerCase() === currentDistrict.name.toLowerCase() && !inc.authorized
-      );
-      openTicketsCount = districtTickets.length;
-      misinfoTarget = `${openTicketsCount} ${language === 'mr' ? 'सक्रिय विहित वेळेत' : 'Active in SLA'}`;
-      misinfoTrend = openTicketsCount === 0 ? '-100%' : '-50%';
-    } else {
-      const unauthIncidents = incidents.filter((inc) => !inc.authorized);
-      openTicketsCount = unauthIncidents.length;
-      const resolvedCount = Math.max(0, incidents.length - unauthIncidents.length);
-      misinfoTarget = language === 'mr'
-        ? `${resolvedCount} निवारित · ${openTicketsCount} चालू`
-        : `${resolvedCount} Resolved · ${openTicketsCount} Open`;
-      misinfoTrend = '-33%';
-    }
-
-    // Scope title
-    const scopeName = currentDistrict
-      ? `${language === 'mr' ? (currentDistrict.nameMr || getDistrictName(currentDistrict.name, 'mr')) : currentDistrict.name} ${language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}`
-      : isDistrictSelected
-      ? `${prettyDistrictName} ${language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}`
-      : `${language === 'mr' ? 'कोकण विभाग • राज्य संनियंत्रण' : 'Konkan Division • State Operations'}`;
-
-    return {
-      scopeName,
-      releasesVal: typeof releasesCount === 'number' ? releasesCount.toLocaleString('en-IN') : releasesCount,
-      releasesTarget,
-      releasesTrend,
-      sentimentVal,
-      sentimentTarget,
-      sentimentTrend,
-      sentimentChannelsText,
-      openTicketsCount,
-      misinfoTarget,
-      misinfoTrend,
-    };
-  }, [selectedDistrictId, selectedPeriod, districts, incidents, language, t, currentDistrict, isDistrictSelected, prettyDistrictName]);
+    return calculateReactiveKPIs({
+      districts,
+      incidents,
+      selectedPeriod,
+      selectedDistrictId,
+      language,
+    });
+  }, [selectedDistrictId, selectedPeriod, districts, incidents, language]);
 
   if (isLoadingData) {
     return <KPIRibbonSkeleton cardsCount={3} />;
   }
 
-  // A district outside the ingested scope has no telemetry. Never present the
-  // statewide aggregates under a district label; say what is actually true.
   if (isDistrictSelected && !currentDistrict) {
     return (
       <section className="w-full space-y-2 select-none" aria-label={t.zone1.sectionTitle}>
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-            <h2 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
+            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" aria-hidden="true" />
+            <h2 className="text-xs font-semibold text-slate-700">
               {t.zone1.sectionTitle}
             </h2>
           </div>
-          <span className="text-[11px] font-semibold text-slate-500 font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+          <span className="text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
             {prettyDistrictName} {language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}
           </span>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm px-6 py-8 flex flex-col items-center justify-center text-center gap-2">
-          <MaterialIcon name="bar_chart" size="md" className="text-slate-300" />
-          <p className="text-sm font-semibold text-slate-700">
+        <div className="bg-white rounded-lg border border-slate-200 px-6 py-8 flex flex-col items-center justify-center text-center gap-2">
+          <MaterialIcon name="bar_chart" size="md" className="text-slate-400" aria-hidden="true" />
+          <p className="text-sm font-semibold text-slate-800">
             {language === 'mr'
               ? 'या जिल्ह्याची अद्याप टेलीमेट्री उपलब्ध नाही'
               : 'No telemetry ingested for this district yet'}
@@ -172,12 +91,12 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
       {/* Scope Sub-label */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block" />
-          <h2 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
+          <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block" aria-hidden="true" />
+          <h2 className="text-xs font-semibold text-slate-700">
             {t.zone1.sectionTitle}
           </h2>
         </div>
-        <span className="text-[11px] font-semibold text-slate-500 font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+        <span className="text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
           {reactiveMetrics.scopeName}
         </span>
       </div>
@@ -199,19 +118,21 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendDirection="up"
           trendValue={reactiveMetrics.releasesTrend}
           positiveTrend={true}
+          metricKey="volumeScore"
         />
 
         {/* 2. Multi-Channel Sentiment Index */}
-
         <KPICard
-          icon="sentiment_satisfied"
+          icon="analytics"
           title={t.zone1.sentimentIndex}
           value={reactiveMetrics.sentimentVal}
-          targetText={reactiveMetrics.sentimentTarget}
+          targetText={`${reactiveMetrics.sentimentTarget} · ${language === 'mr' ? 'शेवटची गणना' : 'Computed'}: ${lastSentimentComputedAt || '18:25 IST'}`}
           trendDirection="up"
           trendValue={reactiveMetrics.sentimentTrend}
           positiveTrend={true}
           channelBreakdown={reactiveMetrics.sentimentChannelsText}
+          metricKey="sentimentIndex"
+          lastUpdated={lastSentimentComputedAt}
         />
 
         {/* 3. Crisis SLA / Misinformation Containment */}
@@ -220,10 +141,12 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           title={t.zone1.misinformation}
           value={reactiveMetrics.openTicketsCount}
           unit={language === 'mr' ? 'चालू' : 'open'}
-          targetText={reactiveMetrics.misinfoTarget}
+          targetText={`${reactiveMetrics.misinfoTarget} · ${language === 'mr' ? 'शेवटची गणना' : 'Computed'}: ${lastTicketsComputedAt || '18:25 IST'}`}
           trendDirection="down"
           trendValue={reactiveMetrics.misinfoTrend}
           positiveTrend={false}
+          metricKey="misinformationTickets"
+          lastUpdated={lastTicketsComputedAt}
         />
       </div>
     </section>

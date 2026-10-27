@@ -56,14 +56,7 @@ export const DIPRDivisionsPanel: React.FC = () => {
       accentColor="navy"
       className="w-full"
     >
-      <div ref={containerRef} className="space-y-4">
-        {/* Helper Note */}
-        <p className="text-xs text-content-secondary leading-relaxed">
-          {language === 'mr'
-            ? 'विभागावर क्लिक करून त्याअंतर्गत येणारे जिल्हे, संबंधित डीआयओ आणि थेट शासकीय पदे, बातम्या, समाजमाध्यम व वृत्तवाहिनी नोंदी पहा:'
-            : 'Select any of the 9 DGIPR divisions below to inspect districts, assigned DIOs, composite rankings, and quick media links:'}
-        </p>
-
+      <div ref={containerRef} className="space-y-3">
         {/* The 9 Dropdown Menus Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {DIPR_DIVISIONS_CONFIG.map((division: DIPRDivisionConfig) => {
@@ -90,7 +83,7 @@ export const DIPRDivisionsPanel: React.FC = () => {
                     <span className="truncate text-content-primary">
                       {title} {language === 'mr' ? 'विभाग' : 'Division'}
                     </span>
-                    <span className="text-[10px] font-mono text-content-muted">
+                    <span className="text-xs font-mono text-slate-600 font-medium">
                       ({division.districts.length} {language === 'mr' ? 'जिल्हे' : 'districts'})
                     </span>
                   </div>
@@ -107,9 +100,9 @@ export const DIPRDivisionsPanel: React.FC = () => {
                     className="p-3 space-y-2.5 max-h-[380px] overflow-y-auto bg-surface border-t border-borderLine-subtle shadow-md rounded-b-md animate-in fade-in duration-150"
                     role="menu"
                   >
-                    <div className="text-[10px] font-mono text-content-muted flex items-center justify-between pb-1 border-b border-borderLine-subtle">
+                    <div className="text-xs font-mono text-slate-600 flex items-center justify-between pb-1 border-b border-borderLine-subtle">
                       <span>{division.officeNameMr}</span>
-                      <span className="uppercase text-[9px] font-bold text-gov-primary">{division.code}</span>
+                      <span className="uppercase text-xs font-bold text-gov-primary">{division.code}</span>
                     </div>
 
                     {division.districts.map((d: DIPRDistrictConfig) => {
@@ -135,22 +128,22 @@ export const DIPRDivisionsPanel: React.FC = () => {
                               title="Select district in dashboard"
                             >
                               <span>{language === 'mr' ? d.nameMr : d.nameEn}</span>
-                              <span className="font-mono text-[10px] text-content-muted ml-1.5">
+                              <span className="font-mono text-xs text-slate-600 ml-1.5">
                                 ({d.code})
                               </span>
                             </button>
                             <div className="flex items-center gap-1.5 shrink-0">
-                              <span className="font-mono text-[10px] text-slate-500">
+                              <span className="font-mono text-xs text-slate-600">
                                 #{scoreInfo.rank}
                               </span>
-                              <span className="font-mono font-bold text-[11px] text-content-primary bg-surface px-1.5 py-0.5 rounded border border-borderLine-subtle">
+                              <span className="font-mono font-bold text-xs text-content-primary bg-surface px-1.5 py-0.5 rounded border border-borderLine-subtle">
                                 {scoreInfo.cpi}
                               </span>
                             </div>
                           </div>
 
                           {/* DIO Contact */}
-                          <div className="text-[10px] text-content-secondary flex flex-wrap items-center gap-2">
+                          <div className="text-xs text-content-secondary flex flex-wrap items-center gap-2">
                             <span className="flex items-center gap-1">
                               <MaterialIcon name="person" size="xs" className="text-content-muted" />
                               <span className="truncate max-w-[120px]">{d.dioName}</span>
@@ -165,7 +158,7 @@ export const DIPRDivisionsPanel: React.FC = () => {
                           </div>
 
                           {/* Quick Links: Positions, Clippings, Social, TV */}
-                          <div className="flex items-center gap-1.5 pt-1 border-t border-borderLine-subtle/60 text-[10px]">
+                          <div className="flex items-center gap-1.5 pt-1 border-t border-borderLine-subtle/60 text-xs">
                             <button
                               type="button"
                               onClick={() => setSelectedDistrictId(d.id)}

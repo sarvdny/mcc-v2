@@ -8,6 +8,7 @@ import { DistrictPerformanceChart } from './DistrictPerformanceChart';
 import { DistrictSearchBar } from './DistrictSearchBar';
 import { DistrictTable } from './DistrictTable';
 import { LeaderboardSkeleton } from '@/components/skeletons/LeaderboardSkeleton';
+import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
 
 export interface DistrictLeaderboardProps {
   showChart?: boolean;
@@ -47,16 +48,15 @@ export const DistrictLeaderboard: React.FC<DistrictLeaderboardProps> = (
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden">
       {/* Header and Sub-tabs */}
       <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-            {t.zone2.title}
-          </h3>
-          <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
-            {t.zone2.subtitle}
-          </span>
+        <div className="mb-3">
+          <MinimalCardHeader
+            title={t.zone2.title}
+            subtitle={t.zone2.subtitle}
+            className="w-full"
+          />
         </div>
         <LeaderboardTabs activeTab={activeTab} onTabChange={setActiveTab} />
       </div>

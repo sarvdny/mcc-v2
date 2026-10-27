@@ -3,6 +3,8 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
 
 export interface NewspaperArticle {
   id: string;
@@ -700,13 +702,18 @@ export const NewspaperScreen: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('clippings')}
-              className={`px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1 ${
                 viewMode === 'clippings'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📑 {language === 'mr' ? 'कात्रणे दालन (५१६)' : 'Clippings Gallery (516)'}
+              <span>📑 {language === 'mr' ? 'कात्रणे दालन' : 'Clippings Gallery'}</span>
+              <MetricTip metricKey="volumeScore" value={516}>
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold">
+                  516
+                </span>
+              </MetricTip>
             </button>
           </div>
 

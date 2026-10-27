@@ -3,6 +3,9 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { MetricTip } from '@/components/shared/MetricTip';
+import { TermInfo } from '@/components/shared/TermInfo';
+import { calculateAttendanceSummary } from '@/calculations';
 import { OFFICES_ATTENDANCE_DATA, STATE_ATTENDANCE_SUMMARY, OfficeAttendanceRecord } from '@/data/attendanceData';
 
 export const AttendanceScreen: React.FC = () => {
@@ -10,6 +13,23 @@ export const AttendanceScreen: React.FC = () => {
   const [selectedDivision, setSelectedDivision] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'full' | 'partial'>('all');
+
+  // Date picker defaulting to today (Item 8d)
+  const todayIso = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState<string>(todayIso);
+
+  const formattedDateStr = useMemo(() => {
+    try {
+      const d = new Date(selectedDate);
+      return new Intl.DateTimeFormat('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }).format(d);
+    } catch {
+      return selectedDate;
+    }
+  }, [selectedDate]);
 
   const filteredOffices = useMemo(() => {
     return OFFICES_ATTENDANCE_DATA.filter((office) => {
@@ -31,14 +51,54 @@ export const AttendanceScreen: React.FC = () => {
     });
   }, [selectedDivision, searchQuery, statusFilter]);
 
+  const summaryMetrics = useMemo(() => {
+    return calculateAttendanceSummary(filteredOffices);
+  }, [filteredOffices]);
+
+  // Export Attendance with date on EVERY row (Item 8d)
   const handleExportAttendance = () => {
-    setToast({
-      message:
-        language === 'mr'
-          ? 'बायोमेट्रिक्स उपस्थिती अहवाल (CSV/Excel) निर्यात केला जात आहे.'
-          : 'Exporting Aadhaar BAS Biometric Attendance Report (Excel)...',
-      type: 'success',
-    });
+    try {
+      const headers = ['Date', 'Office ID', 'Office Name', 'Division', 'Officer In-Charge', 'Sanctioned', 'Present', 'On Field Duty', 'On Leave', 'Attendance Rate %', 'Average Punch-In', 'Device Status', 'Punctuality Score %'];
+      const rows = filteredOffices.map((o) => [
+        `"${selectedDate}"`,
+        `"${o.officeId}"`,
+        `"${o.officeName}"`,
+        `"${o.division}"`,
+        `"${o.officerInCharge}"`,
+        o.sanctionedStrength,
+        o.presentToday,
+        o.onFieldDuty,
+        o.onLeave,
+        `${o.attendancePercent}%`,
+        `"${o.averagePunchIn}"`,
+        `"${o.deviceStatus}"`,
+        `${o.punctualityScore}%`,
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Maharashtra_DIO_Attendance_${selectedDate}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setToast({
+        message:
+          language === 'mr'
+            ? `${selectedDate} ची उपस्थिती नोंद (CSV) यशस्वीरीत्या डाउनलोड केली.`
+            : `Downloaded attendance record for ${formattedDateStr} (CSV with date on every row).`,
+        type: 'success',
+      });
+    } catch {
+      setToast({
+        message: language === 'mr' ? 'निर्यात करताना त्रुटी आली' : 'Failed to export attendance CSV',
+        type: 'error',
+      });
+    }
   };
 
   return (
@@ -65,7 +125,30 @@ export const AttendanceScreen: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
+          {/* Always show the date badge (Item 8d) */}
+          <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-bold">
+            <MaterialIcon name="event" size="xs" className="text-amber-700" />
+            <span>
+              {language === 'mr' ? `${formattedDateStr} ची उपस्थिती` : `Attendance for ${formattedDateStr}`}
+            </span>
+          </div>
+
+          {/* Date Picker defaulting to today (Item 8d) */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+            <MaterialIcon name="calendar_today" size="xs" className="text-slate-500" />
+            <label htmlFor="attendance-date" className="font-semibold text-slate-700 sr-only">
+              {language === 'mr' ? 'तारीख निवडा' : 'Select Date'}
+            </label>
+            <input
+              id="attendance-date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="bg-transparent font-mono font-semibold text-slate-900 focus:outline-none cursor-pointer text-xs"
+            />
+          </div>
+
           <button
             onClick={handleExportAttendance}
             className="px-4 py-2 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer"
@@ -89,7 +172,7 @@ export const AttendanceScreen: React.FC = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900">{STATE_ATTENDANCE_SUMMARY.totalSanctionedStaff}</span>
+            <span className="text-2xl font-black text-slate-900">{summaryMetrics.totalSanctioned || STATE_ATTENDANCE_SUMMARY.totalSanctionedStaff}</span>
             <span className="text-xs font-semibold text-slate-500">
               {language === 'mr' ? '३७ कार्यालये (मुख्यालय + ३६ जिल्हे)' : '37 Offices (HQ + 36 DIOs)'}
             </span>
@@ -111,9 +194,9 @@ export const AttendanceScreen: React.FC = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-emerald-700">{STATE_ATTENDANCE_SUMMARY.presentTodayCount}</span>
+            <span className="text-2xl font-black text-emerald-700">{summaryMetrics.totalPresent || STATE_ATTENDANCE_SUMMARY.presentTodayCount}</span>
             <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              {STATE_ATTENDANCE_SUMMARY.presentPercent}%
+              {summaryMetrics.overallAttendancePercent || STATE_ATTENDANCE_SUMMARY.presentPercent}%
             </span>
           </div>
           <div className="text-[11px] text-slate-500">
@@ -132,7 +215,7 @@ export const AttendanceScreen: React.FC = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900">{STATE_ATTENDANCE_SUMMARY.punctualityPercent}%</span>
+            <span className="text-2xl font-black text-slate-900">{summaryMetrics.overallPunctualityScore || STATE_ATTENDANCE_SUMMARY.punctualityPercent}%</span>
             <span className="text-xs font-semibold text-slate-500">
               {language === 'mr' ? 'विहित वेळेत पंच-इन' : 'Punched in ≤ 10:00 AM'}
             </span>
@@ -223,17 +306,17 @@ export const AttendanceScreen: React.FC = () => {
 
       {/* Detailed District Offices Attendance Table */}
       <div className="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden">
-        <div className="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
+        <div className="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between flex-wrap gap-2">
           <span className="text-xs font-bold text-gov-primary uppercase tracking-wider flex items-center gap-1.5">
             <MaterialIcon name="table_chart" size="xs" />
             <span>
               {language === 'mr'
-                ? `कार्यालयनिहाय बायोमेट्रिक्स उपस्थिती तपशील (${filteredOffices.length})`
-                : `Office-wise Biometrics Ledger (${filteredOffices.length} Offices)`}
+                ? `${formattedDateStr} ची उपस्थिती • कार्यालयनिहाय तपशील (${filteredOffices.length})`
+                : `Attendance for ${formattedDateStr} — Office-wise Biometrics Ledger (${filteredOffices.length} Offices)`}
             </span>
           </span>
           <span className="text-[11px] font-mono text-slate-500">
-            {language === 'mr' ? 'शेवटचे सिंक: ' : 'Last Synced: '} {STATE_ATTENDANCE_SUMMARY.lastSyncTime}
+            {language === 'mr' ? 'नोंदणी तारीख: ' : 'Date: '} <strong className="text-slate-800">{selectedDate}</strong> · {language === 'mr' ? 'शेवटचे सिंक: ' : 'Last Synced: '} {STATE_ATTENDANCE_SUMMARY.lastSyncTime}
           </span>
         </div>
 
@@ -241,6 +324,7 @@ export const AttendanceScreen: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-100/90 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
+                <th className="px-3 py-3 font-mono text-[9px]">{language === 'mr' ? 'तारीख' : 'Date'}</th>
                 <th className="px-4 py-3">{language === 'mr' ? 'कार्यालय व जिल्हा' : 'Office & District'}</th>
                 <th className="px-3 py-3">{language === 'mr' ? 'माहिती अधिकारी' : 'Officer In-Charge'}</th>
                 <th className="px-3 py-3 text-center">{language === 'mr' ? 'मंजूर' : 'Sanctioned'}</th>
@@ -257,6 +341,9 @@ export const AttendanceScreen: React.FC = () => {
                 const isFull = office.attendancePercent === 100;
                 return (
                   <tr key={office.officeId} className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-3 py-3 font-mono text-slate-400 text-[10px] whitespace-nowrap">
+                      {selectedDate}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="font-bold text-slate-900">
                         {language === 'mr' ? office.officeNameMr : office.officeName}

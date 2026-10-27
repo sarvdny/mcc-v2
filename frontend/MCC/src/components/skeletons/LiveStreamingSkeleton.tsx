@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/shared/Skeleton';
 
 export const LiveStreamingSkeleton: React.FC = () => {
   return (
-    <div className="bg-white border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden h-full min-h-[380px]">
+    <div className="bg-white border border-slate-200/80 rounded-2xl flex flex-col shadow-xs overflow-hidden h-full min-h-[380px]">
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-200 bg-white flex items-center justify-between flex-wrap gap-2">
         <div className="space-y-1">

@@ -45,3 +45,11 @@ export function sanitizeUrl(rawUrl: string | null | undefined): string | null {
   if (!isSafeUrl(rawUrl)) return null;
   return rawUrl!.trim();
 }
+
+export {
+  ALLOWLISTED_DOMAINS,
+  extractDomain,
+  isDomainAllowlisted,
+  validateOutboundUrl,
+  type OutboundValidationResult,
+} from './domainAllowlist.ts';

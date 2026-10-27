@@ -150,7 +150,7 @@ export const ExecutiveIntelligenceSummary: React.FC<ExecutiveIntelligenceSummary
             type="button"
             key={kpi.id}
             onClick={() => handleCardClick(kpi)}
-            className="p-4 rounded-xl border bg-[#0B111D] border-white/10 hover:border-amber-500/40 hover:bg-[#0E1626] transition-all duration-150 text-left cursor-pointer group flex flex-col justify-between shadow-lg relative overflow-hidden"
+            className="p-4 rounded-2xl border bg-[#0B111D] border-white/10 hover:border-amber-500/40 hover:bg-[#0E1626] shadow-xs hover:shadow-sm active:scale-[0.98] transition-all duration-150 text-left cursor-pointer group flex flex-col justify-between relative overflow-hidden"
           >
             {/* Top Accent Line */}
             <div

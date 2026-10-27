@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { CoreOperationalSwitchDeck } from '@/components/commandCenter/CoreOperationalSwitchDeck';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { EmergencyAlert } from '@/components/zones/EmergencyAlert/EmergencyAlert';
 import { OCRFeed } from '@/components/zones/OCRFeed/OCRFeed';
 import { POINTS_LOST_DATA, DistrictPointsLost } from '@/data/pointsLostData';
+import { calculatePillarBreakdown } from '@/calculations';
 import {
   DocumentTextIcon,
   ClockIcon,
@@ -31,69 +32,37 @@ export const KonkanIndexScreen: React.FC = () => {
       .catch(() => {});
   }, []);
 
-  const konkanDistricts = [
-    {
-      rank: 1,
-      id: 'thane',
-      name: 'Thane',
-      nameMr: 'ठाणे',
-      releases: 462,
-      tat: 38,
-      sentiment: 87,
-      crisisSLA: 100,
-      scores: { volume: 25.0, speed: 25.0, sentiment: 21.75, crisis: 25.0 },
-      cpi: 96.75,
-    },
-    {
-      rank: 2,
-      id: 'raigad',
-      name: 'Raigad',
-      nameMr: 'रायगड',
-      releases: 295,
-      tat: 44,
-      sentiment: 81,
-      crisisSLA: 98,
-      scores: { volume: 24.2, speed: 23.5, sentiment: 20.2, crisis: 24.5 },
-      cpi: 92.4,
-    },
-    {
-      rank: 3,
-      id: 'palghar',
-      name: 'Palghar',
-      nameMr: 'पालघर',
-      releases: 310,
-      tat: 41,
-      sentiment: 76,
-      crisisSLA: 89,
-      scores: { volume: 23.8, speed: 24.1, sentiment: 19.0, crisis: 22.25 },
-      cpi: 89.15,
-    },
-    {
-      rank: 4,
-      id: 'ratnagiri',
-      name: 'Ratnagiri',
-      nameMr: 'रत्नागिरी',
-      releases: 224,
-      tat: 52,
-      sentiment: 83,
-      crisisSLA: 86,
-      scores: { volume: 22.5, speed: 22.0, sentiment: 20.8, crisis: 21.5 },
-      cpi: 86.8,
-    },
-    {
-      rank: 5,
-      id: 'sindhudurg',
-      name: 'Sindhudurg',
-      nameMr: 'सिंधुदुर्ग',
-      releases: 191,
-      tat: 43,
-      sentiment: 80,
-      crisisSLA: 100,
-      scores: { volume: 15.92, speed: 24.0, sentiment: 20.0, crisis: 25.0 },
-      cpi: 84.92,
-      highlight: '-9.08 Volume Gap',
-    },
-  ];
+  const konkanDistricts = useMemo(() => {
+    const rawData = [
+      { id: 'thane', name: 'Thane', nameMr: 'ठाणे', releases: 462, tat: 38, sentiment: 87, crisisSLA: 100 },
+      { id: 'raigad', name: 'Raigad', nameMr: 'रायगड', releases: 295, tat: 44, sentiment: 81, crisisSLA: 98 },
+      { id: 'palghar', name: 'Palghar', nameMr: 'पालघर', releases: 310, tat: 41, sentiment: 76, crisisSLA: 89 },
+      { id: 'ratnagiri', name: 'Ratnagiri', nameMr: 'रत्नागिरी', releases: 224, tat: 52, sentiment: 83, crisisSLA: 86 },
+      { id: 'sindhudurg', name: 'Sindhudurg', nameMr: 'सिंधुदुर्ग', releases: 191, tat: 43, sentiment: 80, crisisSLA: 100, highlight: '-9.08 Volume Gap' },
+    ];
+
+    return rawData.map((d, index) => {
+      const breakdown = calculatePillarBreakdown({
+        releases: d.releases,
+        avgTatMinutes: d.tat,
+        sentimentPercent: d.sentiment,
+        crisisSlaPercent: d.crisisSLA,
+        targetReleases: 300,
+      });
+
+      return {
+        ...d,
+        rank: index + 1,
+        scores: {
+          volume: breakdown.volumeScore,
+          speed: breakdown.speedScore,
+          sentiment: breakdown.sentimentScore,
+          crisis: breakdown.crisisScore,
+        },
+        cpi: breakdown.totalCPI,
+      };
+    });
+  }, []);
 
   return (
     <div className="p-4 sm:p-5 max-w-[1780px] w-full mx-auto space-y-5">
@@ -199,8 +168,8 @@ export const KonkanIndexScreen: React.FC = () => {
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {language === 'mr'
-                    ? '४ घटक: खंड (२५) • वेग (२५) • भावना (२५) • आपत्कालीन एसएलए (२५)'
-                    : '4 Pillars: Volume (25) + Speed/TAT (25) + Sentiment (25) + Crisis SLA (25)'}
+                    ? '४ घटक: प्रसिद्धी (२५) • वेग/TAT (२५) • लोकभावना निर्देशांक (२५) • आपत्कालीन एसएलए निवारण दर (२५)'
+                    : '4 Pillars: Volume (25) + Speed/TAT (25) + Sentiment Index (25) + Crisis SLA Resolution Rate (25)'}
                 </p>
               </div>
               <span className="text-xs font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
@@ -216,8 +185,8 @@ export const KonkanIndexScreen: React.FC = () => {
                     <th className="py-2.5 px-3">{language === 'mr' ? 'जिल्हा' : 'District'}</th>
                     <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'प्रसिद्धी' : 'Releases'}</th>
                     <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'TAT' : 'Avg TAT'}</th>
-                    <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'भावना' : 'Sentiment'}</th>
-                    <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'संकट SLA' : 'Crisis SLA'}</th>
+                    <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'लोकभावना निर्देशांक' : 'Sentiment Index'}</th>
+                    <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'आपत्कालीन एसएलए' : 'Crisis SLA Resolution Rate'}</th>
                     <th className="py-2.5 px-3 w-48">{language === 'mr' ? '४-घटक विभागणी (२५ प्रत्येकी)' : '4-Pillar Score Bar'}</th>
                     <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'गुण (१००)' : 'Index'}</th>
                     <th className="py-2.5 px-3 text-center">{language === 'mr' ? 'तपशील' : 'Drill'}</th>
@@ -295,11 +264,11 @@ export const KonkanIndexScreen: React.FC = () => {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
-                  Sentiment (25)
+                  Sentiment Index (25)
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-sm bg-purple-600" />
-                  Crisis SLA (25)
+                  Crisis SLA Resolution Rate (25)
                 </span>
               </div>
               <span className="text-slate-400 font-mono">Max Index: 100.00 Pts</span>

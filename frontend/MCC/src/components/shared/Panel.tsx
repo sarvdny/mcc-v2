@@ -1,6 +1,7 @@
 import React from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { MinimalCardHeader } from './MinimalCardHeader';
 
 export function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
@@ -33,26 +34,25 @@ export const Panel: React.FC<PanelProps> = ({
   return (
     <div
       className={cn(
-        'bg-surface border border-borderLine-standard rounded-lg shadow-sm flex flex-col overflow-hidden',
+        'bg-white border border-slate-200/80 rounded-2xl shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col overflow-hidden',
         accentClasses[accentColor],
         className
       )}
       {...props}
     >
       {(title || actions) && (
-        <div className="px-4 py-3 border-b border-borderLine-subtle bg-surface flex items-center justify-between min-h-[48px]">
-          <div>
-            {title && (
-              <h3 className="text-sm font-bold text-[var(--gov-primary)] tracking-tight">
-                {title}
-              </h3>
-            )}
-            {subtitle && <p className="text-xs text-content-muted mt-0.5">{subtitle}</p>}
-          </div>
-          {actions && <div className="flex items-center gap-2">{actions}</div>}
+        <div className="px-4 py-3 border-b border-borderLine-subtle bg-surface">
+          <MinimalCardHeader
+            title={title}
+            subtitle={subtitle}
+            action={actions}
+            className="w-full"
+          />
         </div>
       )}
       <div className="p-4 flex-1">{children}</div>
     </div>
   );
 };
+
+export default Panel;

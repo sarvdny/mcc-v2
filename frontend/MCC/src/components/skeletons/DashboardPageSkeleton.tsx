@@ -25,7 +25,7 @@ export const DashboardPageSkeleton: React.FC = () => {
           <ScoreDecompositionSkeleton />
 
           {/* Key Metrics & Trends Chart Skeleton */}
-          <div className="bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-sm space-y-3 min-h-[220px]">
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3 min-h-[220px]">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <Skeleton className="h-4 w-44 rounded" />
               <Skeleton variant="subtle" className="h-3 w-24 rounded" />

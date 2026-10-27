@@ -1,3 +1,6 @@
+/* Hallmark · v2.0.0 · genre modern-minimal · scope app */
+/* critique: Institutional command-center executive palette, clean typography, zero gradients, zero shadows */
+
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
@@ -5,6 +8,10 @@
 @tailwind utilities;
 
 :root {
+  /* ===== FONT TOKEN ROLES ===== */
+  --font-family-body: "Plus Jakarta Sans", "Mukta", "Noto Sans Devanagari", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
   /* ===== GOVERNMENT IDENTITY COLORS ===== */
   /* Primary — Deep Navy (Government authority, institutional trust) */
   --gov-primary: #1b2a4a;
@@ -71,33 +78,61 @@
   --chart-4: #15803d; /* Green */
   --chart-5: #94a3b8; /* Slate */
 
+  /* ===== SHIMMER & TARGET HIGHLIGHT TOKENS ===== */
+  --shimmer-light-1: #e2e8f0;
+  --shimmer-light-2: #f8fafc;
+  --shimmer-dark-1: #1e293b;
+  --shimmer-dark-2: #334155;
+  --shimmer-amber-1: #d97706;
+  --shimmer-amber-2: #fbbf24;
+  --search-target: #f59e0b;
+  --search-target-bg: rgba(245, 158, 11, 0.12);
+
   /* ===== EMERGENCY ALERT (Zone 5 Warning System) ===== */
   --alert-bg: #fef2f2; /* Red-50 */
   --alert-border: #fca5a5; /* Red-300 */
   --alert-text: #991b1b; /* Red-800 */
   --alert-pulse: #dc2626; /* Red-600 */
+
+  /* ===== DISPLAY SCALING ADAPTATION TOKENS (100%, 125%, 150%) ===== */
+  --app-card-padding: 1.25rem;
+  --app-grid-gap: 1.25rem;
+  --app-header-py: 0.875rem;
+}
+
+/* Windows Display Scale Fluid Density Optimization */
+@media (max-width: 1536px) {
+  :root {
+    --app-card-padding: 1rem;
+    --app-grid-gap: 1rem;
+    --app-header-py: 0.625rem;
+  }
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --app-card-padding: 0.875rem;
+    --app-grid-gap: 0.875rem;
+    --app-header-py: 0.5rem;
+  }
+  html {
+    font-size: 14.5px;
+  }
 }
 
 html {
   zoom: 100%;
+  overflow-x: clip;
 }
 
 body {
+  overflow-x: clip;
   background-color: var(--bg-page);
   color: var(--text-primary);
-  font-family:
-    "Plus Jakarta Sans",
-    "Mukta",
-    "Noto Sans Devanagari",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    sans-serif;
+  font-family: var(--font-family-body);
   margin: 0;
   padding: 0;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -252,29 +287,28 @@ body {
 /* 2-Second Glowing Ring Target Highlight for Search Navigation */
 @keyframes searchTargetPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
-    outline: 2px solid rgba(245, 158, 11, 0.9);
+    outline: 2px solid var(--search-target);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.35);
-    outline: 3px solid rgba(245, 158, 11, 1);
+    outline: 3px solid var(--search-target);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
-    outline: 2px solid rgba(245, 158, 11, 0);
+    outline: 2px solid transparent;
   }
 }
 
 .search-highlight-target {
   animation: searchTargetPulse 1s ease-in-out 2;
   outline-offset: -2px;
-  transition: all 0.3s ease;
+  transition-property: outline, background-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
 }
 
 tr.search-highlight-target {
-  outline: 2px solid #f59e0b !important;
+  outline: 2px solid var(--search-target) !important;
   outline-offset: -2px !important;
-  background-color: rgba(245, 158, 11, 0.12) !important;
+  background-color: var(--search-target-bg) !important;
 }
 
 /* Institutional Command-Center Metallic Shimmer Sweep */
@@ -287,48 +321,33 @@ tr.search-highlight-target {
   }
 }
 
+@keyframes skeletonPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
 .animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(226, 232, 240, 0.7) 0%,
-    rgba(241, 245, 249, 0.95) 50%,
-    rgba(226, 232, 240, 0.7) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmerSweep 1.8s ease-in-out infinite;
+  background: var(--shimmer-light-1);
+  animation: skeletonPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .animate-shimmer-subtle {
-  background: linear-gradient(
-    90deg,
-    rgba(241, 245, 249, 0.8) 0%,
-    rgba(248, 250, 252, 1) 50%,
-    rgba(241, 245, 249, 0.8) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmerSweep 1.8s ease-in-out infinite;
+  background: var(--shimmer-light-1);
+  animation: skeletonPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .animate-shimmer-dark {
-  background: linear-gradient(
-    90deg,
-    #1e293b 0%,
-    #334155 50%,
-    #1e293b 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmerSweep 1.8s ease-in-out infinite;
+  background: var(--shimmer-dark-1);
+  animation: skeletonPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .animate-shimmer-amber {
-  background: linear-gradient(
-    90deg,
-    #d97706 0%,
-    #fbbf24 50%,
-    #d97706 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmerSweep 1.5s ease-in-out infinite;
+  background: var(--shimmer-amber-1);
+  animation: skeletonPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes tickerScroll {
@@ -369,3 +388,51 @@ tr.search-highlight-target {
 .animate-marquee-scroll:hover {
   animation-play-state: paused;
 }
+
+/* ===== APPLE DESIGN HIG TOKENS & UTILITIES ===== */
+/* Continuous squircle curve smoothing & fluid micro-interactions */
+.squircle-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.squircle-card:hover {
+  border-color: rgba(203, 213, 225, 0.9);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Apple-style physical tactile button */
+.btn-apple {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  transition: transform 100ms cubic-bezier(0.16, 1, 0.3, 1), background-color 100ms ease-out, border-color 100ms ease-out, box-shadow 100ms ease-out;
+  font-weight: 500;
+}
+
+.btn-apple:active {
+  transform: scale(0.98);
+}
+
+.btn-apple:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+/* Apple Translucent Frosted Glass Material */
+.apple-glass {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.90);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.apple-glass-dark {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(15, 23, 42, 0.90);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+}
+
