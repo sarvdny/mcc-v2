@@ -64,7 +64,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
     const options = [...districts]
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((d) => {
-        const num = DISTRICT_NUMBERS[d.id];
+        const num = DISTRICT_NUMBERS?.[d.id];
         const numPrefix = num ? `#${num} ` : '';
         return {
           id: d.id,
@@ -79,7 +79,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
       selectedDistrictId !== 'all' &&
       !options.some((o) => o.id === selectedDistrictId)
     ) {
-      const num = DISTRICT_NUMBERS[selectedDistrictId];
+      const num = DISTRICT_NUMBERS?.[selectedDistrictId];
       const numPrefix = num ? `#${num} ` : '';
       const fallbackLabel = selectedDistrictId
         .split('-')

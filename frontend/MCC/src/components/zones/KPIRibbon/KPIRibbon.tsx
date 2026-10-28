@@ -108,18 +108,18 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
         </div>
       </div>
 
-      {/* KPI Cards: 3 cards matching Volume, Sentiment, and Crisis SLA */}
+      {/* KPI Cards: 5-column executive metric strip */}
       <div
         className={
           layout === 'ribbon'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 xl:gap-5 w-full items-stretch'
+            ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-3.5 xl:gap-4 w-full items-stretch'
             : 'grid grid-cols-1 gap-2.5 w-full items-stretch'
         }
       >
-        {/* 1. Total Releases (Volume) */}
+        {/* 1. Press Releases (Volume) */}
         <KPICard
           icon="description"
-          title={t.zone1.totalReleases}
+          title={language === 'mr' ? 'प्रेस रिलीज' : 'Press Releases'}
           value={reactiveMetrics.releasesVal}
           targetText={reactiveMetrics.releasesTarget}
           trendDirection="up"
@@ -128,10 +128,23 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           metricKey="volumeScore"
         />
 
-        {/* 2. Multi-Channel Sentiment Index */}
+        {/* 2. Media Placements & Broadcasts */}
+        <KPICard
+          icon="newspaper"
+          title={language === 'mr' ? 'माध्यम प्रसार' : 'Media Placements'}
+          value={language === 'mr' ? '४,५९२' : '4,592'}
+          unit={language === 'mr' ? 'बातम्या' : 'clips'}
+          targetText={language === 'mr' ? '९८.२% प्रमाणित कव्हरेज' : '98.2% Verified Coverage'}
+          trendDirection="up"
+          trendValue="+8.6%"
+          positiveTrend={true}
+          metricKey="volumeScore"
+        />
+
+        {/* 3. Multi-Channel Sentiment Index */}
         <KPICard
           icon="analytics"
-          title={t.zone1.sentimentIndex}
+          title={language === 'mr' ? 'नेट लोकभावना निर्देशांक' : 'Net Sentiment Index'}
           value={reactiveMetrics.sentimentVal}
           targetText={reactiveMetrics.sentimentTarget}
           trendDirection="up"
@@ -142,10 +155,10 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           lastUpdated={lastSentimentComputedAt}
         />
 
-        {/* 3. Crisis SLA / Misinformation Containment */}
+        {/* 4. Crisis TAT / Misinformation Containment */}
         <KPICard
           icon="error"
-          title={t.zone1.misinformation}
+          title={language === 'mr' ? 'आपत्ती निवारण TAT' : 'Crisis SLA / TAT'}
           value={reactiveMetrics.openTicketsCount}
           unit={language === 'mr' ? 'चालू' : 'open'}
           targetText={reactiveMetrics.misinfoTarget}
@@ -154,6 +167,19 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           positiveTrend={false}
           metricKey="misinformationTickets"
           lastUpdated={lastTicketsComputedAt}
+        />
+
+        {/* 5. Field Events & Ministerial Briefings */}
+        <KPICard
+          icon="event"
+          title={language === 'mr' ? 'क्षेत्रीय कार्यक्रम' : 'Field Events'}
+          value={language === 'mr' ? '१४२' : '142'}
+          unit={language === 'mr' ? 'कार्यक्रम' : 'briefings'}
+          targetText={language === 'mr' ? '१००% वेळेवर प्रसारण' : '100% Dispatched on-time'}
+          trendDirection="up"
+          trendValue="+15.0%"
+          positiveTrend={true}
+          metricKey="volumeScore"
         />
       </div>
     </section>

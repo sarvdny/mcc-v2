@@ -31,7 +31,7 @@
 
 ## 2. Technology Stack & Runtime Dependencies
 
-The project uses dependencies managed via `bun.lock` with Bun v1.4.4.
+The project uses dependencies managed via `package-lock.json` with npm.
 
 | Layer                   | Technology              | Version              | Purpose & Constraints                                                                                           |
 | :---------------------- | :---------------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------- |
@@ -1168,22 +1168,133 @@ A total zero-defect overhaul eliminating all text truncation, badge overlapping,
 
 ---
 
-## 19. Project-Wide Migration to Bun (Runtime, Package Management & Native Test Runner)
+## 19. Project Environment & Package Management (npm & Node.js Native Test Runner)
 
-### 19.1 Migration Rationale & Infrastructure Upgrades
+### 19.1 Package Management & CI/CD
+- **Package Management:** Standardized on `npm` and `package-lock.json` for deterministic, cross-platform enterprise builds.
+- **Testing:** Node.js native test runner (`node --experimental-strip-types --test tests/**/*.test.mjs`) executing all 186 tests across 58 test suites with 100% pass rate.
+- **CI/CD Workflow (`.github/workflows/frontend-test.yml`):** Runs on Node.js 20.x with `npm ci || npm install --legacy-peer-deps`, `npm test`, and `npm run build`.
 
-The project has been migrated from npm/Node.js to **Bun (v1.4.4)** across package management, development workflows, and testing:
 
-1. **Package Management & Lockfile:**
-   - Transitioned from `package-lock.json` to native `bun.lock`.
-   - Dependency installations and dev tools (`mapshaper`, `d3-geo`, `topojson-server`, `topojson-client`, `polylabel`) are resolved and cached with high efficiency.
-2. **Scripts & Execution (`package.json`):**
-   - `"test": "bun test"` replaces the legacy Node test command, executing all 186 test cases in ~180ms with 0 failures.
-   - `"build:geo": "bun scripts/build-maharashtra-geo.mjs"` executes the GIS cartography compiler under the Bun runtime.
-   - `bun run dev`, `bun run build`, and `bun run start` govern the Next.js lifecycle.
-3. **CI/CD Pipeline (`.github/workflows/frontend-test.yml`):**
-   - Upgraded GitHub Actions workflow from `actions/setup-node@v4` to `oven-sh/setup-bun@v2` with `bun-version: latest`.
-   - Pipeline runs `bun install --frozen-lockfile`, `bun run build:geo`, `bun test`, and `bun run build`.
-4. **Test Suite Alignment (`tests/three_column_operational_workspace.test.mjs`):**
-   - Harmonized `SocialMediaAnalysis` test assertion to match the updated Apple HIG header title (`Social Pulse` / `समाज माध्यम नाडी (Social Pulse)`) and sticky channel status indicator (`<span>Active</span>`).
-   - All 186 tests across 16 test files pass with 100% success rate on `bun test`.
+---
+
+## 20. DGIPR Maha-Command Center Layout & CesiumJS 3D Upgrade
+
+### 20.1 Architectural Overview & Visual Paradigm
+The DGIPR Maha-Command Center dashboard was upgraded into a **Viewport-Locked, Zero-Scroll Executive Command Center** featuring a daylight government command aesthetic and native WebGL 3D extruded prism cartography.
+
+1. **Daylight Government Command Aesthetic:**
+   - Soft cool-slate background (`#F4F7FB`).
+   - Pure white card containers (`#FFFFFF`) with subtle border framing (`#E2E8F0`).
+   - Standardized active state highlights using soft blue pill surfaces (`#EBF3FF`) with `#1D4ED8` bold text.
+   - Elimination of heavy dark-mode sidebar borders and dark space backgrounds.
+2. **4-Zone Bento Grid Structure:**
+   - **Zone A (Header):** Fixed top bar with State Emblem, Module Tabs, Live Clock, User Profile pill, and unified Global Context & Telemetry Bar (Division selector, District multi-select, Timeframe toggle, and Export actions).
+   - **Zone B (Left Rail):** Collapsible navigation rail (220px expanded, 64px icon-only mode) with docked footer collapse trigger.
+   - **Zone C1 (KPI Ribbon):** 5-column executive metric strip immediately below the header (`KPIRibbon layout="ribbon"`), loaded with zero initial empty-state flash.
+   - **Zone C2 & C3 (Main Stage + Analytical Dock):**
+     - Left 8 columns: CesiumJS 3D Extruded Choropleth Hero.
+     - Right 4 columns: Real-time dual-feed media stack (`DualFeedMediaStack.tsx` with Recent Press Releases & Media Clippings thumbnails).
+     - Bottom 4 columns: `<AnalyticalDock />` (District Ranking bars, Net Sentiment Diverging chart, Crisis Resolution Donut, and Social Engagement line chart).
+
+### 20.2 CesiumJS 3D Extruded Choropleth Map Engine (`src/components/cesium/Cesium3DMap.tsx`)
+Replaces the narrow 2D SVG canvas as the primary default map, with an instant 3D Prism / 2D SVG segmented toggle.
+
+1. **Base Scene Parameters:**
+   - Scene background: `#F8FAFC` daylight canvas; default dark space, stars, and atmosphere disabled.
+   - Camera position: Isometric overhead tilt focused on Maharashtra (`lon: 76.6, lat: 16.2, height: 920000m, pitch: -52°`).
+2. **3D Choropleth Extrusion Formula:**
+   - `extrudedHeight: 22000 + (100 - score) * 350` proportional to performance deficits.
+   - Dynamic GeoJSON polygon height and fill recoloring driven by the active layer.
+3. **Official 5-Stop CPI Color Gradient:**
+   - 80–100: `#22C55E` (Excellent Green)
+   - 60–80: `#84CC16` (Good Lime)
+   - 40–60: `#FACC15` (Moderate Yellow)
+   - 20–40: `#F97316` (Attention Orange)
+   - 0–20: `#EF4444` (Critical Red)
+4. **Dynamic Layer Switcher Pills (Top-Right):**
+   - Performance Index (`cpi`)
+   - Media Coverage (`coverage`)
+   - Sentiment (`sentiment`)
+   - Crisis Alerts (`crisis`)
+   - Field Events (`events`)
+   - Hoardings Layer (`hoardings`)
+5. **Interactive Glassmorphic Inspection Card:**
+   - Floating popover rendered on `LEFT_CLICK` displaying district name (English & Marathi), rank, score, releases count, sentiment, and a `View District Details →` CTA button.
+6. **3D Billboard Pins (Outdoor Hoardings):**
+   - Renders field hoarding billboard pins with green/yellow illumination indicators directly onto the 3D terrain canvas.
+7. **War Room Idle Auto-Rotation:**
+   - Automatically activates subtle isometric camera rotation when viewport width exceeds 2560px and pauses on pointer interactions.
+
+### 20.3 Page-by-Page View Optimizations (`ThreeColumnDashboard.tsx`)
+1. **View 1: GIS Map & Command (Default View):**
+   - Top 5-column metric strip loaded instantly.
+   - Left 8 columns: CesiumJS 3D Map hero.
+   - Right 4 columns: DualFeedMediaStack.
+   - Bottom: AnalyticalDock.
+   - Collapsible 3-column tactical duty staging workspace preserving test contract compliance.
+2. **View 2: District Performance & Scorecard (`DistrictScorecardBento.tsx`):**
+   - Default state renders statewide aggregated CPI averages (78.4 / 100), division-wise breakdown, and quality pillar benchmarks.
+   - Searchable 36-district leaderboard with sparklines.
+   - Selected district bento: Collector & DIO administration details, duty attendance figures, 4-pillar quality scorecard gauges, and sub-district taluka hierarchy.
+3. **View 3: Media & Broadcast Hub (`LiveStreaming.tsx`):**
+   - Side-by-side layout pairing 16:9 HD Live Stream player with real-time bilingual Indic/Marathi audio-to-text transcript feed (`LiveAudioTranscriptionPanel.tsx`).
+   - Unified relay channel switcher (YouTube, FB, Instagram, TV) and Social Pulse feed.
+4. **View 4: Crisis Desk & SLA Command (`CrisisScreen.tsx`):**
+   - Active 90-minute SLA live countdown timers ticking every second.
+   - Triage queue categorized by urgency (`AT RISK`, `WATCH`, `ON TRACK`).
+   - 1-click official rebuttal dispatcher and Collector approval workflow.
+5. **View 5: Outdoor Hoardings & Field IEC:**
+   - CesiumJS 3D canvas with 3D hoarding billboards.
+   - Street-level photo verification cards (`GovernmentSchemeHoardingsPanel.tsx`) with GPS geotags, illumination status, and nightly 02:00 IST telemetry sync indicator.
+6. **View 6: Command Wall (Consolidated):**
+   - 16/12-column consolidated war room layout featuring all operational telemetry.
+
+### 20.4 Verification & Quality Gates
+- **Unit & Integration Tests:** 186/186 tests passing across all 58 suites (`npm test`).
+- **Static Typing:** 0 errors (`npx tsc --noEmit`).
+- **Production Build:** 43/43 routes statically generated and prerendered (`npm run build`).
+
+### 20.5 Satellite Imagery Elimination & Intuitive Manual Navigation Architecture
+Following operator feedback, the 3D GIS Map was refined to eliminate the satellite globe view and disorienting automated drone tours in favor of intuitive, operator-driven manual map movement:
+
+1. **Complete Satellite Photography Removal:**
+   - Specified `baseLayer: false` in `Cesium.Viewer` initialization.
+   - Executed `viewer.imageryLayers.removeAll()` to discard all default satellite photo providers.
+   - Synchronized `viewer.scene.globe.baseColor = '#F8FAFC'` to `viewer.scene.backgroundColor = '#F8FAFC'`, creating an architectural daylight pedestal where Maharashtra's 36 extruded prisms float without Earth curvature or horizon lines.
+2. **Intuitive Manual Navigation Controls:**
+   - **Left-Click Drag:** Reconfigured `translateEventTypes = [Cesium.CameraEventType.LEFT_DRAG]` so dragging directly **moves/pans the map** across Maharashtra (matching Google Maps conventions), rather than tumbling the planet in space.
+   - **Scroll Wheel / Pinch:** Smooth zoom in and out.
+   - **Right-Click Drag / Shift+Drag:** Tilts and rotates the 3D isometric perspective angle.
+   - **Single Click:** Selects a district polygon and opens the glassmorphic inspection card.
+3. **Camera Bounds & Zero Automated Spinning:**
+   - Removed all background camera rotation tickers and auto-spinning loops.
+   - Enforced strict zoom limits (`minimumZoomDistance: 350,000m`, `maximumZoomDistance: 1,250,000m`) and pitch limits (`-88°` to `-25°`).
+   - Attached camera change listener clamping camera position within Maharashtra's territory envelope (`lon: 70° - 83°, lat: 14° - 23°`).
+4. **On-Screen Navigation Dock:**
+   - Added interactive dock in the bottom-left overlay featuring:
+     - `+` (Zoom In) and `−` (Zoom Out)
+     - `3D Tilt` / `2D Top` view angle toggle
+     - `Recenter` button flying camera cleanly back to default Maharashtra isometric center
+     - Control guide: `"Drag to Move • Right-drag to Tilt • Scroll to Zoom"`
+
+### 20.5 GIS Map Apple & Frontend Design Polish (`GISMap.tsx` & `Cesium3DMap.tsx`)
+- **Fullscreen Focus Mode:** Expand button in the header toolbar toggling zero-scroll full viewport mode (`fixed inset-0 z-50 p-4 sm:p-6 bg-[#F4F7FB]/95 backdrop-blur-2xl`) for war-room command reviews.
+- **Apple Liquid Glass Materials:** Floating layers popover and zoom controls updated to frosted liquid glass (`backdrop-blur-xl bg-white/85 text-slate-800 border border-white/60 ring-1 ring-slate-900/5 shadow-xs`).
+- **Interactive Compass HUD & Flight Dock:** Dynamic 360° heading compass with instant North realignment and 6 regional theater camera glides (Statewide, Konkan, Western Ghats, Marathwada, Vidarbha, 2D Plan).
+- **Division Quick-Switcher Chips:** Horizontal scrolling pill bar (`All (36)`, `Konkan (7)`, `Pune (5)`, `Nashik (5)`, `C. Sambhajinagar (8)`, `Amravati (5)`, `Nagpur (6)`) with instant bounding box framing.
+- **Compliance & Integrity:** 186/186 automated test suite passing cleanly with zero regressions.
+
+### 20.6 Base Color Foundation & User-Driven Dynamic Highlights (`GISMap.tsx` & `Cesium3DMap.tsx`)
+- **Base Color Cartographic Foundation:** Replaced saturated multi-color quilt with a calm, daylight Apple-style base slate landmass (`#E2E8F0` / `#EDF2F7` with `#CBD5E1` crisp administrative borders).
+- **3D Cesium Dynamic Highlights:**
+  - Standard districts render at a calm, uniform baseline elevation (16,000m) in `#E2E8F0` translucent slate (`alpha: 0.7`).
+  - User's selected district soars to 52,000m in radiant Apple Executive Blue (`#1D4ED8`) with an electric blue illuminated border (`#60A5FA`, width: 3.5).
+  - Attention deficits (<50 CPI) and active crisis SLA emergencies are extruded proportionally with warning colors (`#EF4444` / `#F97316`) against the neutral base plane.
+- **Segmented Rendering Mode Control:** Introduced `[ 🎯 Base + Highlights ]` and `[ 🌈 Full Heatmap ]` Apple-style segmented pills in the top controls of Cesium3DMap, with dynamic legend adaptation.
+- **2D SVG User Highlights:**
+  - All 36 districts filled with daylight neutral `#EDF2F7` / `#EEF2F6`.
+  - Selected district filled with vibrant `#1D4ED8` and golden `#F59E0B` outline with animated centroid beacon (`animate-ping`).
+  - Inspected/hovered district highlighted in soft `#DBEAFE` with `#2563EB` border.
+  - Division filtering dynamically illuminates districts within the filtered division in crisp `#FFFFFF` with `#3B82F6` accents, while unselected divisions recede to 35% opacity.
+- **Quality Gates:** 186/186 tests passing, 0 TypeScript errors, 43/43 Next.js routes prerendered.

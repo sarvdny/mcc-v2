@@ -1,35 +1,38 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useEffect } from "react";
+import dynamic from "next/dynamic";
 
 const CopilotDrawer = dynamic(
-  () => import('@/components/copilot/CopilotDrawer').then((mod) => mod.CopilotDrawer),
-  { ssr: false }
+  () =>
+    import("@/components/copilot/CopilotDrawer").then(
+      (mod) => mod.CopilotDrawer,
+    ),
+  { ssr: false },
 );
-import { useRouter, usePathname } from 'next/navigation';
-import { Header } from './Header';
-import { Sidebar } from './Sidebar';
-import { DashboardToolbar } from './DashboardToolbar';
-import { useDashboardStore } from '@/stores/dashboardStore';
-import { MaterialIcon } from '@/components/shared/MaterialIcon';
-import { GlossaryDrawer } from '@/components/shared/GlossaryDrawer';
-import { FullScreenAuthLoader } from '@/components/auth/FullScreenAuthLoader';
+import { useRouter, usePathname } from "next/navigation";
+import { Header } from "./Header";
+import { Sidebar } from "./Sidebar";
+import { DashboardToolbar } from "./DashboardToolbar";
+import { useDashboardStore } from "@/stores/dashboardStore";
+import { MaterialIcon } from "@/components/shared/MaterialIcon";
+import { GlossaryDrawer } from "@/components/shared/GlossaryDrawer";
+import { FullScreenAuthLoader } from "@/components/auth/FullScreenAuthLoader";
 
 // Precision Skeletons for Route-Aware Initial Load
-import { DashboardPageSkeleton } from '@/components/skeletons/DashboardPageSkeleton';
-import { CrisisPageSkeleton } from '@/components/skeletons/CrisisPageSkeleton';
-import { DistrictsPageSkeleton } from '@/components/skeletons/DistrictsPageSkeleton';
-import { CommandCenterSkeleton } from '@/components/skeletons/CommandCenterSkeleton';
-import { PipelineFlowSkeleton } from '@/components/skeletons/PipelineFlowSkeleton';
-import { RawIngestionSkeleton } from '@/components/skeletons/RawIngestionSkeleton';
-import { SystemMonitoringSkeleton } from '@/components/skeletons/SystemMonitoringSkeleton';
-import { PressReleasesSkeleton } from '@/components/skeletons/PressReleasesSkeleton';
-import { ActivitiesSkeleton } from '@/components/skeletons/ActivitiesSkeleton';
-import { ReportsSkeleton } from '@/components/skeletons/ReportsSkeleton';
-import { MediaMonitoringSkeleton } from '@/components/skeletons/MediaMonitoringSkeleton';
-import { NotificationsSkeleton } from '@/components/skeletons/NotificationsSkeleton';
-import { ProfileSkeleton } from '@/components/skeletons/ProfileSkeleton';
+import { DashboardPageSkeleton } from "@/components/skeletons/DashboardPageSkeleton";
+import { CrisisPageSkeleton } from "@/components/skeletons/CrisisPageSkeleton";
+import { DistrictsPageSkeleton } from "@/components/skeletons/DistrictsPageSkeleton";
+import { CommandCenterSkeleton } from "@/components/skeletons/CommandCenterSkeleton";
+import { PipelineFlowSkeleton } from "@/components/skeletons/PipelineFlowSkeleton";
+import { RawIngestionSkeleton } from "@/components/skeletons/RawIngestionSkeleton";
+import { SystemMonitoringSkeleton } from "@/components/skeletons/SystemMonitoringSkeleton";
+import { PressReleasesSkeleton } from "@/components/skeletons/PressReleasesSkeleton";
+import { ActivitiesSkeleton } from "@/components/skeletons/ActivitiesSkeleton";
+import { ReportsSkeleton } from "@/components/skeletons/ReportsSkeleton";
+import { MediaMonitoringSkeleton } from "@/components/skeletons/MediaMonitoringSkeleton";
+import { NotificationsSkeleton } from "@/components/skeletons/NotificationsSkeleton";
+import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -40,30 +43,39 @@ interface DashboardLayoutProps {
  * so that hard refreshing or loading any route produces zero CLS.
  */
 function getRouteSkeleton(pathname: string) {
-  if (pathname.startsWith('/crisis')) return <CrisisPageSkeleton />;
-  if (pathname.startsWith('/districts')) return <DistrictsPageSkeleton />;
-  if (pathname.startsWith('/publications')) return <ActivitiesSkeleton />;
-  if (pathname.startsWith('/attendance')) return <DistrictsPageSkeleton />;
-  if (pathname.startsWith('/live-events')) return <CommandCenterSkeleton />;
-  if (pathname.startsWith('/advertisements')) return <PressReleasesSkeleton />;
-  if (pathname === '/command-center/pipeline-flow' || pathname === '/system-monitoring/pipeline-flow') {
+  if (pathname.startsWith("/crisis")) return <CrisisPageSkeleton />;
+  if (pathname.startsWith("/districts")) return <DistrictsPageSkeleton />;
+  if (pathname.startsWith("/publications")) return <ActivitiesSkeleton />;
+  if (pathname.startsWith("/attendance")) return <DistrictsPageSkeleton />;
+  if (pathname.startsWith("/live-events")) return <CommandCenterSkeleton />;
+  if (pathname.startsWith("/advertisements")) return <PressReleasesSkeleton />;
+  if (
+    pathname === "/command-center/pipeline-flow" ||
+    pathname === "/system-monitoring/pipeline-flow"
+  ) {
     return <PipelineFlowSkeleton />;
   }
-  if (pathname === '/command-center/raw-ingestion' || pathname === '/system-monitoring/raw-ingestion') {
+  if (
+    pathname === "/command-center/raw-ingestion" ||
+    pathname === "/system-monitoring/raw-ingestion"
+  ) {
     return <RawIngestionSkeleton />;
   }
-  if (pathname.startsWith('/command-center')) return <CommandCenterSkeleton />;
-  if (pathname.startsWith('/system-monitoring')) return <SystemMonitoringSkeleton />;
-  if (pathname.startsWith('/press-releases')) return <PressReleasesSkeleton />;
-  if (pathname.startsWith('/activities')) return <ActivitiesSkeleton />;
-  if (pathname.startsWith('/reports')) return <ReportsSkeleton />;
-  if (pathname.startsWith('/media')) return <MediaMonitoringSkeleton />;
-  if (pathname.startsWith('/notifications')) return <NotificationsSkeleton />;
-  if (pathname.startsWith('/profile')) return <ProfileSkeleton />;
+  if (pathname.startsWith("/command-center")) return <CommandCenterSkeleton />;
+  if (pathname.startsWith("/system-monitoring"))
+    return <SystemMonitoringSkeleton />;
+  if (pathname.startsWith("/press-releases")) return <PressReleasesSkeleton />;
+  if (pathname.startsWith("/activities")) return <ActivitiesSkeleton />;
+  if (pathname.startsWith("/reports")) return <ReportsSkeleton />;
+  if (pathname.startsWith("/media")) return <MediaMonitoringSkeleton />;
+  if (pathname.startsWith("/notifications")) return <NotificationsSkeleton />;
+  if (pathname.startsWith("/profile")) return <ProfileSkeleton />;
   return <DashboardPageSkeleton />;
 }
 
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+  children,
+}) => {
   const router = useRouter();
   const pathname = usePathname();
   const isToolbarVisible =
@@ -88,7 +100,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
   useEffect(() => {
     if (authInitialized && !isAuthenticated) {
-      router.replace('/login');
+      router.replace("/login");
     }
   }, [authInitialized, isAuthenticated, router]);
 
@@ -130,12 +142,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
           {/* Scrollable Dashboard Canvas with Precision Route Skeleton while verifying */}
           <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 relative">
-            {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
+            {isVerifyingAuth ? getRouteSkeleton(pathname || "/") : children}
           </main>
         </div>
 
         {/* Open UI Copilot Drawer */}
-        {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== 'false' && <CopilotDrawer />}
+        {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== "false" && (
+          <CopilotDrawer />
+        )}
 
         {/* Universal DGIPR Standards & Glossary Help Drawer */}
         <GlossaryDrawer
@@ -148,14 +162,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
         {toast && (
           <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg border text-xs font-semibold animate-in fade-in slide-in-from-bottom-2 bg-slate-900 text-white border-slate-700">
             <MaterialIcon
-              name={toast.type === 'error' ? 'warning' : 'check_circle'}
+              name={toast.type === "error" ? "warning" : "check_circle"}
               size="sm"
               className={
-                toast.type === 'success'
-                  ? 'text-emerald-400'
-                  : toast.type === 'error'
-                  ? 'text-rose-400'
-                  : 'text-amber-400'
+                toast.type === "success"
+                  ? "text-emerald-400"
+                  : toast.type === "error"
+                    ? "text-rose-400"
+                    : "text-amber-400"
               }
             />
             <span>{toast.message}</span>
