@@ -147,11 +147,7 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
       {/* Header matching Reference */}
       <div className="p-3 sm:p-3.5 border-b border-slate-100 bg-white shrink-0">
         <MinimalCardHeader
-          title={
-            language === "mr"
-              ? "समाज माध्यम नाडी (Social Pulse)"
-              : "Social Pulse"
-          }
+          title={language === "mr" ? "समाज माध्यम नाडी (Social Pulse)" : "Social Pulse"}
           subtitle={
             language === "mr"
               ? "ट्विटर/एक्स व बहु-वाहिन्यांचा थेट प्रवाह"
@@ -235,7 +231,7 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                 </span>
                 <span className="font-mono text-[10px] text-emerald-600 font-semibold uppercase tracking-wider shrink-0 ml-1 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Active</span>
+                  <span>API Active</span>
                 </span>
               </div>
 
@@ -289,7 +285,7 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                 </span>
                 <span className="font-mono text-[10px] text-emerald-600 font-semibold uppercase tracking-wider shrink-0 ml-1 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Active</span>
+                  <span>API Active</span>
                 </span>
               </div>
 

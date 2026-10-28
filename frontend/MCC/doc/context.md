@@ -8,12 +8,14 @@
 ## 1. Executive Overview & Institutional Purpose
 
 ### 1.1 Project Identity
+
 - **Project Name:** Maha-Command Center (MCC) / DGIPR Institutional Command & Media Intelligence System
 - **Owner Organization:** Directorate General of Information and Public Relations (DGIPR / माहिती व जनसंपर्क महासंचालनालय), Government of Maharashtra, Mantralaya, Mumbai.
 - **Repository Location:** `d:\proj-eureks-re\frontend\MCC`
 - **Application Class:** Mission-critical, 24x7 state executive situational awareness portal, real-time media telemetry dashboard, multi-channel crisis communication response desk, and public perception monitoring cockpit.
 
 ### 1.2 Core Mandates
+
 1. **Statewide Media Surveillance:** Real-time multi-channel aggregation across 18+ daily newspapers (OCR digitisation), 6 broadcast TV news channels, digital wire services, and state social media handles (X/Twitter, Facebook, Instagram, YouTube).
 2. **Communication Performance Index (CPI):** Algorithmic scoring of all 36 Maharashtra districts out of 100 points based on:
    - Volume Score (35 pts max)
@@ -29,20 +31,20 @@
 
 ## 2. Technology Stack & Runtime Dependencies
 
-The project uses **461 installed npm packages** managed via `package-lock.json`.
+The project uses dependencies managed via `bun.lock` with Bun v1.4.4.
 
-| Layer | Technology | Version | Purpose & Constraints |
-| :--- | :--- | :--- | :--- |
-| **Framework** | Next.js (App Router) | `16.4.1` | Turbopack dev, experimental CPU throttling (`cpus: 1`), breaking-changes compliance (`AGENTS.md`) |
-| **Runtime / Library** | React | `19.3.1` | React 19 Server Components, Client Components (`'use client'`), Concurrent transitions |
-| **Styling** | Tailwind CSS | `3.4.1` | Utility-first with custom institutional design system tokens |
-| **State Management**| Zustand | `5.0.15`| Lightweight global reactive store with LocalStorage persistence and selectors |
-| **Accessible Tooltips**| @radix-ui/react-tooltip | `^1.1.8` | WAI-ARIA and GIGW 3.0 compliant hover and keyboard-focus tooltips for figures (`<MetricTip>`) |
-| **Data Visualisation**| Apache ECharts | `6.1.0` | High-performance canvas/SVG charting, gauge meters, GIS topological layers |
-| **Security / Auth** | Jose | `^6.0.8` | Cryptographic JWT signing and verification (`HS256`, 12-hour TTL enforcement) |
-| **Geospatial Engine**| D3-Geo & TopoJSON | `^3.1.2` / `^3.0.2`| Precise SVG projection & polygon simplification of all 36 Maharashtra districts |
-| **Icons & Symbols** | Custom Heroicons Pack | Handcrafted | Pure SVG 24x24 Solid Heroicons (`src/symbols.jsx`) and Material UI icons |
-| **Testing** | Node.js Test Runner | Native (`node:test`) | Ultra-fast unit & integration testing via `--experimental-strip-types` (**137 tests passing across 43 suites**) |
+| Layer                   | Technology              | Version              | Purpose & Constraints                                                                                           |
+| :---------------------- | :---------------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------- |
+| **Framework**           | Next.js (App Router)    | `16.4.1`             | Turbopack dev, experimental CPU throttling (`cpus: 1`), breaking-changes compliance (`AGENTS.md`)               |
+| **Runtime / Library**   | React                   | `19.3.1`             | React 19 Server Components, Client Components (`'use client'`), Concurrent transitions                          |
+| **Styling**             | Tailwind CSS            | `3.4.1`              | Utility-first with custom institutional design system tokens                                                    |
+| **State Management**    | Zustand                 | `5.0.15`             | Lightweight global reactive store with LocalStorage persistence and selectors                                   |
+| **Accessible Tooltips** | @radix-ui/react-tooltip | `^1.1.8`             | WAI-ARIA and GIGW 3.0 compliant hover and keyboard-focus tooltips for figures (`<MetricTip>`)                   |
+| **Data Visualisation**  | Apache ECharts          | `6.1.0`              | High-performance canvas/SVG charting, gauge meters, GIS topological layers                                      |
+| **Security / Auth**     | Jose                    | `^6.0.8`             | Cryptographic JWT signing and verification (`HS256`, 12-hour TTL enforcement)                                   |
+| **Geospatial Engine**   | D3-Geo & TopoJSON       | `^3.1.2` / `^3.0.2`  | Precise SVG projection & polygon simplification of all 36 Maharashtra districts                                 |
+| **Icons & Symbols**     | Custom Heroicons Pack   | Handcrafted          | Pure SVG 24x24 Solid Heroicons (`src/symbols.jsx`) and Material UI icons                                        |
+| **Testing**             | Node.js Test Runner     | Native (`node:test`) | Ultra-fast unit & integration testing via `--experimental-strip-types` (**137 tests passing across 43 suites**) |
 
 ---
 
@@ -86,7 +88,7 @@ The project uses **461 installed npm packages** managed via `package-lock.json`.
 ```
 frontend/MCC/
 ├── package.json                            # Scripts, dependencies (React 19, Next 16, Zustand 5, Radix Tooltip)
-├── package-lock.json                       # 461 locked packages
+├── bun.lock                                # Bun dependency lockfile
 ├── next.config.ts                          # Next.js 16 compiler options & SVG loaders
 ├── tailwind.config.ts                      # Extended institutional theme tokens, fonts, colors
 ├── task.md                                 # Task tracking checklist
@@ -431,6 +433,7 @@ frontend/MCC/
 ### 5.1 Application Shell & Layout System
 
 #### `src/components/layout/DashboardLayout.tsx`
+
 - **Role:** Master wrapper for all application views.
 - **Key Responsibilities:**
   - Persistently mounts `<Header />`, `<Sidebar />`, `<DashboardToolbar />`, and `<GlossaryDrawer />`.
@@ -441,6 +444,7 @@ frontend/MCC/
   - Manages mobile sidebar drawer collapse/expansion state.
 
 #### `src/components/layout/Header.tsx`
+
 - **Role:** Institutional top bar.
 - **Key Responsibilities:**
   - Displays official Lion Capital Government Emblem (`GovEmblem.tsx`) with state branding.
@@ -451,6 +455,7 @@ frontend/MCC/
   - Global system clock and sync status pill.
 
 #### `src/components/layout/Sidebar.tsx`
+
 - **Role:** Primary left navigation drawer.
 - **Key Responsibilities:**
   - Contains navigation links to all institutional portal modules, the Command Center, and "Glossary & Standards" (`/glossary`).
@@ -459,6 +464,7 @@ frontend/MCC/
   - Badge counters for unread notifications and pending crisis incidents.
 
 #### `src/components/layout/DashboardToolbar.tsx`
+
 - **Role:** Dynamic action toolbar below Header.
 - **Key Responsibilities:**
   - Time window filter toggle: `Last 24 Hours`, `7 Days`, `30 Days` (triggers live recomputation of Sentiment Index and Misinformation Tickets).
@@ -471,6 +477,7 @@ frontend/MCC/
 ### 5.2 Primary Dashboard Stage (`ThreeColumnDashboard.tsx`)
 
 Located at `src/components/dashboard/ThreeColumnDashboard.tsx`, this is the executive dashboard cockpit:
+
 1. **Top Banner:** Full-width `<BreakingNewsTicker />` followed by full-width `<KPIRibbon layout="ribbon" />` with `<MetricTip>` on every KPI value and `<TermInfo>` on every title.
 2. **Left Column (`xl:col-span-3`):**
    - `<ScoreDecomposition />`: Radar/bar analysis of CPI constituent scores (Volume, Speed, Sentiment Index 25 pts, Crisis SLA Resolution Rate 15 pts).
@@ -493,14 +500,15 @@ Located at `src/components/dashboard/ThreeColumnDashboard.tsx`, this is the exec
 ### 5.3 Command Center Views (Real-time Telemetry)
 
 Located in `src/components/commandCenter/` (exact camelCase folder name on disk):
+
 - **`PipelineFlowView.tsx` & `AnimatedPipelineDiagram.tsx`:** Visualizes the 6-stage telemetry processing pipeline:
-  1. *Stage 1: Multi-Channel Ingestion* (Optical bus line, packet generators)
-  2. *Stage 2: Kafka Partition Buffer* (Buffer utilization %, auto-scaling)
-  3. *Stage 3: Devanagari OCR Vectorization* (Tesseract v5.2, confidence scoring)
-  4. *Stage 4: Indic-BERT Sentiment Engine* (Positive/Neutral/Negative classification)
-  5. *Stage 5: Verification & Rebuttal Desk* (90-min SLA timer, collector approvals)
-  6. *Stage 6: Dual Persistence & Fanout* (TimescaleDB chunks, Redis WebSocket broadcast)
-  Features speed controls (1x, 2x, 0.5x), simulated packet drops, and node-focus inspection.
+  1. _Stage 1: Multi-Channel Ingestion_ (Optical bus line, packet generators)
+  2. _Stage 2: Kafka Partition Buffer_ (Buffer utilization %, auto-scaling)
+  3. _Stage 3: Devanagari OCR Vectorization_ (Tesseract v5.2, confidence scoring)
+  4. _Stage 4: Indic-BERT Sentiment Engine_ (Positive/Neutral/Negative classification)
+  5. _Stage 5: Verification & Rebuttal Desk_ (90-min SLA timer, collector approvals)
+  6. _Stage 6: Dual Persistence & Fanout_ (TimescaleDB chunks, Redis WebSocket broadcast)
+     Features speed controls (1x, 2x, 0.5x), simulated packet drops, and node-focus inspection.
 - **`TelemetryOperationsView.tsx` & `AnimatedTelemetryMesh.tsx`:** Light-theme network mesh showing latency (ms) and packet throughput across all 36 district nodes connecting to the Mantralaya DGIPR Ingestion Core.
 - **`RawIngestionView.tsx` & `RawEventStreamInspector.tsx`:** High-throughput streaming log of raw JSON telemetry events with hex inspection, regex filtering, and dead-letter queue indicators.
 
@@ -522,6 +530,7 @@ Located in `src/components/commandCenter/` (exact camelCase folder name on disk)
 ### 5.5 Institutional Portal Screens (20 Screen Implementations)
 
 Located in `src/components/portal/`:
+
 1. **`LoginScreen.tsx`:** Zero-friction credential switcher for 5 pre-configured government officer personas (State DG, Konkan Director, Palghar Collector, Thane Collector, DIO Desk). Supports WebAuthn biometric login and 4-digit PIN authentication.
 2. **`ActivitiesScreen.tsx`:** Ministerial public engagements, inaugurations, foundation stone ceremonies, and press tour logs.
 3. **`AdvertisementsScreen.tsx`:** Comprehensive tracking of state welfare scheme hoardings with geo-tagging, illumination status, and daily impression reach.
@@ -539,7 +548,7 @@ Located in `src/components/portal/`:
 15. **`NotificationsScreen.tsx`:** Central notification center categorizing alerts into Urgent (Red), Operational (Amber), and Routine (Blue).
 16. **`PressReleasesScreen.tsx`:** Bilingual press note drafting studio. Features an info icon and tooltip beside "Under Review" status explaining the reviewer, pending approval step, submission timestamp, what happens next, and specific reason field.
 17. **`ProfileScreen.tsx`:** Officer credential card displaying government clearance grade, assigned jurisdictions, and security audit log.
-18. **`PublicationsScreen.tsx`:** Digital library of official government periodicals, including the monthly *Lokrajya* magazine, *Maharashtra at a Glance* statistical digest, and government gazettes.
+18. **`PublicationsScreen.tsx`:** Digital library of official government periodicals, including the monthly _Lokrajya_ magazine, _Maharashtra at a Glance_ statistical digest, and government gazettes.
 19. **`ReportsScreen.tsx`:** Daily and weekly executive summary dossier generator with printable HTML report export.
 20. **`SettingsScreen.tsx`:** System preferences, dark/light mode toggles, font scaling, audio notification toggles, and backend API endpoints.
 
@@ -548,6 +557,7 @@ Located in `src/components/portal/`:
 ## 6. Global State Management (`src/stores/dashboardStore.ts`)
 
 Zustand master store managing reactive state across the application:
+
 - **Authentication & Clearance:** `officerPersona`, `isAuthenticated`, `token`, `biometricsRegistered`, `biometricsEnrolledAt`.
 - **Telemetry Filters:** `timeRange` ('24h' | '7d' | '30d'), `selectedDivision`, `selectedDistrict`, `searchQuery`.
 - **Live Intelligence Stream:**
@@ -566,6 +576,7 @@ Zustand master store managing reactive state across the application:
 ## 7. Security, Authentication & Role-Based Access Control (RBAC)
 
 ### 7.1 Officer Personas & Clearance Tiers
+
 1. **State DG ( clearanceTier: 1 ):** Complete statewide read/write access. Authorizes rebuttals, dismisses crisis tickets, exports full telemetry.
 2. **Konkan Regional Director ( clearanceTier: 2 ):** Scoped to Konkan division districts (Palghar, Thane, Raigad, Ratnagiri, Sindhudurg).
 3. **District Collector Palghar ( clearanceTier: 3 ):** Scoped to Palghar district telemetry, grievance redressal, and local DIO attendance.
@@ -573,14 +584,17 @@ Zustand master store managing reactive state across the application:
 5. **DIO Desk Operator ( clearanceTier: 4 ):** Read-only media surveillance and biometric punch-in access.
 
 ### 7.2 Session Cryptography & JWT Security (`src/lib/jwt.ts`)
+
 - Algorithm: HMAC-SHA256 (`HS256`) using `jose` library.
 - Session Expiration: Strict 12-hour TTL (43,200 seconds). Expired tokens are rejected by `src/middleware.ts` which automatically redirects to `/login`.
 
 ### 7.3 WebAuthn Biometric Architecture (`src/lib/webauthnClient.ts`)
+
 - Hardware-backed FIDO2 / Passkey registration via `navigator.credentials.create()` and `navigator.credentials.get()`.
 - Supports platform authenticators: Apple Touch ID / Face ID, Windows Hello, Android Biometric Prompt, YubiKey hardware tokens.
 
 ### 7.4 URL Sanitization & Protocol Filtering (`src/lib/urlSecurity.ts` & `src/lib/domainAllowlist.ts`)
+
 - Strict URL validation engine rejects malicious schemes: `javascript:`, `data:`, `vbscript:`, `file:`, `blob:`.
 - Automatically strips backslash evasion attempts (`/\evil.com`) and protocol-relative phishing vectors (`//evil.com`).
 - Verified Domain Allowlist: Enforces official government domains (`*.gov.in`, `*.nic.in`, `maharashtra.gov.in`, `dgipr.maharashtra.gov.in`) and verified media platforms.
@@ -591,6 +605,7 @@ Zustand master store managing reactive state across the application:
 ## 8. Bilingual Engine & Devanagari Localization
 
 The application maintains 100% bilingual parity across English and Marathi:
+
 - **`src/lib/translations.ts`:** Master translation dictionary containing 1000+ strings covering navigation labels, form fields, status badges, metrics, and error dialogues.
 - **`src/data/metricDefinitions.ts`:** Dedicated bilingual dictionary providing full definitions, formulas, sources, and examples in both English and Marathi for every metric and glossary term.
 - **`src/lib/dataLocalization.ts`:** Algorithmic Devanagari mapper for:
@@ -605,14 +620,15 @@ The application maintains 100% bilingual parity across English and Marathi:
 ## 9. Geospatial & Topological Mapping Engine
 
 Located at `scripts/build-maharashtra-geo.mjs` and `src/data/maharashtraGeo.generated.ts`:
+
 - **Source Data:** Census-2011 district boundary shapefiles updated with the 2014 Palghar bifurcation from Thane.
 - **Topology Preservation:** Visvalingam simplification via `topojson-server` and `mapshaper` retaining 8% vertex precision to ensure zero gaps or overlapping artifacts between neighbouring districts.
 - **Pole of Inaccessibility (`polylabel`):** Each district geometry includes a mathematically calculated `pin: { x, y }` position deepest inside the polygon, preventing pin labels from rendering outside irregular district boundaries.
 - **Physical Features Layer (`src/data/maharashtraGISDetailData.ts`):**
-  - *Sahyadri Ridges:* Northern Ridge (Kalsubai), Southern Ridge (Koyna), Satpura Range.
-  - *River Corridors:* Godavari, Krishna, Bhima, Tapi, Wainganga, Wardha.
-  - *Water Reservoirs:* Koyna Dam (Shivsagar), Jayakwadi (Nath Sagar), Ujjani Dam.
-  - *Transportation:* Samruddhi Mahamarg (ME-01), Mumbai-Pune Expressway (ME-02), Atal Setu MTHL, Central/Western/Konkan Railway trunk routes.
+  - _Sahyadri Ridges:_ Northern Ridge (Kalsubai), Southern Ridge (Koyna), Satpura Range.
+  - _River Corridors:_ Godavari, Krishna, Bhima, Tapi, Wainganga, Wardha.
+  - _Water Reservoirs:_ Koyna Dam (Shivsagar), Jayakwadi (Nath Sagar), Ujjani Dam.
+  - _Transportation:_ Samruddhi Mahamarg (ME-01), Mumbai-Pune Expressway (ME-02), Atal Setu MTHL, Central/Western/Konkan Railway trunk routes.
 
 ---
 
@@ -628,6 +644,7 @@ npm test
 **Test Status:** 117 tests passing across 34 test suites.
 
 ### Complete Test Inventory
+
 1. **`tests/jwt.test.mjs`:** Validates 12-hour expiration delta (43,200s), signature verification, tampered token rejection, and malformed input handling.
 2. **`tests/url_security.test.mjs`:** Tests XSS rejection, safe route acceptance, `javascript:` and `data:` scheme blocking.
 3. **`tests/auth_redirect.test.mjs`:** Verifies server-side and middleware redirects for active and expired sessions.
@@ -648,10 +665,11 @@ npm test
 > [!IMPORTANT]
 > **DEVELOPER & AGENT INSTRUCTION**:
 > Whenever you modify existing components, introduce new portal screens, add API endpoints, update data fixtures, or refine styling:
+>
 > 1. Preserve institutional GIGW 3.0 accessibility (`aria-*` labels, keyboard focusable tooltips via `<MetricTip>`, table alternatives for charts).
 > 2. Ensure all text strings have corresponding Marathi translations in `src/lib/translations.ts` or `src/data/metricDefinitions.ts`.
 > 3. Verify that changes do not violate Next.js 16 breaking change rules specified in `AGENTS.md`.
-> 4. Run `npm test` to ensure zero regression across the 117 unit and integration tests.
+> 4. Run `bun test` to ensure zero regression across the 117 unit and integration tests.
 > 5. **IMMEDIATELY UPDATE THIS `docs/context/context.md` FILE (AND SYNC TO `doc/context.md`)** to document the modified files, altered schemas, new interfaces, or updated operational workflows.
 
 ---
@@ -659,6 +677,7 @@ npm test
 ## 12. Metric Standards, Dynamic Intelligence & Security Architecture
 
 ### 12.1 Unified Metric Standards Registry & Tooltip System
+
 - **Central Dictionary (`src/data/metricDefinitions.ts`):** Single source of truth for all metrics, KPIs, and glossary terms. Every entry defines:
   - English & Marathi titles (`label`, `labelMr`)
   - Plain-language explanation (`definition`, `definitionMr`)
@@ -673,6 +692,7 @@ npm test
 - **Dedicated Route (`/glossary`):** Full-page institutional reference standard located at `src/app/glossary/page.tsx` and `src/components/portal/GlossaryScreen.tsx`.
 
 ### 12.2 Standardized Mathematical Formulas (`src/lib/metricCalculations.ts`)
+
 1. **Communication Performance Index (CPI):**
    $$\text{CPI} = \text{Volume (35)} + \text{Speed (25)} + \text{Sentiment Index (25)} + \text{Crisis SLA Resolution Rate (15)}$$
    - Total Range: 0 to 100 points.
@@ -689,6 +709,7 @@ npm test
    $$\text{Attendance % } = \min\left(100, \frac{\text{presentStaff}}{\text{totalStaff}} \times 100\right)$$
 
 ### 12.3 Dynamic Live Sentiment Index & Misinformation Tickets Pipeline
+
 - **Root Cause Diagnosed:** Previous implementation loaded static mock fixtures (`69.2%`, 3 tickets) in `sentimentEngine.ts` and `serverData.ts` without evaluating live items from `newsQueue`.
 - **Dynamic Fix Implemented:**
   - `src/lib/sentimentEngine.ts` now evaluates all active items in `newsQueue` filtered by the selected time window (24h, 7d, 30d).
@@ -705,17 +726,20 @@ npm test
   - Updates `lastTicketsComputedAt` and displays "Last computed at: <time>" in the UI.
 
 ### 12.4 Statewide Terminology Standardization
+
 - **"Crisis SLA Resolution Rate":** Renamed from "Crisis SLA" across all UI widgets, data tables, translations (`translations.ts`), AI prompt templates (`route-prompts.ts`), PDF telemetry export, and documentation.
   - Represents the percentage of crisis incidents resolved within the statutory 90-minute limit.
   - The animated 90-minute countdown timer retains the designation "SLA Timer" as it measures the operational countdown rather than the statewide resolution rate.
 - **"Sentiment Index":** Standardized across all screens, replacing deprecated variants such as "Sentiment Score", "Sentiment", and lowercase "sentiment index".
 
 ### 12.5 Nightly Hoardings Sync Protocol & 36-Hour Stale Threshold
+
 - **State Management (`src/data/hoardingsSyncState.ts`):** Tracks `lastFetchedAt`, synchronization schedule (`Nightly at 02:00 IST`), and calculates staleness.
 - **Refresh Endpoint (`/api/v1/hoardings/refresh`):** Protected Next.js route handler requiring the `x-refresh-secret` header. Invoked by external cron scheduler or Hermes backend.
-- **Stale Detection:** If `Date.now() - lastFetchedAt > 36 hours`, `<GovernmentSchemeHoardingsPanel>` displays a high-visibility amber alert banner: *"Data may be stale. Last synchronization was over 36 hours ago."*
+- **Stale Detection:** If `Date.now() - lastFetchedAt > 36 hours`, `<GovernmentSchemeHoardingsPanel>` displays a high-visibility amber alert banner: _"Data may be stale. Last synchronization was over 36 hours ago."_
 
 ### 12.6 Citizen Accountability & Outbound Link Security
+
 - **Citizen Services Card (`<CitizenServicesCard>`):** Embedded directly on the main dashboard stage (`ThreeColumnDashboard.tsx`). Displays 7 accountability fields on hover and keyboard focus:
   1. City / District Name
   2. Issue Details (grievance / civic requirement)
@@ -724,14 +748,14 @@ npm test
   5. Current Resolution Status
   6. Responsible Administrative Office
   7. Time to Resolve (TAT)
-  Clicking any item opens `<CitizenServiceDetailDrawer />` with complete escalation history and audit logs.
+     Clicking any item opens `<CitizenServiceDetailDrawer />` with complete escalation history and audit logs.
 - **False News & Rumour Validation:** All fake news items and crisis alert cards (`PrimaryIncidentCard.tsx`, `FactCheckScreen.tsx`) display:
-  *"False news detected from <source> on <date>"* alongside source platform, handle, URL, detection timestamp, verdict, and official refuting evidence.
+  _"False news detected from <source> on <date>"_ alongside source platform, handle, URL, detection timestamp, verdict, and official refuting evidence.
 - **Press Releases Under Review Transparency:** Press release status records include a detailed reason field (`reason` / `reasonMr`). An info icon beside "Under Review" reveals a tooltip detailing the reviewer, pending approval step, submission timestamp, and next workflow steps.
 - **Biometric Attendance Tracking:** `AttendanceScreen.tsx` features a date picker defaulting to today, displays "Attendance for <date>", and writes the date to every exported CSV record.
 - **Outbound Link Security (`src/lib/domainAllowlist.ts`, `src/lib/urlSecurity.ts`, `<OutboundLink>`):**
   - All outbound URLs are sanitized and checked against official allowlisted domains.
-  - Outbound links render domain badges: *"Source: <domain> · verified"* or *"Source: <domain> · unverified"*.
+  - Outbound links render domain badges: _"Source: <domain> · verified"_ or _"Source: <domain> · unverified"_.
   - Enforces `rel="noopener noreferrer" target="_blank"`.
   - Unverified domains trigger an interactive confirmation dialog (`ConfirmModal`) alerting the user that they are leaving the secure government portal.
 
@@ -740,6 +764,7 @@ npm test
 ## 13. UI/UX Craftsmanship & Visual Architecture Standards (Next.js 16 Overhaul)
 
 ### 13.1 Hallmark Architecture & Constraint Discipline
+
 - **Hallmark Verification Stamp:** Line 1 of `src/app/globals.css` carries the official Hallmark stamp enforcing responsive containment (`overflow-x: clip`), explicit focus rings (`:focus-visible`), and eliminating unbounded page sprawl.
 - **Strict Structural Constraints:** The master layout (`ThreeColumnDashboard.tsx`) is capped at `max-w-[1860px]` with disciplined 12-column grid tracks (`grid-cols-12 gap-5`).
 - **Elimination of AI Slop Tropes:**
@@ -748,17 +773,20 @@ npm test
   - Eliminated ungrounded floating cards and heavy blurry box shadows (`shadow-2xl` / `shadow-indigo-500/20`), replacing them with crisp 1px borders (`border-slate-200/80`) and subtle elevation (`shadow-xs` / `shadow-sm`).
 
 ### 13.2 Apple HIG Design Sophistication & Feel
+
 - **Visual Hierarchy:** Crisp, bold data headings paired with quiet, legible metadata (`text-slate-600 font-mono text-xs`).
 - **Typography & Tabular Numbers:** High-density figures employ `tabular-nums` ensuring that real-time ticking values do not jitter or cause layout reflow.
 - **Subtle Physicality:** Interactive cards feature micro-scale state transitions (`hover:border-slate-300 transition-colors duration-150`) without gaudy hover translations or tacky 3D tilts.
 
 ### 13.3 UI/UX Pro Max Interaction Standards
+
 - **Cognitive Serenity:** Removed frantic animated ping dots (`animate-ping`) from headers, tickers, and sidebars. High-urgency indicators use steady high-contrast badges or smooth controlled pulses.
 - **Defined Interactive States:** Every interactive button, tab, and clickable row implements explicit `:hover`, `:active`, and `:focus-visible` outlines.
 - **Ergonomic Target Sizing:** Interactive buttons maintain minimum desktop click targets ($\ge 28$px height) and mobile touch targets ($\ge 44$px).
 - **Icon Cleanliness:** Eliminated colorful emojis from UI controls and live streams; replaced with consistent monochromatic Heroicons and Material Design SVG vectors.
 
 ### 13.4 Taste-Skill & Anti-Slop App Screen Compliance
+
 - **Colour on Data, Not Chrome:** Navigation chrome, sidebar panels, and structural card containers remain strictly neutral slate (`bg-slate-900` for primary auth buttons, `bg-white` for cards). Color is reserved solely for semantic data: Green (Positive / Verified), Amber (Notice / Warning), Red (Emergency / False News).
 - **Elimination of Icon-Chips:** Removed artificial saturated tinted squares (`w-8 h-8 rounded-lg bg-amber-50`) behind icons in panels and list rows. Icons sit cleanly inline with primary label text.
 - **Rigorous Contrast & GIGW 3.0 Accessibility:**
@@ -768,6 +796,7 @@ npm test
 - **Automated Visual Verification:** Audited via headless Chrome CDP evaluation (`inspect.mjs http://localhost:3000 --app`) confirming **0 FAILs** across standard mobile (390px), tablet (768px), and desktop (1440px) viewports.
 
 ### 13.5 Executive Minimalist Refinement & Screen Scaling Architecture (100%, 125%, 150%)
+
 - **Target Audience Profile:** Top state government leadership (Ministers, Chief Secretary, Principal Secretaries, Director General DGIPR) requiring maximum signal-to-noise ratio, zero filler decoration, and instantaneous cognitive scanning.
 - **Display Scale Optimization (100% vs 125% vs 150% Windows Scaling):**
   - Indian government offices predominantly deploy Windows 11 enterprise laptops (14"–15.6") where the default recommended display scaling is **125%** (1536×864 CSS px) or **150%** (1280×720 CSS px).
@@ -782,7 +811,7 @@ npm test
   - Hovering or keyboard-focusing anywhere across the card header bar triggers an Apple glass Radix tooltip (`.apple-glass-tooltip`, `bg-slate-900/95 backdrop-blur-md text-slate-100 border border-slate-700/60 shadow-xl`) presenting the complete contextual description.
   - Supports dark-themed headers (e.g. `EmergencyAlert`, `LiveNewsQueue`) via `titleClassName="text-white"`.
 - **Streamlined Executive Briefing Header (`ThreeColumnDashboard.tsx`):**
-  - Removed redundant filler paragraph: *"३६ जिल्ह्यांचे थेट संनियंत्रण, नागरिक तक्रार निवारण, लोकभावना विश्लेषण व अधिकृत वार्ताहर कक्ष."*
+  - Removed redundant filler paragraph: _"३६ जिल्ह्यांचे थेट संनियंत्रण, नागरिक तक्रार निवारण, लोकभावना विश्लेषण व अधिकृत वार्ताहर कक्ष."_
   - Replaced bulky 110px briefing card with an ultra-slim, dignified 44px bar.
   - Integrated the 5 workspace perspective filters (`GIS Map & Command`, `District Performance`, `Media & Broadcast`, `Crisis Desk`, `Command Wall`) into a compact Apple-style segmented control.
   - Retained the secondary breaking news ticker in Column 2 of the Command Wall (`all` view) as explicitly requested.
@@ -792,7 +821,9 @@ npm test
 ## 14. Authoritative Unified Calculations Architecture (`src/lib/calculations.tsx`, `src/calculations.tsx`, `src/lib/metricCalculations.ts`)
 
 ### 14.1 Architecture & Node.js Test Runner Isolation
+
 To prevent fragmentation of critical metrics and ensure deterministic calculations statewide, all mathematical formulas, aggregators, formatters, React hooks, and visual badges are unified into an authoritative module:
+
 - **`src/lib/metricCalculations.ts`**: Pure TypeScript computation engine containing zero JSX. Contains all raw deterministic mathematical functions, weighted scoring benchmarks, status thresholds, and aggregate functions. This guarantees that Node.js native test runners using `--experimental-strip-types` (which rejects `.tsx` syntax) execute with 100% fidelity.
 - **`src/lib/calculations.tsx`**: The comprehensive application-layer calculations module. It re-exports all formulas from `metricCalculations.ts`, provides memoized React 19 hooks (`useDashboardCalculations`, `useDistrictScorecard`), and exports accessible UI indicators (`ScoreBadge`, `TATIndicator`, `MetricDelta`).
 - **`src/calculations.tsx`**: Root shortcut re-export enabling clean imports anywhere in the application via `import { ... } from '@/calculations'` or `./calculations`.
@@ -861,6 +892,7 @@ To prevent fragmentation of critical metrics and ensure deterministic calculatio
    - `calculateTopLowerMatrix`: Partitions districts into Top 5 and Lower 5 performers, extracting average scores, key lagging pillars, and positive leadership factors.
 
 ### 14.3 Exported React Components & Hooks
+
 - **`useDashboardCalculations(districts, newsItems, incidents, timeRange)`**: Memoized React hook computing state averages, reactive CPI, live sentiment index, crisis SLA resolution rate, and top/lower matrices without unnecessary re-renders.
 - **`useDistrictScorecard(district)`**: Hook computing detailed pillar breakdown, deductions, and ranking status for an individual district.
 - **`<ScoreBadge score={score} maxScore={100} size="sm"|"md"|"lg" />`**: Accessible badge rendering score with color-coded token badges and screen reader labels.
@@ -868,6 +900,7 @@ To prevent fragmentation of critical metrics and ensure deterministic calculatio
 - **`<MetricDelta current={current} previous={previous} isPercentage format="standard"|"percent" />`**: Renders directional delta arrows ($\uparrow$ / $\downarrow$) and percentage change.
 
 ### 14.4 Page & Screen Integration Points
+
 1. **`src/components/zones/KPIRibbon/KPIRibbon.tsx`**: Replaced 85 lines of duplicate inline calculations with `calculateReactiveKPIs` from `@/calculations`.
 2. **`src/components/zones/ScoreDecomposition/ScoreDecomposition.tsx`**: Replaced inline reduce loops with `calculateStatewideAggregates` from `@/calculations`.
 3. **`src/components/leadership/TopLowerMatrix/TopLowerMatrix.tsx`**: Replaced 60 lines of inline ranking and sorting with `calculateTopLowerMatrix` from `@/calculations`.
@@ -875,7 +908,9 @@ To prevent fragmentation of critical metrics and ensure deterministic calculatio
 5. **`src/components/portal/AttendanceScreen.tsx`**: Computes dynamic attendance, punctuality, and field rates across filtered offices using `calculateAttendanceSummary` from `@/calculations`.
 
 ### 14.5 Unit Test Suite (`tests/calculations.test.mjs`)
+
 A dedicated 20-test suite validates all formulas and edge cases:
+
 - Full marks at boundary limits ($100.00$).
 - Upper ceiling clamping and negative value clamping ($0.00$).
 - TAT deductions ($-0.5$ pts/min after 30 mins) and severe delay cutoff ($0.0$ at $\ge 80$ mins).
@@ -892,7 +927,9 @@ A dedicated 20-test suite validates all formulas and edge cases:
 ## 15. Executive Minimalist Refinement, Scale Optimization & Apple UI/UX Precision
 
 ### 15.1 Multi-Scale Display Optimization (Windows 100%, 125%, 150%)
+
 To ensure that top government officials on diverse hardware (from 4K executive command displays to 14" and 15.6" laptops with 125% and 150% Windows display scaling) experience a unified, high-density, non-overflowing interface, root tokens and media queries were codified in `src/app/globals.css`:
+
 1. **Dynamic Design Tokens:**
    - `--app-card-padding`: Adapts from `1.25rem` (100% scale) down to `1rem` (125% scale, $\le 1536$px) and `0.875rem` (150% scale, $\le 1280$px).
    - `--app-grid-gap`: Adapts from `1.25rem` down to `1rem` and `0.875rem` respectively.
@@ -901,7 +938,9 @@ To ensure that top government officials on diverse hardware (from 4K executive c
    - Eliminates vertical crowding and accidental horizontal scrollbars without breaking component layout contracts.
 
 ### 15.2 Subheading Elimination & Popover Architecture (`<MinimalCardHeader>`)
+
 Card headers across the entire dashboard were refined to eliminate redundant subtitles, filler descriptions, and repetitive explanations:
+
 - **Component Implementation (`src/components/shared/MinimalCardHeader.tsx`):**
   - Built with `@radix-ui/react-tooltip` conforming to GIGW 3.0 and WCAG 2.1 AA.
   - Apple Human Interface Guidelines bold title typography (`text-sm sm:text-base font-bold tracking-tight text-slate-800`).
@@ -923,28 +962,35 @@ Card headers across the entire dashboard were refined to eliminate redundant sub
   12. `LiveNewsQueue.tsx`: Converted to `<MinimalCardHeader titleClassName="text-white">`.
 
 ### 15.3 Tactile Apple-Style Controls & Segmented Controls
+
 Interactive controls across tables and tab bars were upgraded to tactile Apple-style segmented pill controls:
+
 - **Interaction Styling:** `rounded-xl`, `border border-slate-200/90`, `bg-slate-100/80`, `shadow-xs`, `transition-all duration-150 active:scale-[0.98]`.
 - **Accessibility:** Accessible `role="tablist"` and `role="tab"` attributes with `aria-selected` state tracking.
 - **Upgraded Components:** `LeaderboardTabs.tsx`, `DistrictSearchBar.tsx`, `TopLowerMatrix.tsx`, `CitizenServicesCard.tsx`, and `SocialMediaAnalysis.tsx`.
 
 ### 15.4 High-Precision Telemetry & ECharts Dark Glass Visuals
+
 - **Telemetry Tooltip:** `DistrictPerformanceChart.tsx` upgraded to a floating dark glass tooltip (`backdrop-blur-md bg-slate-900/90 border border-slate-800`), `JetBrains Mono` tabular figures, and color-coded series indicators.
 - **Color Consistency:** Replaced indigo with official institutional emerald (`#059669`) for Crisis SLA Resolution Rate.
 - **Axis Typography:** Switched axis ticks and labels to `Plus Jakarta Sans` for crisp rendering across all screen resolutions.
 
 ### 15.5 Ergonomic Chrome & Sticky Navigation
+
 - **Header:** Streamlined `Header.tsx` from `h-16` to `h-14` (56px), reclaiming 8px of primary vertical viewport canvas for data visualization.
 - **Toolbar:** `DashboardToolbar.tsx` refined with `py-2.5` padding, keycap styling, and tactile select controls.
 - **Headline Invariants:** The duplicate breaking news ticker in Column 2 of the `all` view is strictly preserved as an operational necessity.
 
 ### 15.6 Verification & Test Invariants
+
 - **Tests Passing:** 137/137 tests passing across 43 test suites (`npm test`).
 - **TypeScript:** 0 errors (`npx tsc --noEmit`).
 - **Build Status:** Clean production compilation (`npm run build`).
 
 ### 15.7 Width-Aware Redesign of CitizenServicesCard
+
 The citizen services & grievance resolution card (`src/components/dashboard/CitizenServicesCard.tsx`) was redesigned to adapt gracefully across differing dashboard column widths:
+
 1. **Multi-Width Adaptability:**
    - In Command Wall (`activeView === 'all'`), the card is mounted in Column 1 (`xl:col-span-3`, ~340px–420px wide).
    - In Primary Overview (`activeView === 'overview'`), the card is mounted in the Left Deck (`lg:col-span-7`, ~700px–1000px wide).
@@ -968,15 +1014,19 @@ The citizen services & grievance resolution card (`src/components/dashboard/Citi
 ## 16. Minimalist Full-Screen Auth Loading Screen & Zero-Flash Auth Gating
 
 ### 16.1 Architecture Overview
+
 To eliminate unauthenticated layout flashing and protected data leakage during initial application boot or page reload, a zero-flash client-side authentication boundary was deployed.
+
 - **Root-Level Interception (`src/components/auth/AuthGate.tsx`):**
   - Wraps `{children}` at the root level inside `src/app/layout.tsx`.
   - While authentication state is resolving (`!authInitialized || isAuthLoading`), mounts `<FullScreenAuthLoader message="Verifying session..." />`.
   - Strictly prevents mounting of `Header`, `Sidebar`, `DashboardToolbar`, telemetry charts, or login forms until JWT session status is completely resolved.
-  - Automatically triggers `router.replace('/login')` for unauthenticated requests attempting to access protected command routes, and `router.replace('/')` for authenticated users attempting to access `/login`.
+  - Executes `router.replace('/login')` for unauthenticated requests attempting to access protected command routes, and `router.replace('/')` for authenticated users attempting to access `/login`, safely dispatched inside a `useEffect` hook to eliminate render-phase React Router state update collisions.
 
 ### 16.2 Minimalist Full-Screen Auth Loader (`src/components/auth/FullScreenAuthLoader.tsx`)
+
 Conforms to Apple Human Interface Guidelines and state government visual design:
+
 - **Canvas:** Fullscreen fixed overlay (`fixed inset-0 z-[9999] flex flex-col justify-between items-center bg-white select-none text-slate-900`).
 - **Accessibility:** `role="status"`, `aria-live="polite"`, `aria-busy="true"`, plus a screen-reader announcement (`sr-only`).
 - **Optical Centering:** Top and bottom spacers (`<div className="flex-1 w-full" />`) achieve balanced vertical composition across all desktop and mobile viewports.
@@ -990,15 +1040,18 @@ Conforms to Apple Human Interface Guidelines and state government visual design:
   - Right: `NIC • DGIPR Secure Gateway`.
 
 ### 16.3 Defense-in-Depth Layout Gating
+
 - **`DashboardLayout.tsx`:** Adds a top fail-safe guard returning `<FullScreenAuthLoader message="Verifying credentials..." />` if `!authInitialized || !isAuthenticated`, guaranteeing that navigation chrome and child views never mount until authenticated.
 - **`LoginScreen.tsx`:** Adds reverse-gating returning `<FullScreenAuthLoader message="Redirecting to command center..." subMessage="Active Government Officer Session Detected..." />` if `!authInitialized || isAuthenticated`, eliminating form flicker while preserving session-detection feedback.
 
 ### 16.4 Zustand Store Deduplication (`src/stores/dashboardStore.ts`)
+
 - Added `isAuthLoading: boolean` (initial: `true`) and `authInitialized: boolean` (initial: `false`).
 - Implemented module-level cached promise `checkAuthPromise` to deduplicate concurrent `checkAuth()` invocations from multiple components.
 - On network error, gracefully validates cached tokens in `localStorage` using cryptographic verification via `verifyAuthToken` from `src/lib/jwt.ts`.
 
 ### 16.5 Automated Test Verification (`tests/auth-initialization.test.mjs`)
+
 - 6 automated tests verify:
   1. `FullScreenAuthLoader.tsx` accessibility semantics, white background, emblem, and spinner.
   2. `AuthGate.tsx` client-side route boundary and redirect enforcement.
@@ -1013,6 +1066,7 @@ Conforms to Apple Human Interface Guidelines and state government visual design:
 ## 17. 3-Column Operational Workspace Refactoring & Responsive Architecture (v5.5)
 
 ### 17.1 Responsive Grid Architecture (`ThreeColumnDashboard.tsx`)
+
 - **Responsive CSS Grid Container:** `grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full`
 - **Mobile / Tablet Stacking (`< 1024px`):** Single column with mobile-first CSS Grid ordering:
   - GIS Map first (`order-1 lg:order-2`)
@@ -1029,12 +1083,14 @@ Conforms to Apple Human Interface Guidelines and state government visual design:
 - **Synchronized Viewport Budget:** All 3 columns share an identical `lg:h-[640px] flex flex-col` budget with internal scrolling (`overflow-y-auto`) to ensure bottom baselines align cleanly without vertical drift.
 
 ### 17.2 Above-Grid KPI Empty State Alert Bar (`KPIRibbon.tsx`)
+
 - Collapsed 160px placeholder into a slim, single-line alert bar (`h-11 px-4 py-2 flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600 w-full`) when a selected district has no ingested telemetry.
 - Bilingual messaging:
   - English: "No telemetry ingested for this district yet." / "Select an active reporting district above to inspect KPIs."
   - Marathi: "या जिल्ह्यासाठी टेलीमेट्री उपलब्ध नाही." / "केपीआय तपासण्यासाठी वरील सक्रिय जिल्हा निवडा."
 
 ### 17.3 Grievances & SLA Redesign (`CitizenServicesCard.tsx`)
+
 - **Header:** Retitled to "Grievances & SLA" (Marathi: "तक्रारी व हमी कायदा (SLA)") with `94.2% SLA` emerald pill.
 - **4-Cell Summary Strip:** `grid grid-cols-4 gap-1.5 p-2 bg-slate-50 rounded-lg border-b border-slate-100 text-center`:
   - `TOTAL`: 5
@@ -1049,6 +1105,7 @@ Conforms to Apple Human Interface Guidelines and state government visual design:
   - Row 3: Category badge + Users icon + numeric count ONLY (`1,450`, dropped "affected") on left; right-aligned action link (`ml-auto font-medium hover:underline`).
 
 ### 17.4 Maharashtra GIS Optimization (`GISMap.tsx`)
+
 - **Header:** Retitled to "Maharashtra GIS" (Marathi: "महाराष्ट्र जीआयएस (GIS)"). Removed redundant `36 Districts (#1 to #36)` status pill.
 - **Compact 2-Select Filter Bar:** Replaced two multi-row pill strips ("Division:" and "Districts (#1-36):") with a compact 2-select filter bar:
   - Division dropdown (`<select className="h-8 px-2.5 ...">`)
@@ -1058,10 +1115,12 @@ Conforms to Apple Human Interface Guidelines and state government visual design:
 - **SVG Halo Accessibility:** Added `aria-hidden="true"` and `pointerEvents="none"` to SVG halo/outline `<text>` elements.
 
 ### 17.5 Crisis Monitor & Social Pulse Optimization
+
 - **`EmergencyAlert.tsx`:** Retitled to "Crisis Monitor" (Marathi: "संकट संनियंत्रण कक्ष"). Dynamic 44px status bar when 0 active incidents (`scopeIncidents.length === 0 && !isCrisisRoute`), displaying shield icon, "Crisis Monitor", and pulsing green dot with "0 Active (Konkan)".
 - **`SocialMediaAnalysis.tsx`:** Retitled to "Social Pulse" (Marathi: "समाज माध्यम नाडी (Social Pulse)"). Compact segmented tabs (`All` | `X` | `Meta`), pulsing green dot with "Live", sticky minimalist channel divider (`X Feed` / `Meta / DD News` + `API Active`), and formatted metrics (`↻ 1.4K • ♥ 6.2K`, `👁 12K • 💬 1.1K`).
 
 ### 17.6 Test Suite Verification
+
 - Added `tests/three_column_operational_workspace.test.mjs` verifying all architectural and UI specifications across 5 suites.
 - **Overall Test Pass Rate:** 157/157 tests passing across all 50 test suites (`npm test`).
 
@@ -1070,7 +1129,9 @@ Conforms to Apple Human Interface Guidelines and state government visual design:
 ## 18. Complete Dashboard UI/UX Overhaul & Spatial Optimization (Apple HIG + Tailwind)
 
 ### 18.1 Executive Scope & Objectives
+
 A total zero-defect overhaul eliminating all text truncation, badge overlapping, scroll collision, map occlusion, and spatial mispositioning across the executive dashboard cockpit:
+
 1. **Top Command Header & Navigation (`Header.tsx`, `GlobalSearchBar.tsx`, `Sidebar.tsx`)**:
    - Expanded search footprint to `min-w-[260px] lg:min-w-[340px] max-w-md flex-1` with dedicated desktop keyboard shortcut badge (`⌘K`).
    - Removed `max-w-[140px]` string truncation on user profile pill using `shrink-0 min-w-fit pr-2` with `tabular-nums whitespace-nowrap`, rendering `"Divisional Director • Tier 2"` in full.
@@ -1099,14 +1160,30 @@ A total zero-defect overhaul eliminating all text truncation, badge overlapping,
    - Stream channel headers (`X Feed`, `Meta / DD News`) structured as `shrink-0` siblings with `space-y-2.5 overflow-y-auto max-h-[240px] pr-1 pt-0.5 scroll-pt-1` ensuring Post 1 (`@MahaDGIPR 12m ago`) is 100% visible at scroll position 0.
 
 ### 18.2 Verification & Build Status
+
 - **Automated Test Suite:** `tests/dashboard_ui_ux_overhaul.test.mjs` (19/19 tests passing).
-- **Full Test Suite:** 176/176 tests passing across all 57 test suites (`npm test`).
+- **Full Test Suite:** 186/186 tests passing across all 58 test suites (`npm test`).
 - **Static Typing:** `npx tsc --noEmit` passed with 0 errors.
 - **Production Build:** `npm run build` passed with 43/43 static pages prerendered.
 
+---
 
+## 19. Project-Wide Migration to Bun (Runtime, Package Management & Native Test Runner)
 
+### 19.1 Migration Rationale & Infrastructure Upgrades
 
+The project has been migrated from npm/Node.js to **Bun (v1.4.4)** across package management, development workflows, and testing:
 
-
-
+1. **Package Management & Lockfile:**
+   - Transitioned from `package-lock.json` to native `bun.lock`.
+   - Dependency installations and dev tools (`mapshaper`, `d3-geo`, `topojson-server`, `topojson-client`, `polylabel`) are resolved and cached with high efficiency.
+2. **Scripts & Execution (`package.json`):**
+   - `"test": "bun test"` replaces the legacy Node test command, executing all 186 test cases in ~180ms with 0 failures.
+   - `"build:geo": "bun scripts/build-maharashtra-geo.mjs"` executes the GIS cartography compiler under the Bun runtime.
+   - `bun run dev`, `bun run build`, and `bun run start` govern the Next.js lifecycle.
+3. **CI/CD Pipeline (`.github/workflows/frontend-test.yml`):**
+   - Upgraded GitHub Actions workflow from `actions/setup-node@v4` to `oven-sh/setup-bun@v2` with `bun-version: latest`.
+   - Pipeline runs `bun install --frozen-lockfile`, `bun run build:geo`, `bun test`, and `bun run build`.
+4. **Test Suite Alignment (`tests/three_column_operational_workspace.test.mjs`):**
+   - Harmonized `SocialMediaAnalysis` test assertion to match the updated Apple HIG header title (`Social Pulse` / `समाज माध्यम नाडी (Social Pulse)`) and sticky channel status indicator (`<span>Active</span>`).
+   - All 186 tests across 16 test files pass with 100% success rate on `bun test`.
