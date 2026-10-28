@@ -25,8 +25,6 @@ import {
   SignalIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
   XMarkIcon,
   AdjustmentsHorizontalIcon,
 } from '@heroicons/react/20/solid';
@@ -100,19 +98,19 @@ export const Sidebar: React.FC = () => {
       {mobileMenuOpen && (
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 md:hidden transition-opacity"
+          className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[105] md:hidden transition-opacity"
           aria-hidden="true"
         />
       )}
 
       {/* Main Sidebar (Locked Exact Height h-full, Never Scrolls with Page) */}
       <aside
-        className={`h-full shrink-0 bg-[#0B1120] border-r border-slate-800/90 flex flex-col justify-between transition-colors duration-200 ease-in-out z-20 select-none box-border ${
+        className={`h-full shrink-0 bg-slate-950 border-r border-slate-800/90 flex flex-col justify-between transition-colors duration-200 ease-in-out select-none box-border ${
           sidebarCollapsed ? 'md:w-16' : 'md:w-64'
         } ${
           mobileMenuOpen
-            ? 'fixed inset-y-0 left-0 w-64 z-50 shadow-2xl flex'
-            : 'fixed inset-y-0 left-0 w-64 -translate-x-full md:translate-x-0 md:static flex'
+            ? 'fixed inset-y-0 left-0 w-72 z-[110] shadow-2xl flex border-r border-slate-700/80'
+            : 'fixed inset-y-0 left-0 w-72 -translate-x-full md:translate-x-0 md:static z-20 flex'
         }`}
       >
         {/* Mobile Header with Close Action */}
@@ -143,8 +141,8 @@ export const Sidebar: React.FC = () => {
                 sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
               } text-xs transition-colors ${
                 pathname === '/' || pathname === '/dashboard'
-                  ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                  : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                  ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
               }`}
             >
               <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -164,7 +162,7 @@ export const Sidebar: React.FC = () => {
           </div>
 
           {/* GROUP 1: DGIPR PORTALS */}
-          <div className="pt-2 border-t border-slate-800/70">
+          <div className="pt-2 border-t border-slate-800/80">
             {(!sidebarCollapsed || mobileMenuOpen) && (
               <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-3 mb-2 tracking-normal">
                 <span>{language === 'mr' ? 'माहिती व जनसंपर्क दालने' : 'DGIPR Portals'}</span>
@@ -181,8 +179,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/newspaper' || pathname === '/media'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -209,8 +207,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/live-news' || pathname === '/live-events'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -238,8 +236,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/advertisements'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -264,8 +262,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/advertisements' && typeof window !== 'undefined' && window.location.search.includes('hoardings')
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -290,8 +288,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/fact-check'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -315,8 +313,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/media-intelligence'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -340,8 +338,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/publications'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -365,8 +363,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/press-releases'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -391,8 +389,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/activities'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -411,7 +409,7 @@ export const Sidebar: React.FC = () => {
           </div>
 
           {/* GROUP 2: COMMAND CENTRE & STATEWIDE OPERATIONS */}
-          <div className="pt-2 border-t border-slate-800/70">
+          <div className="pt-2 border-t border-slate-800/80">
             {(!sidebarCollapsed || mobileMenuOpen) && (
               <div className="text-xs font-semibold text-slate-400 px-3 mb-2 tracking-normal">
                 <span>{language === 'mr' ? 'कमांड सेंटर व जिल्हे' : 'Command Centre & Districts'}</span>
@@ -428,8 +426,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   isCommandCenterRoute
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -456,8 +454,8 @@ export const Sidebar: React.FC = () => {
                       sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                     } text-xs transition-colors ${
                       pathname === '/districts'
-                        ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                        ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                        : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                     }`}
                   >
                     <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -552,8 +550,8 @@ export const Sidebar: React.FC = () => {
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-colors ${
                   pathname === '/attendance'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-bold rounded-r-lg shadow-2xs'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -572,7 +570,7 @@ export const Sidebar: React.FC = () => {
           </div>
 
           {/* GROUP 3: OPERATIONS & ADMINISTRATION */}
-          <div className="pt-2 border-t border-slate-800/70">
+          <div className="pt-2 border-t border-slate-800/80">
             {(!sidebarCollapsed || mobileMenuOpen) && (
               <div className="text-xs font-semibold text-slate-300 px-3 mb-1.5">
                 {language === 'mr' ? 'प्रशासन व ऑपरेशन्स' : 'Operations & Admin'}
@@ -590,7 +588,7 @@ export const Sidebar: React.FC = () => {
                 } text-xs transition-colors ${
                   pathname === '/crisis'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -619,7 +617,7 @@ export const Sidebar: React.FC = () => {
                 } text-xs transition-colors ${
                   pathname === '/reports'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -650,7 +648,7 @@ export const Sidebar: React.FC = () => {
                   } text-xs transition-colors cursor-pointer ${
                     isSystemMonitoringRoute
                       ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
-                      : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 truncate">
@@ -710,7 +708,7 @@ export const Sidebar: React.FC = () => {
                 } text-xs transition-colors ${
                   pathname === '/settings'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -735,7 +733,7 @@ export const Sidebar: React.FC = () => {
                 } text-xs transition-colors ${
                   pathname === '/glossary'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                    : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100 rounded-lg font-medium'
                 }`}
               >
                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
@@ -757,38 +755,6 @@ export const Sidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-
-        {/* Bottom Rail Footer: Docked Collapse Menu Toggle */}
-        <div className="hidden md:block p-3 border-t border-slate-800/80 shrink-0 bg-slate-900/60">
-          <button
-            type="button"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className={`w-full flex items-center ${
-              sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-1.5' : 'gap-2.5 px-3 py-2'
-            } text-xs rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer group`}
-            title={
-              sidebarCollapsed
-                ? (language === 'mr' ? 'मेन्यू विस्तार करा (Ctrl+B)' : 'Expand Menu (Ctrl+B)')
-                : (language === 'mr' ? 'मेन्यू संक्षिप्त करा (Ctrl+B)' : 'Collapse Menu (Ctrl+B)')
-            }
-            aria-label={sidebarCollapsed ? 'Expand Menu' : 'Collapse Menu'}
-          >
-            <div className="w-6 h-6 rounded-md bg-slate-800 group-hover:bg-slate-700 flex items-center justify-center shrink-0 transition-colors border border-slate-700/60">
-              {sidebarCollapsed ? (
-                <ChevronDoubleRightIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
-              ) : (
-                <ChevronDoubleLeftIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
-              )}
-            </div>
-            {(!sidebarCollapsed || mobileMenuOpen) && (
-              <span className="truncate font-medium text-slate-300">
-                {sidebarCollapsed
-                  ? (language === 'mr' ? 'मेन्यू विस्तार' : 'Expand Menu')
-                  : (language === 'mr' ? 'मेन्यू संक्षिप्त करा' : 'Collapse Menu')}
-              </span>
-            )}
-          </button>
-        </div>
       </aside>
     </>
   );

@@ -274,8 +274,8 @@ export const CrisisScreen: React.FC = () => {
               </h3>
               <p className="text-[11px] text-slate-500 mt-0.5">
                 {language === 'mr'
-                  ? '४-टप्पे जीवनचक्र: १. अफवा ओळखली ➔ २. जिल्हाधिकारी पडताळणी ➔ ३. जिल्हाधिकारी मंजुरी ➔ ४. खंडन प्रसिद्ध'
-                  : '4-Stage Lifecycle: 1. Detected ➔ 2. Collectorate Verification ➔ 3. Collector Approval ➔ 4. Published'}
+                  ? '४-टप्पे जीवनचक्र: १. अफवा ओळखली → २. जिल्हाधिकारी पडताळणी → ३. जिल्हाधिकारी मंजुरी → ४. खंडन प्रसिद्ध'
+                  : '4-Stage Lifecycle: 1. Detected → 2. Collectorate Verification → 3. Collector Approval → 4. Published'}
               </p>
             </div>
             <span className="text-xs font-mono px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-semibold">

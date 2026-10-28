@@ -9,6 +9,7 @@ import { ALL_HOARDINGS, DISTRICT_DETAILS_BY_ID } from '@/data/maharashtraDistric
 import { DIO_BY_DISTRICT } from '@/data/dioDirectory';
 import { GISMapSkeleton } from '@/components/skeletons/GISMapSkeleton';
 import { MinimalCardHeader } from '@/components/shared/MinimalCardHeader';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 
 /* ───────────── Types ───────────── */
 
@@ -647,7 +648,7 @@ export const Cesium3DMap: React.FC<Cesium3DMapProps> = ({
               className="w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-colors cursor-pointer text-xs shrink-0"
               aria-label="Close inspection popup"
             >
-              ✕
+              <XMarkIcon className="w-4 h-4 stroke-[2]" />
             </button>
           </div>
         </div>

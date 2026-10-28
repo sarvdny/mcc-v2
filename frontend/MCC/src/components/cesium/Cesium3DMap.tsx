@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { loadCesium } from '@/lib/cesiumLoader';
 import { useDashboardStore } from '@/stores/dashboardStore';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { getDistrictName } from '@/lib/dataLocalization';
 import { DISTRICT_BY_ID, type DistrictId } from '@/data/maharashtraGeo.generated';
 import { ALL_HOARDINGS, type HoardingRecord } from '@/data/maharashtraDistrictsData';
@@ -794,7 +795,7 @@ export const Cesium3DMap: React.FC<Cesium3DMapProps> = ({
               className="w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-xl transition-colors cursor-pointer text-xs shrink-0"
               aria-label="Close inspection popup"
             >
-              ✕
+              <XMarkIcon className="w-4 h-4 stroke-[2]" />
             </button>
           </div>
         </div>

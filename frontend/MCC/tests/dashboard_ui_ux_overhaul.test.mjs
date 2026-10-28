@@ -39,15 +39,11 @@ describe('Maha-Command Center: Complete Dashboard UI/UX Overhaul Test Suite', ()
       );
     });
 
-    it('Sidebar collapse toggle must be docked in bottom rail footer', () => {
+    it('Sidebar collapse toggle must be consolidated in top header and removed from bottom rail', () => {
       const content = fs.readFileSync(sidebarPath, 'utf8');
       assert.ok(
-        content.includes('Bottom Rail Footer: Docked Collapse Menu Toggle'),
-        'Sidebar collapse button must be docked in bottom rail footer'
-      );
-      assert.ok(
-        content.includes('border-t border-slate-800/80 shrink-0 bg-slate-900/60'),
-        'Bottom rail footer must have dedicated styling docked at base'
+        !content.includes('Bottom Rail Footer: Docked Collapse Menu Toggle'),
+        'Bottom rail collapse toggle must be removed per user request'
       );
     });
   });

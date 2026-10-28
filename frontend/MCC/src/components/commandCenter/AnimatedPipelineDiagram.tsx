@@ -353,7 +353,7 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1">
             <span className="flex items-center gap-1.5 text-gov-primary font-semibold">
               <MaterialIcon name="layers" size="xs" />
-              <span>SECURE DATA CONDUIT (STAGE 1 ➔ STAGE 6)</span>
+              <span>SECURE DATA CONDUIT (STAGE 1 → STAGE 6)</span>
             </span>
             <span className="text-slate-600">Ring Buffer Stream Bus</span>
           </div>

@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import {
   NEWSPAPER_CLIPPINGS,
   NewspaperClipping,
@@ -541,9 +542,10 @@ export const MediaScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setInspectingClipping(null)}
-                className="text-slate-300 hover:text-white p-1 rounded cursor-pointer"
+                aria-label="Close clipping modal"
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 

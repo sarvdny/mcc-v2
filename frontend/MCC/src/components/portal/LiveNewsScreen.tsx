@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { VideoCameraIcon, PlayIcon, TvIcon } from '@heroicons/react/24/solid';
 
 export interface LiveChannel {
   id: string;
@@ -635,37 +636,40 @@ export const LiveNewsScreen: React.FC = () => {
           <div className="flex items-center gap-1.5 font-mono text-xs">
             <button
               onClick={() => setPlayerSource('broadcast')}
-              className={`px-2.5 py-1 rounded text-[11px] font-semibold cursor-pointer transition-colors border ${
+              className={`px-2.5 py-1 rounded text-[11px] font-semibold cursor-pointer transition-colors border flex items-center gap-1.5 ${
                 playerSource === 'broadcast'
                   ? 'bg-rose-600 text-white border-rose-500 font-bold shadow-xs'
                   : 'bg-black/60 text-slate-300 border-white/20 hover:bg-slate-800'
               }`}
             >
-              🎥 Live Feed (Playable)
+              <VideoCameraIcon className="w-3.5 h-3.5 shrink-0" />
+              <span>Live Feed (Playable)</span>
             </button>
 
             {currentChannel.youtubeId && (
               <button
                 onClick={() => setPlayerSource('youtube')}
-                className={`px-2.5 py-1 rounded text-[11px] font-semibold cursor-pointer transition-colors border ${
+                className={`px-2.5 py-1 rounded text-[11px] font-semibold cursor-pointer transition-colors border flex items-center gap-1.5 ${
                   playerSource === 'youtube'
                     ? 'bg-red-600 text-white border-red-500 font-bold shadow-xs'
                     : 'bg-black/60 text-slate-300 border-white/20 hover:bg-slate-800'
                 }`}
               >
-                ▶️ YouTube Live
+                <PlayIcon className="w-3.5 h-3.5 shrink-0" />
+                <span>YouTube Live</span>
               </button>
             )}
 
             <button
               onClick={() => setPlayerSource('studio')}
-              className={`px-2.5 py-1 rounded text-[11px] font-semibold cursor-pointer transition-colors border ${
+              className={`px-2.5 py-1 rounded text-[11px] font-semibold cursor-pointer transition-colors border flex items-center gap-1.5 ${
                 playerSource === 'studio'
                   ? 'bg-indigo-600 text-white border-indigo-500 font-bold shadow-xs'
                   : 'bg-black/60 text-slate-300 border-white/20 hover:bg-slate-800'
               }`}
             >
-              📺 Studio Telemetry
+              <TvIcon className="w-3.5 h-3.5 shrink-0" />
+              <span>Studio Telemetry</span>
             </button>
           </div>
         </div>

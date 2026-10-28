@@ -216,7 +216,11 @@ export function exportTelemetryReportPdf(options: TelemetryReportOptions = {}) {
 <body>
   <div class="header">
     <div class="emblem-title">
-      <div class="emblem">🏛️</div>
+      <div class="emblem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 2l9 8H3z"/>
+        </svg>
+      </div>
       <div class="titles">
         <h1>${title}</h1>
         <p>${subtitle}</p>
@@ -234,12 +238,17 @@ export function exportTelemetryReportPdf(options: TelemetryReportOptions = {}) {
     <div class="kpi-card">
       <div class="kpi-label">${isMr ? 'अंतर्ग्रहण वेग (Ingestion Rate)' : 'Ingestion Velocity'}</div>
       <div class="kpi-val">1,480 <span style="font-size:10px;">ev/min</span></div>
-      <div class="kpi-sub">▲ 24.7 events/sec • Normal</div>
+      <div class="kpi-sub">24.7 events/sec • Normal</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">${isMr ? 'सेवा उपलब्धता (System SLA)' : 'System Availability'}</div>
       <div class="kpi-val">99.98%</div>
-      <div class="kpi-sub">✓ 90-Min Crisis SLA Met</div>
+      <div class="kpi-sub">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:2px;">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        90-Min Crisis SLA Met
+      </div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">${isMr ? 'सक्रिय माध्यम नोंदी (Media Events)' : 'Active Media Stream'}</div>

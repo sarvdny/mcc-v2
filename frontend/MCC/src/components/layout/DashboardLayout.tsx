@@ -92,7 +92,20 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     glossaryDrawerOpen,
     setGlossaryDrawerOpen,
     glossaryTermKey,
+    setSidebarCollapsed,
   } = useDashboardStore();
+
+  // Auto-collapse sidebar to 64px rail on viewports < 1440px or high display scales (150%, 175%)
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== "undefined" && window.innerWidth < 1440) {
+        setSidebarCollapsed(true);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setSidebarCollapsed]);
 
   useEffect(() => {
     checkAuth();

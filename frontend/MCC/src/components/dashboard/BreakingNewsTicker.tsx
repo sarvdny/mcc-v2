@@ -18,7 +18,9 @@ import {
 
 export const BreakingNewsTicker: React.FC = () => {
   const { language, selectedDistrictId } = useDashboardStore();
-  const [isPaused, setIsPaused] = useState(false);
+  const [isUserPaused, setIsUserPaused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const isPaused = isUserPaused || isHovered;
   const [selectedArticle, setSelectedArticle] = useState<typeof INITIAL_QUEUE_ITEMS[0] | null>(null);
 
   // Filter items by district if selected, sorted with latest items first
@@ -63,13 +65,14 @@ export const BreakingNewsTicker: React.FC = () => {
         <div
           id="continuous-news-ticker-container"
           className="flex-1 min-w-0 overflow-hidden relative h-full flex items-center [mask-image:linear-gradient(to_right,transparent_0%,black_3%,black_92%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_3%,black_92%,transparent_100%)]"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           <div
             className={`animate-marquee-scroll items-center gap-6 text-xs font-medium cursor-pointer ${
-              isPaused ? '[animation-play-state:paused]' : ''
+              isPaused ? '[animation-play-state:paused] animate-ticker-paused' : ''
             }`}
+            style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
           >
             {marqueeItems.map((item, idx) => {
               const localizedDistrict = getDistrictName(item.district, language);
@@ -129,16 +132,16 @@ export const BreakingNewsTicker: React.FC = () => {
         <div className="shrink-0 z-20 flex items-center gap-1.5 text-white/95 text-xs bg-red-700/80 px-2 py-1 rounded-lg border border-red-500/80 shadow-xs">
           <button
             type="button"
-            onClick={() => setIsPaused(!isPaused)}
+            onClick={() => setIsUserPaused((prev) => !prev)}
             className="p-1 rounded hover:bg-red-800 hover:text-white text-white focus-visible:outline-none transition-colors cursor-pointer"
             title={
-              isPaused
+              isUserPaused
                 ? language === 'mr' ? 'सुरू करा' : 'Resume Scrolling'
                 : language === 'mr' ? 'थांबवा' : 'Pause Scrolling'
             }
-            aria-label={isPaused ? 'Resume Ticker' : 'Pause Ticker'}
+            aria-label={isUserPaused ? 'Resume Ticker' : 'Pause Ticker'}
           >
-            {isPaused ? <PlayIcon className="w-3.5 h-3.5" /> : <PauseIcon className="w-3.5 h-3.5" />}
+            {isUserPaused ? <PlayIcon className="w-3.5 h-3.5" /> : <PauseIcon className="w-3.5 h-3.5" />}
           </button>
 
           <div className="flex items-center border border-red-500/80 rounded overflow-hidden bg-red-800/80">

@@ -5,6 +5,7 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { MetricTip } from '@/components/shared/MetricTip';
 import { TermInfo } from '@/components/shared/TermInfo';
+import { Scissors, X } from 'lucide-react';
 
 export interface NewspaperArticle {
   id: string;
@@ -1177,8 +1178,8 @@ export const NewspaperScreen: React.FC = () => {
             {/* Scissor Cutout Header */}
             <div className="p-4 sm:p-5 border-b border-slate-300 bg-[#F7F4EE] flex items-center justify-between font-sans">
               <div className="flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-red-700 text-white flex items-center justify-center text-xs font-bold">
-                  ✂
+                <span className="w-6 h-6 rounded-full bg-red-700 text-white flex items-center justify-center">
+                  <Scissors className="w-3.5 h-3.5 stroke-[2]" />
                 </span>
                 <div>
                   <strong className="text-xs text-slate-900 uppercase tracking-wider block">
@@ -1196,9 +1197,10 @@ export const NewspaperScreen: React.FC = () => {
                 </span>
                 <button
                   onClick={() => setSelectedArticle(null)}
-                  className="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer font-sans font-bold"
+                  aria-label="Close article modal"
+                  className="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer transition-colors"
                 >
-                  ✕
+                  <X className="w-4 h-4 stroke-[2]" />
                 </button>
               </div>
             </div>

@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { GISMap } from '@/components/leadership/GISMap/GISMap';
 import { TopLowerMatrix } from '@/components/leadership/TopLowerMatrix/TopLowerMatrix';
 import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/DistrictLeaderboard';
@@ -426,9 +427,10 @@ export const DistrictsScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setInspectingHoardingPhoto(null)}
-                className="text-slate-300 hover:text-white cursor-pointer"
+                aria-label="Close photo preview"
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 

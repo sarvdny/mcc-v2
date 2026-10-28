@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { Squares2X2Icon, TableCellsIcon, CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { STATE_ADVERTISEMENTS_DATA, StateAdvertisement } from '@/data/advertisementsData';
 import { ALL_HOARDINGS, HoardingRecord } from '@/data/maharashtraDistrictsData';
 
@@ -648,23 +649,25 @@ export const AdvertisementsScreen: React.FC = () => {
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setHoardingViewMode('cards')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                   hoardingViewMode === 'cards'
                     ? 'bg-gov-primary text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                🖼️ {language === 'mr' ? 'कार्ड व्ह्यू' : 'Visual Cards'}
+                <Squares2X2Icon className="w-3.5 h-3.5 shrink-0" />
+                <span>{language === 'mr' ? 'कार्ड व्ह्यू' : 'Visual Cards'}</span>
               </button>
               <button
                 onClick={() => setHoardingViewMode('table')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                   hoardingViewMode === 'table'
                     ? 'bg-gov-primary text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                📋 {language === 'mr' ? 'तक्ता नोंदवही' : 'Registry Table'}
+                <TableCellsIcon className="w-3.5 h-3.5 shrink-0" />
+                <span>{language === 'mr' ? 'तक्ता नोंदवही' : 'Registry Table'}</span>
               </button>
             </div>
           </div>
@@ -778,7 +781,7 @@ export const AdvertisementsScreen: React.FC = () => {
                         <td className="px-4 py-3 text-right">
                           <button
                             onClick={() => setSelectedHoarding(h)}
-                            className="px-2.5 py-1 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-semibold transition-colors cursor-pointer"
+                            className="px-3.5 py-1.5 min-h-[36px] bg-gov-primary hover:bg-gov-primary-dark text-white rounded-xl text-xs font-semibold transition-all active:scale-95 cursor-pointer inline-flex items-center justify-center shadow-2xs"
                           >
                             {language === 'mr' ? 'पहा' : 'View'}
                           </button>
@@ -855,7 +858,7 @@ export const AdvertisementsScreen: React.FC = () => {
                             type: 'success',
                           })
                         }
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-gov-primary hover:text-white text-slate-700 rounded text-xs font-semibold transition-colors cursor-pointer"
+                        className="px-3.5 py-1.5 min-h-[36px] bg-slate-100 hover:bg-gov-primary hover:text-white text-slate-700 rounded-xl text-xs font-semibold transition-all active:scale-95 cursor-pointer inline-flex items-center justify-center border border-slate-200/80 shadow-2xs"
                       >
                         {language === 'mr' ? 'कात्रण पहा' : 'View Voucher'}
                       </button>
@@ -942,9 +945,10 @@ export const AdvertisementsScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedRO(null)}
-                className="text-slate-300 hover:text-white cursor-pointer text-lg"
+                aria-label="Close"
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 
@@ -991,7 +995,10 @@ export const AdvertisementsScreen: React.FC = () => {
                 </p>
                 <div className="pt-2 flex items-center justify-between text-[10px] text-slate-500 font-mono">
                   <span>Authorized by: Deputy Director (Advertising), DGIPR</span>
-                  <span className="text-emerald-700 font-bold">✓ Digitally Signed</span>
+                  <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
+                    <CheckCircleIcon className="w-3.5 h-3.5 shrink-0" />
+                    <span>Digitally Signed</span>
+                  </span>
                 </div>
               </div>
 
@@ -1029,9 +1036,10 @@ export const AdvertisementsScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedCreative(null)}
-                className="text-slate-400 hover:text-white cursor-pointer text-lg"
+                aria-label="Close"
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 
@@ -1099,9 +1107,10 @@ export const AdvertisementsScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedHoarding(null)}
-                className="text-slate-300 hover:text-white cursor-pointer text-lg"
+                aria-label="Close"
+                className="w-7 h-7 rounded-full bg-black/20 hover:bg-black/30 text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 
@@ -1208,9 +1217,10 @@ export const AdvertisementsScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setShowRateCalculator(false)}
-                className="text-slate-300 hover:text-white cursor-pointer text-lg"
+                aria-label="Close"
+                className="w-7 h-7 rounded-full bg-black/20 hover:bg-black/30 text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 

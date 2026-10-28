@@ -4,6 +4,14 @@ import React, { useState } from "react";
 import { useDashboardStore } from "@/stores/dashboardStore";
 import { useTranslation } from "@/lib/translations";
 import { MinimalCardHeader } from "@/components/shared/MinimalCardHeader";
+import {
+  ArrowPathRoundedSquareIcon,
+  HeartIcon,
+  EyeIcon,
+  ChatBubbleLeftIcon,
+  PlayIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/solid";
 
 interface TwitterPost {
   id: string;
@@ -258,13 +266,15 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                     <p className="text-[11px] text-slate-700 font-medium leading-relaxed">
                       {language === "mr" ? post.textMr : post.textEn}
                     </p>
-                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center justify-between gap-1 flex-wrap">
-                      <span className="font-medium text-slate-600">
-                        {post.id === "tw-1"
-                          ? "↻ 1.4K • ♥ 6.2K"
-                          : post.id === "tw-2"
-                            ? "↻ 890 • ♥ 4.1K"
-                            : "↻ 520 • ♥ 2.8K"}
+                    {/* Replaced legacy raw symbols (↻ 1.4K • ♥ 6.2K) with solid SVGs */}
+                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center gap-3">
+                      <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                        <ArrowPathRoundedSquareIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span>{post.id === "tw-1" ? "1.4K" : post.id === "tw-2" ? "890" : "520"}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                        <HeartIcon className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <span>{post.id === "tw-1" ? "6.2K" : post.id === "tw-2" ? "4.1K" : "2.8K"}</span>
                       </span>
                     </div>
                   </div>
@@ -308,14 +318,42 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({
                     <p className="text-[11px] text-slate-700 font-medium leading-relaxed">
                       {language === "mr" ? post.textMr : post.textEn}
                     </p>
-                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center justify-between gap-1 flex-wrap">
-                      <span className="font-medium text-slate-600">
-                        {post.id === "mp-1"
-                          ? "👁 12K • 💬 1.1K"
-                          : post.id === "mp-2"
-                            ? "▶ 84.2K • ♥ 9.4K"
-                            : "▶ 35K • 👍 98%"}
-                      </span>
+                    {/* Replaced legacy raw symbols (↻ 1.4K • ♥ 6.2K) with solid SVGs */}
+                    <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex items-center gap-3">
+                      {post.id === "mp-1" ? (
+                        <>
+                          <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                            <EyeIcon className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                            <span>12K</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                            <ChatBubbleLeftIcon className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                            <span>1.1K</span>
+                          </span>
+                        </>
+                      ) : post.id === "mp-2" ? (
+                        <>
+                          <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                            <PlayIcon className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                            <span>84.2K</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                            <HeartIcon className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                            <span>9.4K</span>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                            <PlayIcon className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                            <span>35K</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1 font-medium text-slate-600">
+                            <HandThumbUpIcon className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            <span>98%</span>
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

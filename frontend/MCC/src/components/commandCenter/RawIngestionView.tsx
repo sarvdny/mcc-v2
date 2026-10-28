@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { CheckIcon } from '@heroicons/react/24/solid';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { ClickableEndpoint } from '@/components/commandCenter/TelemetryOperationsView';
 
@@ -277,7 +278,14 @@ export const RawIngestionView: React.FC = () => {
                         : 'bg-slate-900 hover:bg-slate-800 text-white'
                     }`}
                   >
-                    {isRetried ? '✓ Retried & Queued' : 'Retry Now'}
+                    {isRetried ? (
+                      <span className="inline-flex items-center gap-1">
+                        <CheckIcon className="w-3.5 h-3.5" />
+                        <span>Retried & Queued</span>
+                      </span>
+                    ) : (
+                      'Retry Now'
+                    )}
                   </button>
                 </div>
               </div>

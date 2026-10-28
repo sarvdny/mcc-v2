@@ -28,6 +28,21 @@
   --gov-blue-light: #3b82f6;
   --gov-blue-hover: #1d4ed8;
 
+  /* ===== DAYLIGHT GOVERNMENT COMMAND PALETTE ===== */
+  --gov-canvas-base: #F8FAFC;
+  --gov-canvas-subtle: #F1F5F9;
+  --gov-surface-card: #FFFFFF;
+  --gov-border-subtle: #E2E8F0;
+  --gov-text-primary: #0F172A;
+  --gov-text-secondary: #475569;
+  --gov-text-muted: #64748B;
+  --gov-brand-blue: #1D4ED8;
+  --gov-brand-blue-soft: #EBF3FF;
+  --gov-signal-alert: #EF4444;
+  --gov-signal-warning: #F59E0B;
+  --gov-signal-success: #10B981;
+  --gov-signal-info: #3B82F6;
+
   /* ===== BACKGROUNDS ===== */
   --bg-page: #f1f5f9; /* Slate-100 */
   --bg-surface: #ffffff;

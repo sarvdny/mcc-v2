@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
+import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
 export const AnalyticalDock: React.FC = () => {
   const { language, districts } = useDashboardStore();
@@ -25,6 +26,7 @@ export const AnalyticalDock: React.FC = () => {
             <h4 className="font-bold text-xs text-slate-900">
               {language === 'mr' ? 'अव्वल ५ जिल्हे (CPI)' : 'District Rankings (CPI)'}
             </h4>
+            <InfoTooltip metricKey="cpi" />
           </div>
           <span className="text-[10px] font-mono font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
             Top 5
@@ -68,6 +70,7 @@ export const AnalyticalDock: React.FC = () => {
             <h4 className="font-bold text-xs text-slate-900">
               {language === 'mr' ? 'लोकभावना विभागणी' : 'Sentiment Divergence'}
             </h4>
+            <InfoTooltip metricKey="sentimentIndex" />
           </div>
           <span className="text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
             +74.2% Net
@@ -136,6 +139,7 @@ export const AnalyticalDock: React.FC = () => {
             <h4 className="font-bold text-xs text-slate-900">
               {language === 'mr' ? 'आपत्ती निवारण SLA (९० मि)' : 'Crisis SLA Compliance'}
             </h4>
+            <InfoTooltip metricKey="crisisResolution" />
           </div>
           <span className="text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
             94.2% SLA
@@ -202,6 +206,7 @@ export const AnalyticalDock: React.FC = () => {
             <h4 className="font-bold text-xs text-slate-900">
               {language === 'mr' ? 'नागरिक सहभाग वेग' : 'Social Engagement'}
             </h4>
+            <InfoTooltip metricKey="volumeScore" />
           </div>
           <span className="text-[10px] font-mono font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
             3.3M Reach

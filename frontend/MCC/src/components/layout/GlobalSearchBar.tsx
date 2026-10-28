@@ -206,7 +206,17 @@ const NAVIGATION_ROUTES: NavRouteDef[] = [
   },
 ];
 
-export const GlobalSearchBar: React.FC = () => {
+interface GlobalSearchBarProps {
+  autoFocus?: boolean;
+  onSelect?: () => void;
+  className?: string;
+}
+
+export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({
+  autoFocus = false,
+  onSelect,
+  className = '',
+}) => {
   const router = useRouter();
   const pathname = usePathname();
   const { language } = useDashboardStore();
@@ -471,6 +481,9 @@ export const GlobalSearchBar: React.FC = () => {
     // 1. Close dropdown and blur input
     setIsOpen(false);
     inputRef.current?.blur();
+    if (onSelect) {
+      onSelect();
+    }
 
     // 2. Handle Route navigation
     if (item.type === 'Route' && item.route) {
@@ -520,7 +533,7 @@ export const GlobalSearchBar: React.FC = () => {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className={`relative w-full ${className}`}>
       {/* Search Input Container — Clean border only on search bar, NO visual Ctrl+K badge */}
       <div className="relative flex items-center w-full">
         <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-500">
@@ -529,6 +542,7 @@ export const GlobalSearchBar: React.FC = () => {
 
         <input
           ref={inputRef}
+          autoFocus={autoFocus}
           type="text"
           value={query}
           onChange={(e) => {
@@ -542,7 +556,7 @@ export const GlobalSearchBar: React.FC = () => {
               ? 'कमांड सेंटर शोधा...'
               : 'Search command center...'
           }
-          className="h-9 w-full pl-9 pr-14 truncate bg-slate-900/80 hover:bg-slate-900 focus:bg-slate-900 border border-slate-800 hover:border-slate-700 focus:border-amber-500/70 rounded-lg text-xs text-slate-200 placeholder-slate-500 transition-all outline-hidden shadow-2xs"
+          className="h-9 w-full pl-9 pr-14 truncate bg-slate-900 hover:bg-slate-850 focus:bg-slate-900 border border-slate-700/80 hover:border-slate-600 focus:border-blue-500/80 rounded-xl text-xs text-slate-100 placeholder-slate-400 transition-all outline-hidden shadow-xs"
           aria-label={language === 'mr' ? 'थेट शोध' : 'Live Search'}
         />
 
@@ -554,27 +568,27 @@ export const GlobalSearchBar: React.FC = () => {
               setDomResults([]);
               inputRef.current?.focus();
             }}
-            className="absolute right-3 p-0.5 rounded text-slate-500 hover:text-white cursor-pointer"
+            className="absolute right-3 p-0.5 rounded text-slate-400 hover:text-white cursor-pointer"
             aria-label="Clear search"
           >
             <XMarkIcon className="w-4 h-4" />
           </button>
         ) : (
           <div className="absolute right-2.5 pointer-events-none hidden sm:flex items-center">
-            <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-400 bg-slate-800/90 rounded border border-slate-700/80 shadow-2xs">
+            <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-300 bg-slate-800 rounded border border-slate-700 shadow-2xs">
               ⌘K
             </kbd>
           </div>
         )}
       </div>
 
-      {/* Floating Autocomplete Results Dropdown matching search bar width */}
+      {/* Floating Autocomplete Results Dropdown matching search bar width & Header background */}
       {isOpen && (
-        <div className="w-full mt-1.5 bg-[#0B1120] border border-slate-700/80 rounded-xl shadow-2xl shadow-black/90 p-1.5 z-50 absolute left-0 top-full max-h-96 overflow-y-auto animate-in fade-in slide-in-from-top-1 divide-y divide-slate-800/60 scrollbar-none">
+        <div className="w-full mt-1.5 bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl shadow-black/80 p-1.5 z-[120] absolute left-0 top-full max-h-96 overflow-y-auto animate-in fade-in slide-in-from-top-1 divide-y divide-slate-800/80 scrollbar-none">
           {combinedResults.length > 0 ? (
             <div className="space-y-0.5">
               {!query.trim() && (
-                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-sans">
                   {language === 'mr' ? 'द्रुत नेव्हिगेशन शिफारसी' : 'Suggested Navigation Routes'}
                 </div>
               )}
@@ -587,10 +601,10 @@ export const GlobalSearchBar: React.FC = () => {
                     type="button"
                     onClick={() => handleSelectResult(item)}
                     onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors cursor-pointer flex items-center justify-between gap-3 group ${
+                    className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors cursor-pointer flex items-center justify-between gap-3 group border ${
                       isSelected
-                        ? 'bg-slate-800 text-white'
-                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                        ? 'bg-slate-900 text-white border-slate-800'
+                        : 'text-slate-300 hover:bg-slate-900/90 hover:text-white border-transparent'
                     }`}
                   >
                     <div className="flex flex-col gap-0.5 min-w-0 flex-1">

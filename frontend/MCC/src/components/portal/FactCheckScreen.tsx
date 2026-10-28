@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 
 export interface FactCheckItem {
   id: string;
@@ -214,8 +215,8 @@ export const FactCheckScreen: React.FC = () => {
   const handleShareOnWhatsApp = (item: FactCheckItem) => {
     const text =
       language === 'mr'
-        ? `*डीजीआयपीआर तथ्य तपासणी (DGIPR Fact Check)*\n\n📌 *दावा:* ${item.titleMr}\n❌ *सत्य:* ${item.factMr}\n\n🔍 *अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DGIPR) द्वारे प्रमाणित.`
-        : `*DGIPR Fact-Check Alert (Govt of Maharashtra)*\n\n📌 *Claim:* ${item.title}\n✅ *Fact:* ${item.fact}\n\n🔍 *Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate General of Information and Public Relations (DGIPR).`;
+        ? `*डीजीआयपीआर तथ्य तपासणी (DGIPR Fact Check)*\n\n[दावा]: ${item.titleMr}\n[सत्य]: ${item.factMr}\n\n[अधिकृत निकाल]: ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DGIPR) द्वारे प्रमाणित.`
+        : `*DGIPR Fact-Check Alert (Govt of Maharashtra)*\n\n[Claim]: ${item.title}\n[Fact]: ${item.fact}\n\n[Official Verdict]: ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate General of Information and Public Relations (DGIPR).`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -325,14 +326,15 @@ export const FactCheckScreen: React.FC = () => {
 
       {/* 2. REAL-TIME MISINFORMATION SCROLLING TICKER */}
       <div className="bg-rose-50 border-l-4 border-rose-600 rounded-xl p-3 flex items-center gap-3 text-xs text-rose-950 shadow-2xs">
-        <span className="font-bold uppercase tracking-wider text-rose-700 shrink-0 flex items-center gap-1">
+        <span className="font-bold uppercase tracking-wider text-rose-700 shrink-0 flex items-center gap-1.5">
+          <ExclamationTriangleIcon className="w-4 h-4 text-rose-600 shrink-0" />
           <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping" />
           {language === 'mr' ? 'तातडीचा इशारा:' : 'Live Debunk Alert:'}
         </span>
         <div className="truncate font-medium">
           {language === 'mr'
-            ? '⚠️ बनावट शासन निर्णय सावधान: ‘लाडकी बहीण योजनेची वयोमर्यादा बदलल्याचा’ सोशल मीडियावर फिरणारा GR-2026/WCD पूर्णतः बनावट आहे. सायबर पोलिसांत गुन्हा दाखल.'
-            : '⚠️ Forged GR Alert: Viral circular claiming age eligibility change in Ladki Bahin Scheme is completely fake. Criminal FIR lodged with Cyber Police.'}
+            ? 'बनावट शासन निर्णय सावधान: ‘लाडकी बहीण योजनेची वयोमर्यादा बदलल्याचा’ सोशल मीडियावर फिरणारा GR-2026/WCD पूर्णतः बनावट आहे. सायबर पोलिसांत गुन्हा दाखल.'
+            : 'Forged GR Alert: Viral circular claiming age eligibility change in Ladki Bahin Scheme is completely fake. Criminal FIR lodged with Cyber Police.'}
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { getRandomRoutePrompts, resolveLocalQuery, RoutePrompt } from '@/lib/ai/route-prompts';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { ChartBarIcon, MapPinIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import {
   Stack,
@@ -731,21 +732,24 @@ export const CopilotDrawer: React.FC = () => {
               ))}
               <button
                 onClick={() => handleSendQuery('महाराष्ट्र राज्य क्रमवारी दाखवा (Show Leaderboard)')}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+                className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                📊 राज्य क्रमवारी
+                <ChartBarIcon className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <span>राज्य क्रमवारी</span>
               </button>
               <button
                 onClick={() => handleSendQuery('पालघर जिल्ह्याचा स्कोअर ब्रेकडाऊन (Palghar Profile)')}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+                className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                📍 पालघर ब्रेकडाऊन
+                <MapPinIcon className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                <span>पालघर ब्रेकडाऊन</span>
               </button>
               <button
                 onClick={() => handleSendQuery('Active 90-minute SLA crisis tickets and rumors')}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+                className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                ⚠️ Crisis SLA Rumors
+                <ExclamationTriangleIcon className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span>Crisis SLA Rumors</span>
               </button>
             </div>
 

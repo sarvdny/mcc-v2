@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { PUBLICATIONS_DATA, PublicationIssue } from '@/data/publicationsData';
 
 export const PublicationsScreen: React.FC = () => {
@@ -126,9 +127,10 @@ export const PublicationsScreen: React.FC = () => {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+              aria-label="Clear search"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
             >
-              ✕
+              <XMarkIcon className="w-3.5 h-3.5 stroke-[2]" />
             </button>
           )}
         </div>
@@ -334,9 +336,10 @@ export const PublicationsScreen: React.FC = () => {
               </div>
               <button
                 onClick={() => setReadingIssue(null)}
-                className="text-slate-300 hover:text-white p-1 rounded-lg cursor-pointer"
+                aria-label="Close reader"
+                className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
-                ✕
+                <XMarkIcon className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
 

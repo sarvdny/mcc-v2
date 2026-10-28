@@ -18,6 +18,10 @@ import {
   ArrowRightOnRectangleIcon,
   CheckIcon,
   QuestionMarkCircleIcon,
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 
 export const Header: React.FC = () => {
@@ -41,7 +45,8 @@ export const Header: React.FC = () => {
 
   const isSidebarCollapsed = sidebarCollapsed;
 
-  // Dropdown states
+  // Dropdown & Mobile Search states
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [timeString, setTimeString] = useState<string>("");
@@ -157,68 +162,148 @@ export const Header: React.FC = () => {
   return (
     <header
       ref={navRef}
-      className="h-14 w-full max-w-full overflow-hidden shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
+      className="h-14 w-full max-w-full shrink-0 bg-slate-950 border-b border-slate-800/90 text-slate-100 flex items-center justify-between z-[100] relative px-0 shadow-lg select-none"
     >
-      {/* 1. Brand Cell with Smooth Sidebar Collapse Synchronization */}
-      <div
-        className={`transition-all duration-200 ease-in-out ${
-          isSidebarCollapsed ? "w-16 justify-center px-0" : "w-64 px-4 gap-3"
-        } shrink-0 h-full border-r border-slate-800/90 flex items-center relative box-border`}
-      >
-        {/* Mobile Hamburger Drawer Trigger */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1 rounded text-slate-400 hover:text-white md:hidden transition-colors cursor-pointer mr-0.5"
-          aria-label={
-            language === "mr" ? "मेन्यू उघडा" : "Toggle navigation drawer"
-          }
-          title={
-            language === "mr" ? "नेव्हिगेशन मेन्यू" : "Toggle Navigation Menu"
-          }
-        >
-          <Bars3Icon className="w-5 h-5 text-amber-400" />
-        </button>
+      {/* MOBILE EXPANDED SEARCH BAR (Active when tapped on mobile) */}
+      {isMobileSearchOpen ? (
+        <div className="flex md:hidden items-center w-full h-full px-2.5 sm:px-3 gap-2 bg-slate-950 animate-in fade-in duration-150">
+          <div className="flex-1 min-w-0">
+            <GlobalSearchBar
+              autoFocus
+              onSelect={() => setIsMobileSearchOpen(false)}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsMobileSearchOpen(false)}
+            className="h-9 px-3 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95 shrink-0 cursor-pointer"
+          >
+            {language === "mr" ? "रद्द करा" : "Cancel"}
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* MOBILE BRAND ZONE (< md) */}
+          <div className="flex md:hidden items-center gap-1.5 pl-2.5 shrink-0">
+            {/* Mobile Hamburger Drawer Trigger (Apple 44x44pt touch area) */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-10 h-10 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 active:scale-95 flex items-center justify-center transition-all cursor-pointer shrink-0"
+              aria-label={
+                language === "mr" ? "मेन्यू उघडा" : "Toggle navigation drawer"
+              }
+              title={
+                language === "mr" ? "नेव्हिगेशन मेन्यू" : "Toggle Navigation Menu"
+              }
+            >
+              <Bars3Icon className="w-6 h-6 text-blue-400" />
+            </button>
 
-        <Link
-          href="/"
-          className={`flex items-center group ${
-            isSidebarCollapsed ? "justify-center w-full h-full" : "gap-3"
-          }`}
-          title={
-            language === "mr"
-              ? "महा-कमांड • महाराष्ट्र शासन"
-              : "Maha-Command • Government of Maharashtra"
-          }
-        >
-          <GovEmblem
-            size="md"
-            className={`${
-              isSidebarCollapsed ? "w-9 h-9" : "w-8 h-8"
-            } shrink-0 transition-transform duration-150 group-hover:scale-105`}
-          />
+            {/* Mobile Brand Title Link */}
+            <Link
+              href="/"
+              className="flex items-center gap-2 group min-w-0"
+              title={
+                language === "mr"
+                  ? "महा-कमांड • महाराष्ट्र शासन"
+                  : "Maha-Command • Government of Maharashtra"
+              }
+            >
+              <GovEmblem
+                size="sm"
+                className="w-7 h-7 shrink-0 transition-transform group-hover:scale-105"
+              />
+              <div className="flex flex-col">
+                <span className="text-[13px] font-bold text-slate-100 tracking-tight leading-none group-hover:text-blue-400 transition-colors">
+                  {language === "mr" ? "महा-कमांड" : "Maha-Command"}
+                </span>
+                <span className="text-[9px] font-semibold text-blue-400 mt-0.5 leading-none">
+                  DGIPR
+                </span>
+              </div>
+            </Link>
+          </div>
 
-          {/* Text Container: smoothly hidden when collapsed */}
-          {!isSidebarCollapsed && (
-            <div className="flex flex-col overflow-hidden">
-              <span className="text-[15px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
-                {language === "mr" ? "महा-कमांड" : "Maha-Command"}
-              </span>
-              <span className="text-xs font-medium text-amber-400 mt-1 leading-none whitespace-nowrap">
-                {language === "mr"
-                  ? "माहिती व जनसंपर्क, महाराष्ट्र"
-                  : "DGIPR, Maharashtra"}
-              </span>
-            </div>
-          )}
-        </Link>
-      </div>
+          {/* 1. Desktop Brand Cell with Smooth Sidebar Collapse Synchronization & Morphing Toggle (>= md) */}
+          <div
+            className={`hidden md:flex transition-all duration-200 ease-in-out ${
+              isSidebarCollapsed ? "w-16 justify-center px-0" : "w-64 px-3.5 gap-2.5 justify-between"
+            } shrink-0 h-full border-r border-slate-800/90 items-center relative box-border bg-slate-950`}
+          >
+            {isSidebarCollapsed ? (
+              /* COLLAPSED STATE: Logo transforms to "sidebar collapse" (expand) icon on hover */
+              <button
+                type="button"
+                onClick={() => setSidebarCollapsed(false)}
+                className="group relative flex items-center justify-center w-10 h-10 rounded-xl hover:bg-slate-800/80 transition-all cursor-pointer"
+                title={language === "mr" ? "मेन्यू विस्तार करा (Ctrl+B)" : "Expand Navigation (Ctrl+B)"}
+                aria-label="Expand Sidebar Navigation"
+              >
+                {/* Maha-Command Logo: visible normally, fades out on hover */}
+                <div className="transition-all duration-200 group-hover:opacity-0 group-hover:scale-75 flex items-center justify-center">
+                  <GovEmblem size="md" className="w-8 h-8 shrink-0" />
+                </div>
 
-      {/* 2. Interactive Route Breadcrumbs */}
-      <div className="px-4 sm:px-6 hidden sm:flex items-center gap-2 text-sm shrink-0 relative">
+                {/* Sidebar Collapse / Expand Icon: hidden normally, fades in on hover */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shadow-xs">
+                    <ChevronDoubleRightIcon className="w-4 h-4" />
+                  </div>
+                </div>
+              </button>
+            ) : (
+              /* UNCOLLAPSED STATE: Logo + Heading on the left, "sidebar collapse" icon on the right */
+              <div className="flex items-center justify-between w-full min-w-0">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2.5 min-w-0 group"
+                  title={
+                    language === "mr"
+                      ? "महा-कमांड • महाराष्ट्र शासन"
+                      : "Maha-Command • Government of Maharashtra"
+                  }
+                >
+                  <GovEmblem
+                    size="md"
+                    className="w-8 h-8 shrink-0 transition-transform duration-150 group-hover:scale-105"
+                  />
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="text-[14px] font-bold text-slate-100 tracking-tight leading-none whitespace-nowrap group-hover:text-blue-400 transition-colors">
+                      {language === "mr" ? "महा-कमांड" : "Maha-Command"}
+                    </span>
+                    <span className="text-[11px] font-semibold text-blue-400 mt-1 leading-none whitespace-nowrap">
+                      {language === "mr"
+                        ? "माहिती व जनसंपर्क, महाराष्ट्र"
+                        : "DGIPR, Maharashtra"}
+                    </span>
+                  </div>
+                </Link>
+
+                {/* "sidebar collapse" icon right-side of the logo and heading */}
+                <button
+                  type="button"
+                  onClick={() => setSidebarCollapsed(true)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all active:scale-95 cursor-pointer shrink-0 ml-1.5 group"
+                  title={
+                    language === "mr"
+                      ? "मेन्यू संक्षिप्त करा (Ctrl+B)"
+                      : "Collapse Navigation (Ctrl+B)"
+                  }
+                  aria-label="Collapse Sidebar Navigation"
+                >
+                  <ChevronDoubleLeftIcon className="w-4 h-4 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* 2. Interactive Route Breadcrumbs (Desktop >= lg) */}
+          <div className="px-4 hidden lg:flex items-center gap-2 text-sm shrink-0 relative">
         {/* Parent Route: State Command */}
         <Link
           href="/dashboard"
-          className="text-slate-400 hover:text-white hover:bg-slate-800/60 px-2 py-1 -ml-2 rounded-md font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+          className="text-slate-400 hover:text-slate-100 hover:bg-slate-850 px-2 py-1 -ml-2 rounded-md font-medium transition-colors cursor-pointer flex items-center gap-1.5"
           title={
             language === "mr"
               ? "राज्य कमांड डॅशबोर्डकडे परत जा"
@@ -229,14 +314,14 @@ export const Header: React.FC = () => {
         </Link>
 
         {/* Breadcrumb Separator */}
-        <span className="text-slate-700 select-none font-mono text-xs">/</span>
+        <span className="text-slate-600 select-none font-mono text-xs">/</span>
 
         {/* Dynamic Route Segment */}
         {pathname.startsWith("/system-monitoring") ? (
           <>
             <Link
               href="/system-monitoring"
-              className="text-white hover:text-amber-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
+              className="text-slate-200 hover:text-blue-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
               title={
                 language === "mr"
                   ? "प्रणाली व पायाभूत सुविधा निरीक्षण"
@@ -248,12 +333,12 @@ export const Header: React.FC = () => {
               </span>
             </Link>
 
-            <span className="text-slate-700 select-none font-mono text-xs">
+            <span className="text-slate-600 select-none font-mono text-xs">
               /
             </span>
 
-            <span className="text-amber-300 text-xs font-mono flex items-center gap-1.5 whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+            <span className="text-blue-400 text-xs font-mono flex items-center gap-1.5 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shrink-0" />
               <span>
                 {pathname === "/system-monitoring/raw-ingestion"
                   ? language === "mr"
@@ -272,7 +357,7 @@ export const Header: React.FC = () => {
         ) : pathname.startsWith("/command-center") ? (
           <Link
             href="/command-center"
-            className="text-white hover:text-amber-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
+            className="text-slate-200 hover:text-blue-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
             title={
               language === "mr"
                 ? "ऑपरेशनल कमांड डेक"
@@ -284,7 +369,7 @@ export const Header: React.FC = () => {
         ) : (
           <Link
             href={pathname === "/" ? "/dashboard" : pathname}
-            className="text-white hover:text-amber-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
+            className="text-slate-200 hover:text-blue-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
             title={
               language === "mr"
                 ? "सक्रिय प्रणाली दालन"
@@ -356,14 +441,25 @@ export const Header: React.FC = () => {
         )}
       </div>
 
-      {/* 3. Global Search Bar with dedicated command center footprint */}
-      <div className="relative flex-1 min-w-[200px] xl:min-w-[340px] max-w-md px-2 sm:px-4 flex items-center">
+      {/* 3. Global Search Bar with dedicated command center footprint (Desktop >= md) */}
+      <div className="relative hidden md:flex flex-1 min-w-[200px] xl:min-w-[340px] max-w-md px-2 sm:px-4 items-center">
         <GlobalSearchBar />
       </div>
 
       {/* 4. High-Utility Command Center Controls (Right Navbar Zone) */}
-      <div className="px-2 sm:px-3 flex items-center gap-2 shrink-0">
-        {/* Live IST Duty Clock — Clean borderless element */}
+      <div className="px-2 sm:px-3 flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* Mobile Search Icon Button (< md) */}
+        <button
+          type="button"
+          onClick={() => setIsMobileSearchOpen(true)}
+          className="md:hidden w-10 h-10 rounded-xl hover:bg-slate-850 text-slate-400 hover:text-white flex items-center justify-center active:scale-95 transition-all cursor-pointer shrink-0"
+          title={language === "mr" ? "कमांड सेंटर शोधा" : "Search Command Center"}
+          aria-label="Search"
+        >
+          <MagnifyingGlassIcon className="w-5 h-5" />
+        </button>
+
+        {/* Live IST Duty Clock — Clean borderless element (Desktop >= xl) */}
         <div
           className="hidden xl:flex items-center gap-2 text-xs font-mono text-slate-400 px-2 h-9 tabular-nums"
           title={
@@ -384,7 +480,7 @@ export const Header: React.FC = () => {
           </span>
         </div>
 
-        {/* Themed Dark Language Dropdown — Clean borderless element */}
+        {/* Themed Language Dropdown */}
         <div className="relative">
           <button
             type="button"
@@ -392,11 +488,12 @@ export const Header: React.FC = () => {
               setIsLanguageMenuOpen(!isLanguageMenuOpen);
               setIsProfileMenuOpen(false);
             }}
-            className="h-9 px-2.5 hover:bg-slate-800/60 rounded-xl text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer"
+            className="h-10 px-2 sm:px-2.5 hover:bg-slate-850 rounded-xl text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1 sm:gap-1.5 active:scale-95 transition-all cursor-pointer"
             title={language === "mr" ? "भाषा निवडा" : "Select Language"}
           >
             <GlobeAltIcon className="w-4 h-4 text-slate-400 shrink-0" />
-            <span>{language === "mr" ? "मराठी" : "English"}</span>
+            <span className="sm:hidden text-xs font-bold text-blue-400">{language === "mr" ? "मराठी" : "EN"}</span>
+            <span className="hidden sm:inline">{language === "mr" ? "मराठी" : "English"}</span>
             <ChevronDownIcon
               className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-150 shrink-0 ${
                 isLanguageMenuOpen ? "rotate-180" : ""
@@ -406,7 +503,7 @@ export const Header: React.FC = () => {
 
           {/* Language Menu Popover */}
           {isLanguageMenuOpen && (
-            <div className="w-40 mt-1.5 bg-[#0B1120] border border-slate-800 rounded-xl shadow-2xl shadow-black/80 p-1 z-50 absolute right-0 top-full animate-in fade-in slide-in-from-top-1">
+            <div className="w-40 mt-1.5 bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl shadow-black/80 p-1 z-[120] absolute right-0 top-full animate-in fade-in slide-in-from-top-1 text-slate-200">
               <button
                 type="button"
                 onClick={() => {
@@ -415,13 +512,13 @@ export const Header: React.FC = () => {
                 }}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   language === "en"
-                    ? "bg-slate-800 text-white font-semibold"
-                    : "text-slate-300 hover:bg-slate-800/70 hover:text-white"
+                    ? "bg-blue-600/20 text-blue-400 font-semibold border border-blue-500/30"
+                    : "text-slate-300 hover:bg-slate-900 hover:text-white"
                 }`}
               >
                 <span>English (EN)</span>
                 {language === "en" && (
-                  <CheckIcon className="w-4 h-4 text-amber-400" />
+                  <CheckIcon className="w-4 h-4 text-blue-400" />
                 )}
               </button>
 
@@ -433,23 +530,23 @@ export const Header: React.FC = () => {
                 }}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   language === "mr"
-                    ? "bg-slate-800 text-white font-semibold"
-                    : "text-slate-300 hover:bg-slate-800/70 hover:text-white"
+                    ? "bg-blue-600/20 text-blue-400 font-semibold border border-blue-500/30"
+                    : "text-slate-300 hover:bg-slate-900 hover:text-white"
                 }`}
               >
                 <span>मराठी (MR)</span>
                 {language === "mr" && (
-                  <CheckIcon className="w-4 h-4 text-amber-400" />
+                  <CheckIcon className="w-4 h-4 text-blue-400" />
                 )}
               </button>
             </div>
           )}
         </div>
 
-        {/* Notification Bell Button — Clean borderless element */}
+        {/* Notification Bell Button */}
         <Link
           href="/notifications"
-          className="w-9 h-9 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-white relative flex items-center justify-center active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer"
+          className="w-10 h-10 rounded-xl hover:bg-slate-850 text-slate-400 hover:text-white relative flex items-center justify-center active:scale-95 transition-all cursor-pointer shrink-0"
           title={
             language === "mr"
               ? "शासकीय सूचना (२ न वाचलेले इशारे)"
@@ -458,14 +555,14 @@ export const Header: React.FC = () => {
           aria-label={language === "mr" ? "सूचना" : "Notifications"}
         >
           <BellIcon className="w-4 h-4" />
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
         </Link>
 
-        {/* Glossary & Terminology Help Button */}
+        {/* Glossary & Terminology Help Button (Hidden on Mobile, in drawer) */}
         <button
           type="button"
           onClick={() => setGlossaryDrawerOpen(true)}
-          className="w-9 h-9 rounded-xl hover:bg-slate-800/60 text-slate-400 hover:text-amber-400 relative flex items-center justify-center active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer"
+          className="hidden sm:flex w-10 h-10 rounded-xl hover:bg-slate-850 text-slate-400 hover:text-blue-400 relative items-center justify-center active:scale-95 transition-all cursor-pointer shrink-0"
           title={
             language === "mr"
               ? "प्रणाली शब्दकोश व मानके (Glossary)"
@@ -476,12 +573,12 @@ export const Header: React.FC = () => {
           <QuestionMarkCircleIcon className="w-4 h-4" />
         </button>
 
-        {/* DGIPR OpenUI Copilot Header Trigger */}
+        {/* DGIPR OpenUI Copilot Header Trigger (Hidden on Mobile, in floating assistant) */}
         {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== "false" && (
           <button
             type="button"
             onClick={() => setCopilotOpen(!copilotOpen)}
-            className="hover:bg-amber-500/15 border border-amber-500/40 hover:border-amber-500/60 bg-amber-500/10 px-2.5 py-1.5 rounded-xl active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer flex items-center gap-2 text-amber-300 font-semibold text-xs shadow-xs select-none group"
+            className="hidden lg:flex hover:bg-blue-900/40 border border-blue-800/60 bg-blue-950/40 px-2.5 py-1.5 rounded-xl active:scale-95 transition-all cursor-pointer items-center gap-2 text-blue-300 font-semibold text-xs shadow-2xs select-none group shrink-0"
             title={
               language === "mr"
                 ? "डीजीआयपीआर निर्देशक उघडा"
@@ -489,11 +586,11 @@ export const Header: React.FC = () => {
             }
             aria-label="DGIPR Nirdeshak"
           >
-            <div className="w-5 h-5 rounded bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+            <div className="w-5 h-5 rounded bg-blue-900/60 border border-blue-700/50 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
               <MaterialIcon name="auto_awesome" size="xs" />
             </div>
             <span className="font-bold tracking-wide">Nirdeshak</span>
-            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden md:inline">
+            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-blue-900/70 text-blue-300 border border-blue-700/50 hidden xl:inline">
               निर्देशक
             </span>
           </button>
@@ -502,7 +599,7 @@ export const Header: React.FC = () => {
         {/* Vertical Divider */}
         <div className="h-5 w-px bg-slate-800 mx-1 hidden sm:block" />
 
-        {/* Officer Profile Menu Trigger & Dropdown — Retains subtle gray border */}
+        {/* Officer Profile Menu Trigger & Dropdown */}
         <div className="relative">
           <button
             type="button"
@@ -510,24 +607,24 @@ export const Header: React.FC = () => {
               setIsProfileMenuOpen(!isProfileMenuOpen);
               setIsLanguageMenuOpen(false);
             }}
-            className="hover:bg-slate-900/80 border border-slate-700/60 hover:border-slate-600/70 bg-slate-900/40 px-2.5 py-1.5 rounded-xl active:scale-[0.98] transition-all duration-100 ease-out cursor-pointer flex items-center gap-2 select-none shadow-xs"
+            className="hover:bg-slate-850 border border-slate-800 hover:border-slate-700 bg-slate-900/90 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 select-none shadow-2xs text-slate-200"
             title={`${language === "mr" ? "अधिकारी प्रोफाइल:" : "Officer Profile:"} ${displayName}`}
           >
             {!currentUser ? (
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-slate-700/80 animate-shimmer-dark shrink-0" />
-                <div className="w-20 h-3.5 rounded bg-slate-700/80 animate-shimmer-dark hidden sm:inline" />
+                <div className="w-7 h-7 rounded-full bg-slate-800 animate-pulse shrink-0" />
+                <div className="w-20 h-3.5 rounded bg-slate-800 animate-pulse hidden sm:inline" />
               </div>
             ) : (
               <>
-                <div className="w-7 h-7 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 rounded-full bg-blue-950/80 border border-blue-800/80 text-blue-300 font-bold text-xs flex items-center justify-center shrink-0">
                   {displayInitials}
                 </div>
                 <div className="flex flex-col text-left hidden sm:flex shrink-0 min-w-fit pr-2">
-                  <span className="text-xs font-semibold text-white leading-tight truncate">
+                  <span className="text-xs font-semibold text-slate-200 leading-tight truncate">
                     {displayName}
                   </span>
-                  <span className="text-[10px] text-amber-400 font-mono leading-none mt-0.5 tabular-nums whitespace-nowrap">
+                  <span className="text-[10px] text-blue-400 font-mono leading-none mt-0.5 tabular-nums whitespace-nowrap">
                     {userRole === "dg_admin"
                       ? "State DG Admin • Tier 1"
                       : userRole === "director_konkan"
@@ -546,18 +643,18 @@ export const Header: React.FC = () => {
             />
           </button>
 
-          {/* Profile Menu Popover with Subtle Gray Border */}
+          {/* Profile Menu Popover */}
           {isProfileMenuOpen && (
-            <div className="w-72 mt-2 bg-[#0B1120] border border-slate-700/80 rounded-xl shadow-2xl shadow-black/90 p-2 z-50 absolute right-0 top-full animate-in fade-in slide-in-from-top-1">
-              {/* Unique Top Section: Official Email & Session Status Badge */}
-              <div className="p-2.5 border-b border-slate-800/80 mb-1 space-y-1">
+            <div className="w-72 mt-2 bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl shadow-black/80 p-2.5 z-[120] absolute right-0 top-full animate-in fade-in slide-in-from-top-1 text-slate-100">
+              {/* Top Section */}
+              <div className="p-2.5 border-b border-slate-800 mb-1 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-sans">
                     {language === "mr"
                       ? "प्रवेश केलेले अधिकारी"
                       : "Signed in as"}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-medium text-emerald-400">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-[10px] font-medium text-emerald-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     <span>
                       {language === "mr" ? "सक्रिय सत्र" : "Active Session"}
@@ -572,8 +669,8 @@ export const Header: React.FC = () => {
                 </div>
               </div>
 
-              {/* Cadre & Posting Section: matching Title Case, no colons, clean UI font */}
-              <div className="p-2.5 space-y-2 text-xs border-b border-slate-800/80">
+              {/* Cadre & Posting Section */}
+              <div className="p-2.5 space-y-2 text-xs border-b border-slate-800">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-400 font-sans">
                     {language === "mr" ? "संवर्ग" : "Cadre"}
@@ -613,7 +710,7 @@ export const Header: React.FC = () => {
                 <Link
                   href="/profile"
                   onClick={() => setIsProfileMenuOpen(false)}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-sans"
+                  className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-sans"
                 >
                   <UserIcon className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>
@@ -626,7 +723,7 @@ export const Header: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:bg-rose-500/10 transition-colors flex items-center gap-2 cursor-pointer font-sans"
+                  className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:bg-rose-950/40 transition-colors flex items-center gap-2 cursor-pointer font-sans"
                 >
                   <ArrowRightOnRectangleIcon className="w-4 h-4 text-rose-400 shrink-0" />
                   <span>{language === "mr" ? "बाहेर पडा" : "Sign Out"}</span>
@@ -636,6 +733,8 @@ export const Header: React.FC = () => {
           )}
         </div>
       </div>
+      </>
+      )}
     </header>
   );
 };

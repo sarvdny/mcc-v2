@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import { motion } from 'motion/react';
 import { ArrowDownTrayIcon, SparklesIcon, ShieldExclamationIcon, VideoCameraIcon, MapPinIcon, ChartBarIcon } from '@heroicons/react/20/solid';
 import { KPIRibbon } from '@/components/zones/KPIRibbon/KPIRibbon';
 import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/DistrictLeaderboard';
@@ -189,91 +190,41 @@ export const ThreeColumnDashboard: React.FC = () => {
           <div
             role="tablist"
             aria-label={language === 'mr' ? 'डॅशबोर्ड विभाग निवडा' : 'Select dashboard view'}
-            className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shadow-2xs overflow-x-auto scrollbar-none text-xs w-full sm:w-auto"
+            className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shadow-2xs overflow-x-auto scrollbar-none text-xs w-full sm:w-auto relative"
           >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeView === 'overview'}
-              onClick={() => setActiveView('overview')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
-                activeView === 'overview'
-                  ? 'bg-[#EBF3FF] text-[#1D4ED8] font-bold shadow-xs border border-blue-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {language === 'mr' ? 'नकाशा व मुख्य डॅशबोर्ड' : 'GIS Map & Command'}
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeView === 'performance'}
-              onClick={() => setActiveView('performance')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
-                activeView === 'performance'
-                  ? 'bg-[#EBF3FF] text-[#1D4ED8] font-bold shadow-xs border border-blue-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {language === 'mr' ? 'जिल्हा कामगिरी (CPI)' : 'District Performance'}
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeView === 'media'}
-              onClick={() => setActiveView('media')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
-                activeView === 'media'
-                  ? 'bg-[#EBF3FF] text-[#1D4ED8] font-bold shadow-xs border border-blue-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {language === 'mr' ? 'माध्यम व थेट प्रक्षेपण' : 'Media & Broadcast'}
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeView === 'crisis'}
-              onClick={() => setActiveView('crisis')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
-                activeView === 'crisis'
-                  ? 'bg-[#EBF3FF] text-[#1D4ED8] font-bold shadow-xs border border-blue-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {language === 'mr' ? 'आपत्कालीन कक्ष' : 'Crisis Desk'}
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeView === 'hoardings'}
-              onClick={() => setActiveView('hoardings')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
-                activeView === 'hoardings'
-                  ? 'bg-[#EBF3FF] text-[#1D4ED8] font-bold shadow-xs border border-blue-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {language === 'mr' ? 'होर्डिंग्ज व क्षेत्रीय मोहीम' : 'Outdoor Hoardings'}
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeView === 'all'}
-              onClick={() => setActiveView('all')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
-                activeView === 'all'
-                  ? 'bg-[#EBF3FF] text-[#1D4ED8] font-bold shadow-xs border border-blue-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {language === 'mr' ? 'सर्व विभाग (कमांड वॉल)' : 'Command Wall (All)'}
-            </button>
+            {[
+              { id: 'overview', labelEn: 'GIS Map & Command', labelMr: 'नकाशा व मुख्य डॅशबोर्ड' },
+              { id: 'performance', labelEn: 'District Performance', labelMr: 'जिल्हा कामगिरी (CPI)' },
+              { id: 'media', labelEn: 'Media & Broadcast', labelMr: 'माध्यम व थेट प्रक्षेपण' },
+              { id: 'crisis', labelEn: 'Crisis Desk', labelMr: 'आपत्कालीन कक्ष' },
+              { id: 'hoardings', labelEn: 'Outdoor Hoardings', labelMr: 'होर्डिंग्ज व क्षेत्रीय मोहीम' },
+              { id: 'all', labelEn: 'Command Wall (All)', labelMr: 'सर्व विभाग (कमांड वॉल)' },
+            ].map((tab) => {
+              const isSelected = activeView === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  onClick={() => setActiveView(tab.id as DashboardWorkspaceView)}
+                  className={`relative px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden text-xs z-10 ${
+                    isSelected
+                      ? 'text-[#1D4ED8] font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {isSelected && (
+                    <motion.div
+                      layoutId="activeModuleTab"
+                      className="absolute inset-0 bg-[#EBF3FF] rounded-lg shadow-xs border border-blue-200/80 -z-10"
+                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  <span>{language === 'mr' ? tab.labelMr : tab.labelEn}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </header>

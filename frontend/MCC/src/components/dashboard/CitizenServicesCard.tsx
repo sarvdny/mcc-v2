@@ -140,6 +140,14 @@ export const CitizenServicesCard: React.FC = () => {
             {resolvedCount}/{CITIZEN_SERVICES_DATA.length}
           </span>
         </div>
+
+        {/* Graphical Representation: Active vs Resolved Proportional Indicator */}
+        <div className="col-span-4 mt-1 px-1">
+          <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden flex" title={`Resolved: ${resolvedCount}, Active: ${inProgressCount}`}>
+            <div className="h-full bg-emerald-500 transition-all duration-300" style={{ width: `${(resolvedCount / (CITIZEN_SERVICES_DATA.length || 1)) * 100}%` }} />
+            <div className="h-full bg-amber-500 transition-all duration-300" style={{ width: `${(inProgressCount / (CITIZEN_SERVICES_DATA.length || 1)) * 100}%` }} />
+          </div>
+        </div>
       </div>
 
       {/* 3. Category Pill Filters (Clean wrapping strip so all pills are visible) */}

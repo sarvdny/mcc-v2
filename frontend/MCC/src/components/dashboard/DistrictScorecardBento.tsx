@@ -19,6 +19,7 @@ import {
   ShieldCheckIcon,
   SparklesIcon,
 } from '@heroicons/react/20/solid';
+import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
 export const DistrictScorecardBento: React.FC = () => {
   const { language, selectedDistrictId, setSelectedDistrictId, districts } = useDashboardStore();
@@ -60,6 +61,7 @@ export const DistrictScorecardBento: React.FC = () => {
                     ? 'महाराष्ट्र राज्य सर्वसमावेशक कामगिरी निर्देशांक (CPI)'
                     : 'Statewide Aggregated CPI Benchmark & Division Scorecard'}
                 </h3>
+                <InfoTooltip metricKey="cpi" />
               </div>
               <p className="text-xs text-slate-500 mt-1">
                 {language === 'mr'
@@ -160,6 +162,7 @@ export const DistrictScorecardBento: React.FC = () => {
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span className="text-xs font-semibold text-emerald-600">Live Active Reporting</span>
+            <InfoTooltip metricKey="cpi" />
           </div>
           <h2 className="text-xl font-bold text-slate-900 mt-1">
             {language === 'mr' ? d.nameMr : d.name} District
@@ -169,19 +172,36 @@ export const DistrictScorecardBento: React.FC = () => {
           </p>
         </div>
 
-        {/* CPI Score Gauge */}
-        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200/80">
+        {/* CPI Score Radial Gauge */}
+        <div className="flex items-center gap-3 bg-slate-50 px-3.5 py-2 rounded-2xl border border-slate-200/80">
+          <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+            <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="24" r="20" stroke="#E2E8F0" strokeWidth="4" fill="transparent" />
+              <circle
+                cx="24"
+                cy="24"
+                r="20"
+                stroke={cpiScore >= 80 ? '#10B981' : cpiScore >= 60 ? '#1D4ED8' : '#F59E0B'}
+                strokeWidth="4"
+                strokeDasharray={125.6}
+                strokeDashoffset={125.6 - (125.6 * cpiScore) / 100}
+                strokeLinecap="round"
+                fill="transparent"
+                className="transition-all duration-500"
+              />
+            </svg>
+            <span className="absolute font-black text-xs text-slate-800">
+              {cpiScore >= 80 ? 'A+' : cpiScore >= 60 ? 'B+' : 'C'}
+            </span>
+          </div>
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
               Composite CPI
             </span>
-            <span className="text-2xl font-black font-mono text-blue-600">
+            <span className="text-2xl font-black font-mono text-blue-600 leading-none">
               {cpiScore.toFixed(1)}
             </span>
             <span className="text-xs text-slate-400 font-mono"> / 100</span>
-          </div>
-          <div className="w-10 h-10 rounded-full border-4 border-blue-600 flex items-center justify-center font-bold text-xs text-blue-700 bg-white shadow-2xs">
-            {cpiScore >= 80 ? 'A+' : cpiScore >= 60 ? 'B+' : 'C'}
           </div>
         </div>
       </div>
