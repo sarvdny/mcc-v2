@@ -5,7 +5,11 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
-export const AnalyticalDock: React.FC = () => {
+interface AnalyticalDockProps {
+  layout?: 'row' | 'grid2x2';
+}
+
+export const AnalyticalDock: React.FC<AnalyticalDockProps> = ({ layout = 'row' }) => {
   const { language, districts } = useDashboardStore();
   const t = useTranslation(language);
 
@@ -17,7 +21,13 @@ export const AnalyticalDock: React.FC = () => {
   }, [districts]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 w-full">
+    <div
+      className={
+        layout === 'grid2x2'
+          ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 w-full'
+          : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 w-full'
+      }
+    >
       {/* 1. District Ranking Bars */}
       <div className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-sm transition-all">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2.5">

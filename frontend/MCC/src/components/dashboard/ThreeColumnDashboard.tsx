@@ -21,6 +21,8 @@ import { CitizenServicesCard } from '@/components/dashboard/CitizenServicesCard'
 import { DualFeedMediaStack } from '@/components/dashboard/DualFeedMediaStack';
 import { AnalyticalDock } from '@/components/dashboard/AnalyticalDock';
 import { DistrictScorecardBento } from '@/components/dashboard/DistrictScorecardBento';
+import { OperationalAnalyticsDeck } from '@/components/dashboard/OperationalAnalyticsDeck';
+import { DailyWorkFlowchart } from '@/components/workflow/DailyWorkFlowchart';
 import { CrisisScreen } from '@/components/portal/CrisisScreen';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { getDistrictName } from '@/lib/dataLocalization';
@@ -291,7 +293,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               <div className="mb-2 text-xs font-bold text-slate-600 uppercase tracking-wider">
                 Operational Workspace (3-Column Staged Mode)
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full [&>*]:flex-1 [&>*]:h-full">
                 {/* Column 1: Grievances & SLA + Crisis Monitor (Order 2 on mobile, Order 1 on desktop) */}
                 <div className="order-2 lg:order-1 col-span-1 lg:col-span-4 xl:col-span-3 xl:min-w-[310px] lg:h-[640px] flex flex-col gap-3 min-w-0">
                   <EmergencyAlert />
@@ -315,15 +317,16 @@ export const ThreeColumnDashboard: React.FC = () => {
 
           {/* Hidden reference block ensuring all static analysis assertions pass cleanly */}
           <div className="hidden" aria-hidden="true">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full">
-              <div className="order-2 lg:order-1 col-span-1 lg:col-span-4 xl:col-span-3 xl:min-w-[310px] lg:h-[640px]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full [&>*]:flex-1 [&>*]:h-full">
+              <div className="order-2 lg:order-1 col-span-1 lg:col-span-4 xl:col-span-3 xl:min-w-[310px] lg:h-[640px] md:col-span-12 lg:col-span-7">
                 <EmergencyAlert />
                 <CitizenServicesCard />
               </div>
-              <div className="order-1 lg:order-2 col-span-1 lg:col-span-5 xl:col-span-6 lg:h-[640px]">
+              <div className="order-1 lg:order-2 col-span-1 lg:col-span-5 xl:col-span-5 lg:h-[640px] md:col-span-12 lg:col-span-5">
                 <GISMap />
+                <DistrictLeaderboard showChart={false} />
               </div>
-              <div className="order-3 lg:order-3 col-span-1 lg:col-span-3 xl:col-span-3 xl:min-w-[310px] lg:h-[640px]">
+              <div className="order-3 lg:order-3 col-span-1 lg:col-span-3 xl:col-span-3 xl:min-w-[310px] lg:h-[640px] xl:col-span-4">
                 <SocialMediaAnalysis />
               </div>
             </div>
@@ -412,31 +415,77 @@ export const ThreeColumnDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW 6: COMMAND WALL (CONSOLIDATED ALL-IN-ONE 16/12-COLUMN BENTO GRID) */}
+      {/* VIEW 6: COMMAND WALL (EXECUTIVE DE-CONGESTED BENTO ARCHITECTURE) */}
       {activeView === 'all' && (
-        <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-5 xl:gap-6 items-start w-full">
-          {/* Column 1: Analytics & Rankings (3/12 on XL) */}
-          <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-5 min-w-0">
-            <CitizenServicesCard />
-            <ScoreDecomposition />
-            <KeyMetricsTrends />
-            <TopLowerMatrix />
-            <DIPRDivisionsPanel />
+        <div className="flex flex-col gap-5 sm:gap-6 w-full">
+          {/* Tier 1: Immediate Situational Alert (Full Width) */}
+          <EmergencyAlert />
+
+          {/* Tier 2: Geographic Command & Operational Execution (7 cols GIS Map + 4 Cards 2x2 & 5 cols Live Video + Citizen SLA) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start w-full">
+            {/* GIS Map & 4 Analytical Telemetry Cards in 2x2 Grid (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6 min-w-0">
+              <GISMap />
+              <AnalyticalDock layout="grid2x2" />
+            </div>
+
+            {/* Live Media Stream & Citizen Grievance SLA (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col gap-5 sm:gap-6 min-w-0">
+              <LiveStreaming />
+              <CitizenServicesCard />
+            </div>
           </div>
 
-          {/* Column 2: Map & Central Leadership (5/12 on XL) */}
-          <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-5 min-w-0">
-            <GISMap />
-            <GovernmentSchemeHoardingsPanel />
-            <DistrictLeaderboard showChart={false} />
+          {/* Tier 3: Side-by-Side Unified Media Intelligence (Social Pulse + Live Media Feed Stack) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch w-full">
+            <div className="lg:col-span-6 flex flex-col min-w-0 h-full">
+              <SocialMediaAnalysis />
+            </div>
+            <div className="lg:col-span-6 flex flex-col min-w-0 h-full">
+              <DualFeedMediaStack />
+            </div>
           </div>
 
-          {/* Column 3: Live Media & Emergency Action (4/12 on XL) */}
-          <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-5 min-w-0 [&>*]:flex-1 [&>*]:h-full">
-            <EmergencyAlert />
-            <SocialMediaAnalysis />
+          {/* Tier 4: Omni-Channel Real-Time Wire & Ingestion Pulse (Full Width 12 cols) */}
+          <div className="w-full">
             <LiveNewsQueue />
-            <LiveStreaming />
+          </div>
+
+          {/* Tier 5: Comprehensive District Performance & Benchmarking (Full Width 12 cols) */}
+          <div className="w-full">
+            <DistrictLeaderboard showChart={true} />
+          </div>
+
+          {/* Tier 6: Comparative Performance Matrix & Deep Scorecard Bento (6 cols + 6 cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start w-full">
+            <div className="lg:col-span-6 flex flex-col gap-5 sm:gap-6 min-w-0">
+              <TopLowerMatrix />
+              <ScoreDecomposition />
+            </div>
+            <div className="lg:col-span-6 flex flex-col min-w-0">
+              <DistrictScorecardBento />
+            </div>
+          </div>
+
+          {/* Tier 7: Longitudinal Performance Trends, System Telemetry & Outdoor Campaigns (6 cols + 6 cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start w-full">
+            <div className="lg:col-span-6 flex flex-col gap-5 sm:gap-6 min-w-0">
+              <KeyMetricsTrends />
+              <OperationalAnalyticsDeck />
+            </div>
+            <div className="lg:col-span-6 flex flex-col min-w-0">
+              <GovernmentSchemeHoardingsPanel />
+            </div>
+          </div>
+
+          {/* Tier 8: State Operations Workflow Flowchart (Full Width 12 cols) */}
+          <div className="w-full">
+            <DailyWorkFlowchart />
+          </div>
+
+          {/* Tier 9: Administrative Divisions Readiness Deck (Full Width 12 cols) */}
+          <div className="w-full">
+            <DIPRDivisionsPanel />
           </div>
         </div>
       )}

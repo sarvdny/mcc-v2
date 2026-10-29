@@ -18,25 +18,25 @@ export const OperationalAnalyticsDeck: React.FC = () => {
   const days = ['Oct 12', 'Oct 13', 'Oct 14', 'Oct 15', 'Oct 16', 'Oct 17', 'Oct 18'];
 
   return (
-    <div className="bg-[#0B111D] border border-white/10 rounded-2xl overflow-hidden shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col h-full">
+    <div className="bg-white dark:bg-[#0B111D] border border-slate-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-white/10 bg-[#070B14]/80 flex items-center justify-between flex-wrap gap-2">
+      <div className="p-4 border-b border-slate-100 dark:border-white/10 bg-slate-50/70 dark:bg-[#070B14]/80 flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <ChartBarIcon className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white tracking-tight">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
               {language === 'mr' ? 'प्रमुख कामगिरी मेट्रिक्स व ट्रेंड्स' : 'Key Operational Metrics & System Trends'}
             </h3>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               {language === 'mr' ? 'राज्यस्तरीय प्रसिद्धी, कार्यपूर्तता व प्रतिसाद गती' : 'Statewide releases, task completion & pipeline throughput over time'}
             </p>
           </div>
         </div>
 
         {/* Time Filter Pills */}
-        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono">
+        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[11px] font-mono">
           {(['7D', '30D', '90D'] as const).map((win) => (
             <button
               key={win}
@@ -45,7 +45,7 @@ export const OperationalAnalyticsDeck: React.FC = () => {
               className={`px-2.5 py-1 rounded font-semibold transition-all cursor-pointer ${
                 activeWindow === win
                   ? 'bg-amber-500 text-slate-950 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {win}
@@ -70,9 +70,9 @@ export const OperationalAnalyticsDeck: React.FC = () => {
             </defs>
 
             {/* Grid lines */}
-            <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-            <line x1="0" y1="65" x2="500" y2="65" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-            <line x1="0" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+            <line x1="0" y1="30" x2="500" y2="30" stroke="currentColor" className="text-slate-200 dark:text-white/5" strokeDasharray="3 3" />
+            <line x1="0" y1="65" x2="500" y2="65" stroke="currentColor" className="text-slate-200 dark:text-white/5" strokeDasharray="3 3" />
+            <line x1="0" y1="100" x2="500" y2="100" stroke="currentColor" className="text-slate-200 dark:text-white/5" strokeDasharray="3 3" />
 
             {/* Series 1: Tasks (Sky Blue) */}
             <path
@@ -82,7 +82,7 @@ export const OperationalAnalyticsDeck: React.FC = () => {
             <path
               d="M0,90 Q80,80 160,60 T320,40 T500,20"
               fill="none"
-              stroke="#38BDF8"
+              stroke="#0284C7"
               strokeWidth="2.5"
             />
 
@@ -94,7 +94,7 @@ export const OperationalAnalyticsDeck: React.FC = () => {
             <path
               d="M0,105 Q80,95 160,85 T320,65 T500,45"
               fill="none"
-              stroke="#10B981"
+              stroke="#059669"
               strokeWidth="2"
             />
 
@@ -109,8 +109,8 @@ export const OperationalAnalyticsDeck: React.FC = () => {
                 cx={pt.cx}
                 cy={pt.cy}
                 r="4.5"
-                fill="#F59E0B"
-                stroke="#0B111D"
+                fill="#D97706"
+                stroke="#FFFFFF"
                 strokeWidth="2"
               />
             ))}
@@ -118,7 +118,7 @@ export const OperationalAnalyticsDeck: React.FC = () => {
         </div>
 
         {/* Day X-Axis Labels */}
-        <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 px-1 border-b border-white/5 pb-2">
+        <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400 px-1 border-b border-slate-100 dark:border-white/5 pb-2">
           {days.map((d) => (
             <span key={d}>{d}</span>
           ))}
@@ -127,14 +127,14 @@ export const OperationalAnalyticsDeck: React.FC = () => {
         {/* Legend */}
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="flex items-center gap-1.5 text-sky-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-400" /> Releases & Clippings
+            <span className="flex items-center gap-1.5 text-sky-700 dark:text-sky-400 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> Releases & Clippings
             </span>
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" /> Ground Verification Rate
+            <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Ground Verification Rate
             </span>
-            <span className="flex items-center gap-1.5 text-amber-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Cabinet Briefings
+            <span className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Cabinet Briefings
             </span>
           </div>
 
@@ -146,7 +146,7 @@ export const OperationalAnalyticsDeck: React.FC = () => {
                 message: 'Operations analytics export generated (CSV format).',
               });
             }}
-            className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
           >
             <ArrowDownTrayIcon className="w-3.5 h-3.5" />
             <span>Export Data</span>
@@ -154,22 +154,22 @@ export const OperationalAnalyticsDeck: React.FC = () => {
         </div>
 
         {/* 4 Bottom Telemetry Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-white/5">
-          <div className="p-2 rounded bg-white/[0.02]">
-            <span className="text-[10px] text-slate-400 block font-mono">Mean Ingestion Latency</span>
-            <span className="text-sm font-bold font-mono text-emerald-400">24 ms</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-slate-100 dark:border-white/5">
+          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-transparent">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">Mean Ingestion Latency</span>
+            <span className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400">24 ms</span>
           </div>
-          <div className="p-2 rounded bg-white/[0.02]">
-            <span className="text-[10px] text-slate-400 block font-mono">Pipeline Success Rate</span>
-            <span className="text-sm font-bold font-mono text-white">99.98%</span>
+          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-transparent">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">Pipeline Success Rate</span>
+            <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">99.98%</span>
           </div>
-          <div className="p-2 rounded bg-white/[0.02]">
-            <span className="text-[10px] text-slate-400 block font-mono">Human Review Backlog</span>
-            <span className="text-sm font-bold font-mono text-amber-400">4 items</span>
+          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-transparent">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">Human Review Backlog</span>
+            <span className="text-sm font-bold font-mono text-amber-600 dark:text-amber-400">4 items</span>
           </div>
-          <div className="p-2 rounded bg-white/[0.02]">
-            <span className="text-[10px] text-slate-400 block font-mono">Channel Availability</span>
-            <span className="text-sm font-bold font-mono text-emerald-400">100% (42/42)</span>
+          <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-transparent">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">Channel Availability</span>
+            <span className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400">100% (42/42)</span>
           </div>
         </div>
       </div>

@@ -42,7 +42,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
   const [sortColumn, setSortColumn] = useState<SortColumn>('rank');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(6);
 
   const handleSort = (col: SortColumn) => {
     if (sortColumn === col) {
@@ -360,6 +360,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               }}
               className="px-2 py-1 border border-slate-200/80 rounded-xl text-slate-800 bg-white/95 shadow-xs hover:border-slate-300 focus:outline-none cursor-pointer transition-all duration-100 ease-out"
             >
+              <option value={6}>6</option>
               <option value={10}>10</option>
               <option value={20}>20</option>
               <option value={0}>{language === 'mr' ? 'सर्व (३६)' : 'All (36)'}</option>
@@ -368,30 +369,52 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
         </div>
 
         {!isAll && totalPages > 1 && (
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={safePage === 1}
-              aria-disabled={safePage === 1}
-              className="p-1.5 border border-slate-200/80 rounded-xl text-slate-600 shadow-xs hover:bg-slate-100 active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all duration-100 ease-out"
-              title={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
-              aria-label={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
-            >
-              <ChevronLeftIcon className="w-3.5 h-3.5 shrink-0" />
-            </button>
-            <span className="font-mono text-xs font-semibold px-2 text-slate-800">
-              {safePage} / {totalPages}
-            </span>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={safePage === totalPages}
-              aria-disabled={safePage === totalPages}
-              className="p-1.5 border border-slate-200/80 rounded-xl text-slate-600 shadow-xs hover:bg-slate-100 active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all duration-100 ease-out"
-              title={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
-              aria-label={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
-            >
-              <ChevronRightIcon className="w-3.5 h-3.5 shrink-0" />
-            </button>
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Interactive District Pagination Slider */}
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-200/80 rounded-xl shadow-2xs">
+              <span className="text-[10px] font-mono text-slate-400 font-bold shrink-0">
+                #1
+              </span>
+              <input
+                type="range"
+                min={1}
+                max={totalPages}
+                step={1}
+                value={safePage}
+                onChange={(e) => setCurrentPage(Number(e.target.value))}
+                aria-label={language === 'mr' ? 'जिल्हे पृष्ठ स्लाइडर' : 'District pagination slider'}
+                className="w-20 sm:w-28 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-hidden"
+              />
+              <span className="text-[10px] font-mono text-slate-400 font-bold shrink-0">
+                #{totalItems}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+                aria-disabled={safePage === 1}
+                className="p-1.5 border border-slate-200/80 rounded-xl text-slate-600 shadow-xs hover:bg-slate-100 active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all duration-100 ease-out"
+                title={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
+                aria-label={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
+              >
+                <ChevronLeftIcon className="w-3.5 h-3.5 shrink-0" />
+              </button>
+              <span className="font-mono text-xs font-semibold px-2 text-slate-800">
+                {safePage} / {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+                aria-disabled={safePage === totalPages}
+                className="p-1.5 border border-slate-200/80 rounded-xl text-slate-600 shadow-xs hover:bg-slate-100 active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all duration-100 ease-out"
+                title={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
+                aria-label={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
+              >
+                <ChevronRightIcon className="w-3.5 h-3.5 shrink-0" />
+              </button>
+            </div>
           </div>
         )}
       </div>
